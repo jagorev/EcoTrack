@@ -1,7 +1,4 @@
 
 # SoftwareEngineering
 
-adsgfz
-Ciao
-
-ciaoo
+To do: - chiedere web app mobile al prof

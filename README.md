@@ -1,6 +1,9 @@
 
 # SoftwareEngineering
 
+## Links
+[Documento "Idee"](https://docs.google.com/document/d/1m42KyGt-J5MM8goCJWPM5KvNqKv4sumKCRWranK6XfY/edit?tab=t.0)
+
 ## To Do
 - [ ] Chiedere al prof riguardo la web app mobile
 - [ ] Chiedere di account 

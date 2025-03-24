@@ -1,0 +1,110 @@
+\section{Requisiti Funzionali}
+
+\subsection{Requisiti generali:}
+\label{Requisiti generali}
+\begin{itemize}
+    \item L’applicazione SMART PARKING dovrà essere un’app per \textbf{smartphone};
+    \item l’applicazione deve essere composta da una schermata principale dove poter \textbf{cercare i parcheggi} e un \textbf{menù ad hamburger};
+    \item Il sistema deve avere 3 livelli di accesso:
+    \begin{itemize}
+        \item Utente \textbf{non registrato};
+        \item Utente \textbf{registrato ed autenticato};
+        \item Utente \textbf{proprietario di parcheggio};
+    \end{itemize}
+    \item il sistema deve mostrare la \textbf{situazione generale} dei parcheggi in base alla disponibilità
+    \item Il sistema deve gestire le \textbf{prenotazioni};
+    \item Il sistema deve gestire i pagamenti tramite \textbf{wallet/carta di credito};
+\end{itemize}
+
+\subsection{Utenti}
+\subsection*{Utente non registrato/non autenticato}
+
+\begin{enumerate}[start=1,label={\bfseries RF\arabic*}]
+    \item \label{itm:RF1} L’utente non registrato può selezionare se \textbf{registrarsi} come “utente” o “proprietario di parcheggio”:
+    \begin{itemize}
+        \item se l’utente seleziona “\textbf{utente}” il sistema chiede di inserire: i suoi dati personali (nome, cognome, data di nascita, CF, email, numero di telefono) ed una password (da confermare due volte) oppure può registrarsi utilizzando un account google, facebook o apple.
+        Una volta inseriti i dati, il sistema invia una mail contenente un link di conferma all’indirizzo specificato. Nel caso l’utente non ricevesse la mail può cliccare su un tasto per chiedere che gli sia inviata nuovamente.
+        \item se l’utente seleziona “\textbf{proprietario di parcheggio}” il sistema chiede di inserire i dati personali del proprietario del parcheggio, i dati del parcheggio, ovvero, nome del parcheggio, via, città, cap, posti disponibili, le varie tariffe (oraria, giornaliera) e i giorni in cui il parcheggio è a pagamento;
+    \end{itemize}
+    \item \label{itm:RF2} Se l’utente non autenticato non si ricorda la password può richiederne il \textbf{reset}, inserendo l’email verificata collegata all’account in modo da ricevere una mail che contiene un link per cambiare la password. L’utente dovrà inserire la nuova password e confermare. 
+\end{enumerate}
+
+\subsection*{Utente autenticato}
+\begin{enumerate}[start=3,label={\bfseries RF\arabic*}]
+    \item \label{itm:RF3} Per effettuare il login l’utente dovrà inserire \textbf{email} e \textbf{password}. Nel caso l’account non esista appare un messaggio di errore, cancellando il contenuto del campo password.
+    \item \label{itm:RF4} Dopo il primo login all’utente verrà chiesto di inserire anche: un \textbf{metodo di pagamento attivo} (carta di credito) e la \textbf{targa} delle macchine che vuole utilizzare. È obbligatorio compilare almeno una volta il metodo di pagamento e la targa;
+    \item \label{itm:RF5}Composizione del menù: l’utente autenticato ha a disposizione un \textbf{menù ad hamburger} dove può effettuare le seguenti operazioni:
+    \begin{itemize}
+        \item \textbf{cercare i parcheggi} (sezione principale) sulla mappa di Google maps;
+        \item \textbf{visualizzare dati personali} e \textbf{modificare}: email, numero di telefono, elenco delle carte di credito, lista delle targhe;
+        \item \textbf{visualizzare} la disponibilità del \textbf{wallet}, ricaricarlo e l’elenco delle \textbf{transazioni effettuate};
+        \item \textbf{visualizzare e gestire le prenotazioni effettuate};
+        \item \textcolor{red}{passare all'account "\textbf{parcheggiatore}"};
+        \item \textbf{logout} dall’appliazione: quando si preme questa voce il sistema ti riporta alla schermata di login.
+    \end{itemize}
+    \item \label{itm:RF6}L’utente autenticato può cercare i parcheggi con posti disponibili, con la possibilità di utilizzare un \textbf{filtro} per:
+    \begin{itemize}
+        \item selezionare il \textbf{raggio} in cui cercare i parcheggi;
+        \item selezionare la \textbf{tariffa oraria massima};
+        \item parcheggi \textbf{preferiti}.
+    \end{itemize}
+    \subitem I parcheggi verranno mostrati sulla mappa con \textbf{3 colori in base alla disponibilità}: rosso, arancione, verde.
+    \item \label{itm:RF7} Una volta che l’utente ha cercato i parcheggi è possibile \textbf{ordinarli} per:
+    \begin{itemize}
+        \item tariffa oraria;
+        \item distanza dalla posizione;
+        \item disponibilità posti;
+        \item ordine alfabetico.
+    \end{itemize}
+    \item \label{itm:RF8}L’utente autenticato può prenotare un posto nel parcheggio selezionandolo dalla mappa. L’utente deve anche selezionare la \textbf{targa} della macchina con cui si recherà nel parcheggio, il \textbf{giorno} in cui vuole prenotare (se sosta per più di 24h) e per \textbf{quanto} vuole sostare nel parcheggio;
+    \item \label{itm:RF9}L'utente autenticato può \textbf{aggiungere} un parcheggio nella lista dei \textbf{preferiti};
+    \item \label{itm:RF10}L’utente autenticato può \textbf{aggiungere nuovi metodi di pagamento} cliccando su \textcolor{red}{“modifica”} nella sezione dei suoi dati personali.
+    \item \label{itm:RF11}L’utente \textcolor{red}{deve} selezionare una carta da utilizzare come \textcolor{red}{principale};
+    \item \label{itm:RF12}L’utente autenticato può \textbf{modificare la password} aprendo il menù ad hamburger e selezionando \textcolor{red}{“dati personali”, "modifica"} inserendo la vecchia password e confermando la nuova due volte;
+\end{enumerate}
+
+\subsection*{Propietario parcheggio}
+\begin{enumerate}[start=13,label={\bfseries RF\arabic*}]
+    \item \label{itm:RF13}Il proprietario del parcheggio può gestire il suo parcheggio attraverso una schermata apposita selezionabile nel menù ad hamburger; 
+    \item \label{itm:RF14}Il proprietario può \textbf{cambiare il costo per ora} del suo parcheggio;
+    \item \label{itm:RF15}Il proprietario può \textbf{aggiungere nuove \textcolor{red}{aree parcheggio}} al suo account;
+    \item \label{itm:RF16}Il proprietario può accedere ad una schermata di \textbf{analytics}, dove viene mostrato l’andamento del parcheggio selezionato, come: 
+    \begin{itemize}
+        \item \textbf{guadagni} mensili/semestrali/annuali;
+        \item \textbf{istogramma} che mostra il numero di macchine parcheggiate al mese (12 mesi);
+        \item il numero di \textbf{utenti} che hanno utilizzato il parcheggio \textbf{tramite l’applicazione}.
+    \end{itemize}
+    \item \label{itm:RF17}Il proprietario del parcheggio può \textbf{disiscriversi} dall’applicazione.
+\end{enumerate}
+
+\subsection{Gestione prenotazioni}
+\begin{enumerate}[start=18,label={\bfseries RF\arabic*}]
+    \item \label{itm:RF18} Il sistema deve permettere all’utente di prenotare il parcheggio selezionandolo e inserendo:
+    \begin{itemize}
+        \item \textbf{data} in cui desidera effettuare la prenotazione;
+        \item \textbf{fascia oraria}.
+    \end{itemize}
+    \item \label{itm:RF19}In caso di prenotazione avvenuta con successo, \textcolor{red}{il parcheggio scala il numero di posti disponibili come descritto nell'\textbf{\nameref{label:RNF12}}};
+    \item \label{itm:RF20}La prenotazione del parcheggio si suddivide in \textbf{due macro-categorie}, per lunghezza della prenotazione:
+    \begin{itemize}
+        \item \textbf{$<$ 24h}: l’utente ha \textbf{30 minuti} per arrivare al parcheggio una volta avvenuta la prenotazione, altrimenti la prenotazione del posto decade.
+        \item \textbf{$>$ 24h}: l’utente \textbf{non ha un tempo limite} per arrivare al parcheggio. In questo caso l’utente può entrare ed uscire liberamente dal parcheggio finché non passa il tempo dichiarato inizialmente.
+    \end{itemize}
+    \item \label{itm:RF21}Il sistema deve permettere di annullare la prenotazione:
+    \begin{itemize}
+        \item prenotazione \textbf{$<$ 24h}: l’utente ha \textbf{20 minuti} per annullare la prenotazione (viene restituita la cauzione);
+        \item prenotazione \textbf{$>$ 24h}: l’utente può annullare la prenotazione (ricevendo il rimborso) entro le \textbf{12h} precedenti l’effettiva prenotazione.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Gestione pagamenti}
+\begin{enumerate}[start=22,label={\bfseries RF\arabic*}]
+    \item \label{itm:RF22} L’utente può caricare il wallet mediante carta di credito nel sottomenù “wallet”.
+    \item \label{itm:RF23} Al momento della prenotazione se il wallet è pari o minore di 0 il sistema dovrà controllare la validità della carta di credito. Nel caso in cui la carta di credito non fosse valida la prenotazione verrà annullata.
+    \item \label{itm:RF24} Pagamento suddiviso in base alla durata della prenotazione:
+    \begin{itemize}
+        \item \textbf{$<$ 24h}: Al momento del pagamento viene chiesta una cauzione di 2€, che verrà restituita se l’utente arriva al parcheggio in tempo.
+        Quando l’utente arriva al parcheggio, la sbarra si alza senza dover prendere il biglietto (il sistema riconosce la targa). All’uscita la sbarra si alza e viene calcolata la tariffa dovuta, data da \textbf{\textit{tempo passato nel parcheggio} $\cdot$ \textit{tariffa oraria}}. La cauzione viene restituita e si detrae la tariffa dal wallet. Nel caso in cui l’importo da pagare sia maggiore del saldo del wallet, la differenza, più il 5\% del prezzo totale viene detratta dalla carta di credito registrata e collegata all’account.
+        \item \textbf{$>$ 24h}: il pagamento della tariffa avviene al momento della prenotazione. Nel caso in cui l’utente lasci la macchina all’interno del parcheggio per più tempo di quanto dichiarato, all’uscita dal parcheggio dalla carta di credito viene addebitata la seguente tariffa: \textcolor{red}{\textbf{\textit{$($tempo $\cdot$ tariffa oraria$)-($costo già addebitata+5$\%$~costo già addebitato$)$.}}}
+    \end{itemize}
+\end{enumerate}

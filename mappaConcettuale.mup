@@ -1,0 +1,152 @@
+{
+  "formatVersion": 3,
+  "id": "root",
+  "ideas": {
+    "1": {
+      "title": "Attori del Sistema",
+      "id": 1,
+      "attr": {
+        "position": [
+          -25,
+          -15,
+          1
+        ]
+      },
+      "ideas": {
+        "1": {
+          "title": "Utenti",
+          "id": "2.6892.672f293b9-1fda.1a55043a8",
+          "ideas": {
+            "1": {
+              "title": "Utente Anonimo",
+              "id": "4.6892.672f293b9-1fda.1a55043a8",
+              "attr": {
+                "position": [
+                  69,
+                  -120,
+                  1
+                ]
+              }
+            },
+            "2": {
+              "title": "Utente Registrato",
+              "id": "5.6892.672f293b9-1fda.1a55043a8",
+              "attr": {
+                "position": [
+                  72,
+                  108,
+                  2
+                ]
+              },
+              "ideas": {
+                "1": {
+                  "title": "Cittadino",
+                  "id": "6.6892.672f293b9-1fda.1a55043a8",
+                  "attr": {
+                    "position": [
+                      161,
+                      -67,
+                      3
+                    ]
+                  }
+                },
+                "2": {
+                  "title": "Operatore Ecologico",
+                  "id": "7.6892.672f293b9-1fda.1a55043a8",
+                  "attr": {
+                    "position": [
+                      163,
+                      -1,
+                      2
+                    ]
+                  }
+                },
+                "3": {
+                  "title": "Amministratore",
+                  "id": "8.6892.672f293b9-1fda.1a55043a8",
+                  "attr": {
+                    "position": [
+                      162,
+                      61,
+                      4
+                    ]
+                  },
+                  "ideas": {
+                    "1": {
+                      "title": "Comune",
+                      "id": "16.6892.672f293b9-1fda.1a55043a8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "attr": {
+            "position": [
+              179,
+              -1,
+              8
+            ]
+          }
+        },
+        "-11": {
+          "title": "Servizi Interni",
+          "id": "13.6892.672f293b9-1fda.1a55043a8",
+          "attr": {
+            "position": [
+              145,
+              -139,
+              9
+            ]
+          },
+          "ideas": {
+            "1": {
+              "title": "Database",
+              "id": "14.6892.672f293b9-1fda.1a55043a8",
+              "attr": {}
+            },
+            "2": {
+              "title": "Sistema di Analisi Dati",
+              "id": "15.6892.672f293b9-1fda.1a55043a8",
+              "attr": {}
+            }
+          }
+        },
+        "-21": {
+          "title": "Servizi Esterni",
+          "id": "3.6892.672f293b9-1fda.1a55043a8",
+          "ideas": {
+            "1": {
+              "title": "Servizio di Geolocalizzazione",
+              "id": "9.6892.672f293b9-1fda.1a55043a8",
+              "attr": {}
+            },
+            "2": {
+              "title": "Servizio di Notifiche",
+              "id": "10.6892.672f293b9-1fda.1a55043a8"
+            },
+            "3": {
+              "title": "Servizio di Autenticazione",
+              "id": "11.6892.672f293b9-1fda.1a55043a8"
+            },
+            "4": {
+              "title": "Sensoristica",
+              "id": "12.6892.672f293b9-1fda.1a55043a8"
+            }
+          },
+          "attr": {
+            "position": [
+              143,
+              115,
+              10
+            ]
+          }
+        }
+      }
+    }
+  },
+  "attr": {
+    "theme": "default"
+  },
+  "title": "Attori del Sistema"
+}

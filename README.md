@@ -6,7 +6,8 @@
 
 ## To Do
 - [ ] Chiedere al prof riguardo la web app mobile
-- [ ] Chiedere se nella sezione "Attori del Sistema" vanno messi anche i permessi dei vari attori
+- [x] Chiedere se nella sezione "Attori del Sistema" vanno messi anche i permessi dei vari attori
+- [ ] Chiedere di asterisco
 ## Next time  
 - [ ] Impostare il file latex 
 - [ ] Organizzare/strutturare le idee del 11/03 

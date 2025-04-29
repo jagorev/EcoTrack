@@ -20,8 +20,23 @@
 \usepackage{amsmath}
 \usepackage[export]{adjustbox} 
 \usepackage{float}
+\usepackage{tabularx} % Da inserire nel preambolo se non già presente
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+\geometry{margin=2.5cm}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
 \usepackage{
-    geometry,
+        geometry,
 	plain,
 	setspace, 
 	titlesec,
@@ -34,6 +49,16 @@
         right = 2.5cm,
 	top = 2cm,
 	bottom = 2cm
+}
+\lstdefinestyle{ocl}{
+  backgroundcolor=\color{gray!10},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black},
+  captionpos=b,
+  tabsize=2,
+  language=OCL
 }
 \singlespacing
 
@@ -55,13 +80,10 @@
 
 
 
-\include{D1-G1/Chapter/0Cover}
+\include{D2-G1/Chapters/0Cover}
 \tableofcontents
-\include{Chapter/1Obiettivi}
-\include{D1-G1/Chapter/2Attori}
-\include{D1-G1/Chapter/3RF}
-\include{D1-G1/Chapter/4NRF}
-\include{D1-G1/Chapter/5UseCase}
-\include{D1-G1/Chapter/6BPMN}
+\include{D2-G1/Chapters/1DiagrammaComponenti}
+\include{D2-G1/Chapters/2DiagrammaClassi}
+\include{D2-G1/Chapters/3DiagrammaOCL}
 
 \end{document}

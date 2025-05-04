@@ -1,0 +1,93 @@
+\section{Vincoli Object Constraint Language}
+
+In questa sezione vengono specificati i vincoli espressi in linguaggio OCL (Object Constraint Language). Si includono invarianti, precondizioni e postcondizioni relative alle operazioni principali delle classi. I vincoli permettono di garantire la consistenza logica del sistema.
+
+\subsection{Classe Autenticatore}
+
+\textbf{Pre-Condizione \texttt{login()}:} L’username e la password non devono essere nulli o vuoti.
+\begin{lstlisting}[language=OCL]
+context Autenticatore::login(username: String, password: String): Boolean
+pre: not username.oclIsUndefined() and username <> '' and
+     not password.oclIsUndefined() and password <> ''
+\end{lstlisting}
+
+\textbf{Post-Condizione \texttt{login()}:} Se le credenziali sono corrette, l’utente risulta autenticato.
+\begin{lstlisting}[language=OCL]
+context Autenticatore::login(username: String, password: String): Boolean
+post: result = true implies self.isAutenticato(self.idUtente) = true
+\end{lstlisting}
+
+\textbf{Invariante:} Un utente autenticato deve avere un ID valido (positivo).
+\begin{lstlisting}[language=OCL]
+context Autenticatore
+inv: self.isAutenticato(self.idUtente) implies self.idUtente > 0
+\end{lstlisting}
+
+\subsection{Classe GestoreAutenticazioneEsterna}
+
+\textbf{Post-Condizione \texttt{login()}:} L’utente viene autenticato solo se il provider conferma le credenziali.
+\begin{lstlisting}[language=OCL]
+context GestoreAutenticazioneEsterna::login(): Boolean
+post: result = true implies self.isAutenticato(self.idUtente) = true
+\end{lstlisting}
+
+
+\subsection{Classe UtenteRegistrato}
+
+\textbf{Pre-Condizione \texttt{setTelefono()}:} Il numero di telefono deve essere lungo almeno 9 cifre.
+\begin{lstlisting}[language=OCL]
+context UtenteRegistrato::setTelefono(tel: String): void
+pre: tel.size() >= 9
+\end{lstlisting}
+
+\textbf{Post-Condizione \texttt{setUsername()}:} L’attributo username viene aggiornato.
+\begin{lstlisting}[language=OCL]
+context UtenteRegistrato::setUsername(un: String): void
+post: self.getUsername() = un
+\end{lstlisting}
+
+\subsection{Classe GestoreSegnalazioni}
+
+\textbf{Invariante:} Nessuna segnalazione può avere una data futura.
+\begin{lstlisting}[language=OCL]
+context GestoreSegnalazioni
+inv: self.getSegnalazioni()->forAll(s | s.getData() <= Date::now())
+\end{lstlisting}
+
+\subsection{Classe Prenotazione}
+
+\textbf{Invariante:} La data della prenotazione deve essere futura.
+\begin{lstlisting}[language=OCL]
+context Prenotazione
+inv: self.getData() > Date::now()
+\end{lstlisting}
+
+
+\subsection{Classe UnitaRaccolta}
+
+\textbf{Invariante:} Il livello di saturazione non può superare 100\%.
+\begin{lstlisting}[language=OCL]
+context UnitaRaccolta
+inv: self.getLivelloSaturazione() <= 1.0
+\end{lstlisting}
+
+\textbf{Post-Condizione \texttt{calcolaSaturazione()}:} Il nuovo livello corrisponde al dato sensore/capienza.
+\begin{lstlisting}[language=OCL]
+context UnitaRaccolta::calcolaSaturazione(datoSensore: Real): void
+post: self.getLivelloSaturazione() = datoSensore / self.getCapienza()
+\end{lstlisting}
+
+\textbf{Invariante:} Una unità è critica se supera l’85\% di saturazione.
+\begin{lstlisting}[language=OCL]
+context UnitaRaccolta
+inv: self.isFull() = (self.getLivelloSaturazione() >= 0.85)
+\end{lstlisting}
+
+\subsection{Classe GestoreUtenti}
+
+\textbf{Pre-Condizione \texttt{creaUtente()}:} L’ID non deve essere già utilizzato.
+\begin{lstlisting}[language=OCL]
+context GestoreUtenti::creaUtente(id: Integer): void
+pre: self.utenti->forAll(u | u.getId() <> id)
+\end{lstlisting}
+

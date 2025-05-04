@@ -16,20 +16,22 @@
 \setlength{\cellspacetoplimit}{4pt}
 \setlength{\cellspacebottomlimit}{4pt}
 \usepackage{graphicx}
+\usepackage{svg}
+\usepackage{amsmath}
 \usepackage[export]{adjustbox} 
 \usepackage{float}
 \usepackage{
     geometry,
 	plain,
-	setspace,
+	setspace, 
 	titlesec,
 }
 
 \geometry{
 	paperheight = 29.7cm,
 	paperwidth = 21cm,
-	outer = 1.5cm,
-	inner = 2.5cm,
+        left = 2.5cm,
+        right = 2.5cm,
 	top = 2cm,
 	bottom = 2cm
 }
@@ -53,13 +55,13 @@
 
 
 
-\include{Chapter/0paginaIniziale}
+\include{D1-G1/Chapter/0Cover}
 \tableofcontents
 \include{Chapter/1Obiettivi}
-\include{Chapter/2RF}
-\include{Chapter/3RNF}
-\include{Chapter/4FrontEnd}
-\include{Chapter/5BackEnd}
-\include{Chapter/6SintesiDiscussione}
+\include{D1-G1/Chapter/2Attori}
+\include{D1-G1/Chapter/3RF}
+\include{D1-G1/Chapter/4NRF}
+\include{D1-G1/Chapter/5UseCase}
+\include{D1-G1/Chapter/6BPMN}
 
 \end{document}

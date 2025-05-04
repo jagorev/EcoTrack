@@ -1,0 +1,53 @@
+\section{Requisiti Non Funzionali}
+
+\begin{enumerate}[start=1,label=\textbf{RNF\theenumi}, labelwidth=4em, left=0pt, labelsep=1em, align=left]
+
+    \item \label{itm:RNF1} La mobile app deve funzionare su \textbf{iOS} (14 o superiori) e \textbf{Android} (8 o superiori), mentre la web app deve funzionare sui \textbf{principali browser}.
+    
+    \item \label{itm:RNF2} La mobile app e la web app saranno fruibili in lingua \textbf{italiana} ed \textbf{inglese}.
+    
+    \item \label{itm:RNF3} I dati dell’utente devono essere salvati in un \textbf{database} e devono essere \textbf{crittografati} utilizzando i principali metodi di crittografia e sicurezza.
+    
+    \item \label{itm:RNF4} L’applicazione all’avvio dovrà richiedere l’\textbf{accesso ai servizi} di: 
+    \begin{itemize}
+        \item GPS
+        \item Notifiche
+        \item Archiviazione Dati
+        \item Fotocamera
+    \end{itemize}
+    
+    \item \label{itm:RNF5} Il sistema deve supportare \textbf{API} per l'integrazione con servizi di terze parti, come la sensoristica utilizzata.
+    
+    \item \label{itm:RNF6} Riguardo l'operazione di log-in:
+    \begin{itemize}
+        \item Viene incoraggiato il \textbf{log-in} mediante \textbf{terze parti} (Google, Facebook, ...).
+        \item Nel caso in cui si voglia utilizzare un \textbf{account di EcoTrack}, il sistema deve controllare nel database se la password inserita è associata alla mail inserita.
+        \item Se l’utente \textbf{non ricorda la password}, ha la possibilità di richiedere l'invio di una mail con un link per reimpostarla.
+    \end{itemize}
+
+    \item \label{itm:RNF7} In riferimento al \hyperref[itm:RF6]{RF6}, l'utente può impostare il \textbf{tempo di preavviso} del promemoria.
+    
+    \item \label{itm:RNF8} In riferimento al \hyperref[itm:RF7]{RF7}, ciascuna \textbf{segnalazione} viene effettuata compilando un apposito \textbf{form}, in modo da essere conforme al formato stabilito dal sistema.
+
+    \item \label{itm:RNF9} In riferimento al \hyperref[itm:RF8]{RF8}, dev'essere utilizzato un gradiente di \textbf{colorazione} come indicatore di \textbf{saturazione} degli ecocentri, cassonetti e cestini:
+    \begin{itemize}
+        \item \textbf{Verde} tra 0\% e 40\% 
+        \item \textbf{Arancione} tra 40\% e 80\%
+        \item \textbf{Rosso} tra 80\% e 100\%
+    \end{itemize}
+
+\end{enumerate}
+
+\begin{enumerate}[start=10,label=\textbf{RNF\theenumi}, labelwidth=4em, left=0pt, align=left, itemindent=-0.6em]
+
+    \item \label{itm:RNF10}  \textbf{Tempo di Risposta}:\\Il caricamento dei dati devono avvenire in un massimo di 3 secondi, anche in condizioni di rete sfavorevoli. Il caricamento iniziale dell’app non deve superare i 4 secondi.
+    
+    \item \label{itm:RNF11}\textbf{Navigazione Fluida}:\\Il passaggio tra le sezioni dell’app deve avvenire in meno di 1 secondo, garantendo un’esperienza utente senza ritardi.
+    
+    \item \label{itm:RNF12} \textbf{Visualizzazione in Tempo Reale}:\\La visualizzazione della mappa e l’aggiornamento dei dati in tempo reale (ad esempio, posizione dei punti di raccolta, percorsi dei mezzi di smaltimento) devono avvenire in meno di 3 secondi, con un’interazione fluida e senza lag.
+    
+    \item \label{itm:RNF13}\textbf{Failure Rate}:\\Gli errori durante il caricamento dei dati della mappa e delle altre sezioni interattive non devono superare l’1\%, per garantire affidabilità e continuità del servizio.
+    
+    \item \label{itm:RNF14}\textbf{Capacità}:\\L’app non deve pesare più di 200 MB.
+     
+\end{enumerate}

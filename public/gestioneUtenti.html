@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+    }
+    #users {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>EcoTrack Dashboard</h1>
+    <h2>Lista Utenti Registrati</h2>
+    <button onclick="getUsers()">Carica Utenti</button>
+    <ul id="users"></ul>
+
+    <h2>Aggiungi Nuovo Utente</h2>
+    <form id="userForm" onsubmit="addUser(event)">
+      <input type="text" id="username" placeholder="Nome utente" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="text" id="telefono" placeholder="Telefono" required>
+      <button type="submit">Aggiungi Utente</button>
+    </form>
+  </div>
+
+  <script>
+    const API_URL = 'api/utenteRegistrato';
+
+    async function getUsers() {
+      try {
+        const response = await fetch(API_URL);
+        const users = await response.json();
+        const usersList = document.getElementById('users');
+        usersList.innerHTML = '';
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = `${user.username} - ${user.email} - ${user.telefono}`;
+          usersList.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento degli utenti:', error);
+      }
+    }
+
+    async function addUser(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const telefono = document.getElementById('telefono').value;
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, email, telefono }),
+        });
+        if (response.ok) {
+          alert('Utente aggiunto con successo!');
+          document.getElementById('userForm').reset();
+          getUsers();
+        } else {
+          alert('Errore nell\'aggiunta dell\'utente.');
+        }
+      } catch (error) {
+        console.error('Errore nell\'aggiunta dell\'utente:', error);
+      }
+    }
+  </script>
+</body>
+</html>

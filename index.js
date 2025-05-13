@@ -4,7 +4,10 @@ const mongoose = require('mongoose');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+const path = require('path');
+
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); // Importante per leggere body JSON
 
 const routeUtenteRegistrato = require('./routes/routeUtenteRegistrato');

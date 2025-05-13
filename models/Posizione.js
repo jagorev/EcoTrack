@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Schema per le coordinate geografiche (gradi, primi, secondi)
 const posizioneSchema = new mongoose.Schema({
-  latititudineGradi: {      // NB: nel requisito c'è una doppia “ti”
+  latitudineGradi: {      // NB: nel requisito c'è una doppia “ti”
     type: Number,
     required: true
   },

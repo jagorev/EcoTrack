@@ -7,6 +7,9 @@ const path = require('path');
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+//   });
 app.use(express.json()); // Importante per leggere body JSON
 
 //Routes API

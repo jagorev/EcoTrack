@@ -12,8 +12,12 @@ app.use(express.json()); // Importante per leggere body JSON
 //Routes API
 const routeUtenteRegistrato = require('./routes/routeUtenteRegistrato');
 app.use(routeUtenteRegistrato);
+const routeTrifiuto = require('./routes/routeTrifiuto');
+app.use(routeTrifiuto);
 const routeEcocentro = require('./routes/routeEcocentro');
 app.use(routeEcocentro);
+const routePrenotazione = require('./routes/routePrenotazione');
+app.use(routePrenotazione);
 
 // Configurazione Swagger
 const swaggerOptions = {

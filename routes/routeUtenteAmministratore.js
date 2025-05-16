@@ -1,4 +1,5 @@
 const express = require('express');
+const UtenteAmministratore = require('../models/UtenteAmministratore');
 const router = express.Router();
 
 /**
@@ -26,17 +27,13 @@ const router = express.Router();
  *       401:
  *         description: Credenziali non valide
  */
-router.post('/api/loginAdmin', (req, res) => {
+router.post('/api/loginAdmin', async (req, res) => {
   const { username, password } = req.body;
-
-  // Credenziali hardcoded (puoi sostituirle con database/env)
-  const adminUsername = 'admin';
-  const adminPassword = 'password123';
-
-  if (username === adminUsername && password === adminPassword) {
-    res.sendStatus(200); // OK
+  const admin = await UtenteAmministratore.findOne({ username, password });
+  if (admin) {
+    res.sendStatus(200);
   } else {
-    res.sendStatus(401); // Unauthorized
+    res.sendStatus(401);
   }
 });
 

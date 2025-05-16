@@ -10,7 +10,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()); // Importante per leggere body JSON
 
-const routeUtenteRegistrato = require('./routes/routeUtenteRegistrato');
+const routeUtenteRegistrato = require('./routes/routeUtenteRegistrato');  //rest api per gli utenti registrati
 app.use(routeUtenteRegistrato);
 
 // Configurazione Swagger

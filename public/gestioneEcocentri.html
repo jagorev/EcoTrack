@@ -8,9 +8,17 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-6">
   <div class="max-w-5xl mx-auto">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Gestione Ecocentri</h1>
-      <a href="index.html" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Torna alla Dashboard</a>
+    <!-- Intestazione con navigazione -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold mb-4 md:mb-0">Gestione Ecocentri</h1>
+      <div class="flex space-x-3">
+        <a href="gestionePrenotazioni.html" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200">
+          Gestione Prenotazioni
+        </a>
+        <a href="index.html" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-200">
+          Torna alla Dashboard
+        </a>
+      </div>
     </div>
 
     <!-- Lista Ecocentri -->
@@ -69,6 +77,61 @@
       </form>
     </div>
 
+    <!-- Gestione Tipi di Rifiuto -->
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+      <h2 class="text-xl font-semibold mb-4">Gestione Tipi di Rifiuto</h2>
+      
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-3">Tipi di Rifiuto Esistenti</h3>
+        <button id="loadTipiRifiutoBtn" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">
+          Carica Tipi di Rifiuto
+        </button>
+        <div id="tipiRifiutoEsistenti" class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4"></div>
+      </div>
+      
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-3">Crea Nuovo Tipo di Rifiuto</h3>
+        <form id="nuovoTipoRifiutoForm" class="flex flex-col md:flex-row gap-2">
+          <input type="text" id="nuovoTipoRifiutoNome" placeholder="Nome del nuovo tipo di rifiuto" 
+            class="flex-grow border rounded px-3 py-2" required>
+          <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            Crea Nuovo
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Gestione Tipi Rifiuti Accettati -->
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+      <h2 class="text-xl font-semibold mb-4">Gestione Tipi Rifiuti Accettati</h2>
+      
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Seleziona Ecocentro</label>
+        <select id="ecocentroSelectRifiuti" class="w-full border rounded px-3 py-2">
+          <option value="">-- Seleziona un ecocentro --</option>
+        </select>
+        <button id="loadRifiutiAccettati" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" disabled>
+          Carica Rifiuti Accettati
+        </button>
+      </div>
+      
+      <div id="rifiutiAccettatiContainer" class="hidden">
+        <h3 class="text-lg font-semibold mb-3">Rifiuti Attualmente Accettati</h3>
+        <div id="rifiutiAccettatiList" class="mb-4 space-y-2 max-h-60 overflow-y-auto p-2 bg-gray-50 rounded">
+          <!-- Qui verranno visualizzati dinamicamente i rifiuti accettati -->
+        </div>
+        
+        <h3 class="text-lg font-semibold mb-3 mt-6">Aggiungi/Rimuovi Tipi di Rifiuto</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" id="rifiutiDisponibiliContainer">
+          <!-- Qui verranno visualizzati tutti i tipi di rifiuto disponibili -->
+        </div>
+        
+        <button id="salvaRifiutiAccettati" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+          Salva Modifiche
+        </button>
+      </div>
+    </div>
+
     <!-- Gestione Percentuali Rifiuti -->
     <div class="bg-white p-6 rounded-xl shadow-md">
       <h2 class="text-xl font-semibold mb-4">Gestione Percentuali Rifiuti</h2>
@@ -103,10 +166,16 @@
     let tipiRifiutoList = [];
     let ecocentroSelezionato = null;
 
+    // Variabili globali aggiuntive
+    let rifiutiSelezionati = new Set();
+    let ecocentroSelezionatoPerRifiuti = null;
+
     // Carica dati iniziali
     window.onload = () => {
       loadEcocentriSelect();
       loadTipiRifiuto();
+      loadEcocentriSelectRifiuti();
+      loadTipiRifiutoUI(); // Carica subito i tipi di rifiuto all'apertura della pagina
     };
 
     // Funzione per caricare gli ecocentri
@@ -167,6 +236,30 @@
       }
     }
 
+    // Funzione per caricare il selettore di ecocentri per la gestione dei rifiuti accettati
+    async function loadEcocentriSelectRifiuti() {
+      try {
+        const response = await fetch(API_ECOCENTRO);
+        const ecocentri = await response.json();
+        const select = document.getElementById('ecocentroSelectRifiuti');
+        
+        // Mantieni solo la prima opzione
+        select.innerHTML = '<option value="">-- Seleziona un ecocentro --</option>';
+        
+        ecocentri.forEach(ecocentro => {
+          const option = document.createElement('option');
+          option.value = ecocentro._id;
+          option.textContent = ecocentro.nome;
+          select.appendChild(option);
+        });
+        
+        select.disabled = ecocentri.length === 0;
+        document.getElementById('loadRifiutiAccettati').disabled = true;
+      } catch (error) {
+        console.error('Errore nel caricamento degli ecocentri:', error);
+      }
+    }
+
     // Carica tipi di rifiuto
     async function loadTipiRifiuto() {
       try {
@@ -177,6 +270,152 @@
       }
     }
     
+    // Funzione per caricare e visualizzare tutti i tipi di rifiuto
+    async function loadTipiRifiutoUI() {
+      try {
+        const response = await fetch(API_TIPI_RIFIUTO);
+        tipiRifiutoList = await response.json();
+        
+        const container = document.getElementById('tipiRifiutoEsistenti');
+        container.innerHTML = '';
+        
+        if (tipiRifiutoList.length === 0) {
+          container.innerHTML = '<div class="col-span-3 text-gray-500">Nessun tipo di rifiuto configurato nel sistema</div>';
+          return;
+        }
+        
+        tipiRifiutoList.forEach(tipo => {
+          const div = document.createElement('div');
+          div.className = 'flex items-center justify-between bg-gray-50 p-3 rounded border';
+          div.innerHTML = `
+            <span class="font-medium">${tipo.nome}</span>
+            <div>
+              <button onclick="modificaTipoRifiuto('${tipo._id}')" class="text-blue-500 hover:text-blue-700 mr-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button onclick="eliminaTipoRifiuto('${tipo._id}', '${tipo.nome}')" class="text-red-500 hover:text-red-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento dei tipi di rifiuto:', error);
+        alert('Errore nel caricamento dei tipi di rifiuto');
+      }
+    }
+
+    // Funzione per creare un nuovo tipo di rifiuto
+    async function creaNuovoTipoRifiuto(event) {
+      event.preventDefault();
+      
+      const nome = document.getElementById('nuovoTipoRifiutoNome').value.trim();
+      if (!nome) {
+        alert('Inserisci un nome valido per il tipo di rifiuto');
+        return;
+      }
+      
+      try {
+        const response = await fetch(API_TIPI_RIFIUTO, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nome })
+        });
+        
+        if (response.ok) {
+          const nuovoTipoRifiuto = await response.json();
+          alert(`Tipo di rifiuto "${nome}" creato con successo`);
+          document.getElementById('nuovoTipoRifiutoNome').value = '';
+          
+          // Aggiorna la lista dei tipi di rifiuto
+          await loadTipiRifiutoUI();
+          
+          // Aggiorna anche i checkbox nella sezione di gestione rifiuti accettati
+          if (ecocentroSelezionatoPerRifiuti) {
+            await loadRifiutiAccettati(ecocentroSelezionatoPerRifiuti);
+          }
+        } else {
+          const error = await response.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nella creazione del tipo di rifiuto:', error);
+        alert('Errore nella creazione del tipo di rifiuto');
+      }
+    }
+
+    // Funzione per modificare un tipo di rifiuto esistente
+    async function modificaTipoRifiuto(id) {
+      const tipoRifiuto = tipiRifiutoList.find(t => t._id === id);
+      if (!tipoRifiuto) return;
+      
+      const nuovoNome = prompt('Modifica il nome del tipo di rifiuto:', tipoRifiuto.nome);
+      if (!nuovoNome || nuovoNome === tipoRifiuto.nome) return;
+      
+      try {
+        const response = await fetch(`${API_TIPI_RIFIUTO}/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nome: nuovoNome })
+        });
+        
+        if (response.ok) {
+          alert(`Tipo di rifiuto rinominato in "${nuovoNome}"`);
+          // Aggiorna la lista
+          await loadTipiRifiutoUI();
+          
+          // Aggiorna visualizzazioni correlate se necessario
+          if (ecocentroSelezionatoPerRifiuti) {
+            await loadRifiutiAccettati(ecocentroSelezionatoPerRifiuti);
+          }
+        } else {
+          const error = await response.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nella modifica del tipo di rifiuto:', error);
+        alert('Errore nella modifica del tipo di rifiuto');
+      }
+    }
+
+    // Funzione per eliminare un tipo di rifiuto
+    async function eliminaTipoRifiuto(id, nome) {
+      if (!confirm(`Sei sicuro di voler eliminare il tipo di rifiuto "${nome}"?\nQuesta azione potrebbe influenzare gli ecocentri che accettano questo tipo di rifiuto.`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_TIPI_RIFIUTO}/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          alert(`Tipo di rifiuto "${nome}" eliminato con successo`);
+          await loadTipiRifiutoUI();
+          
+          // Aggiorna visualizzazioni correlate se necessario
+          if (ecocentroSelezionatoPerRifiuti) {
+            await loadRifiutiAccettati(ecocentroSelezionatoPerRifiuti);
+          }
+        } else {
+          const error = await response.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nell\'eliminazione del tipo di rifiuto:', error);
+        alert('Errore nell\'eliminazione del tipo di rifiuto');
+      }
+    }
+
     // Carica percentuali per un ecocentro specifico
     async function loadPercentuali(ecocentroId) {
       try {
@@ -242,6 +481,155 @@
       } catch (error) {
         console.error('Errore nel caricamento delle percentuali:', error);
         alert('Errore nel caricamento delle percentuali');
+      }
+    }
+
+    // Funzione per caricare i rifiuti accettati da un ecocentro
+    async function loadRifiutiAccettati(ecocentroId) {
+      try {
+        const response = await fetch(`${API_ECOCENTRO}/${ecocentroId}`);
+        const ecocentro = await response.json();
+        
+        document.getElementById('rifiutiAccettatiContainer').classList.remove('hidden');
+        
+        // Inizializza il set dei rifiuti selezionati
+        rifiutiSelezionati = new Set();
+        
+        // Mostra i rifiuti attualmente accettati
+        const rifiutiAccettatiList = document.getElementById('rifiutiAccettatiList');
+        rifiutiAccettatiList.innerHTML = '';
+        
+        if (!ecocentro.situazioneRifiuti || ecocentro.situazioneRifiuti.length === 0) {
+          rifiutiAccettatiList.innerHTML = '<div class="text-gray-500">Nessun rifiuto configurato per questo ecocentro</div>';
+        } else {
+          ecocentro.situazioneRifiuti.forEach(item => {
+            if (item.tipoRifiuto) {
+              const tipoRifiutoId = item.tipoRifiuto._id || item.tipoRifiuto;
+              rifiutiSelezionati.add(tipoRifiutoId.toString());
+              
+              const div = document.createElement('div');
+              div.className = 'flex items-center justify-between bg-white p-2 rounded border';
+              div.innerHTML = `
+                <span>${item.tipoRifiuto.nome || 'Rifiuto'}</span>
+                <span class="text-sm text-gray-600">Percentuale: ${item.percentuale}%</span>
+              `;
+              rifiutiAccettatiList.appendChild(div);
+            }
+          });
+        }
+        
+        // Visualizza tutti i tipi di rifiuto disponibili con checkbox
+        await visualizzaTipiRifiutoDisponibili();
+        
+        ecocentroSelezionatoPerRifiuti = ecocentroId;
+      } catch (error) {
+        console.error('Errore nel caricamento dei rifiuti accettati:', error);
+        alert('Errore nel caricamento dei rifiuti accettati');
+      }
+    }
+
+    // Visualizza tutti i tipi di rifiuto con checkbox per selezione
+    async function visualizzaTipiRifiutoDisponibili() {
+      try {
+        if (!tipiRifiutoList || tipiRifiutoList.length === 0) {
+          // Carica i tipi di rifiuto se non sono già stati caricati
+          const response = await fetch(API_TIPI_RIFIUTO);
+          tipiRifiutoList = await response.json();
+        }
+        
+        const container = document.getElementById('rifiutiDisponibiliContainer');
+        container.innerHTML = '';
+        
+        tipiRifiutoList.forEach(tipo => {
+          const isChecked = rifiutiSelezionati.has(tipo._id.toString());
+          
+          const div = document.createElement('div');
+          div.className = 'flex items-center space-x-2 p-2 border rounded bg-white';
+          div.innerHTML = `
+            <input 
+              type="checkbox" 
+              id="checkbox-rifiuto-${tipo._id}" 
+              value="${tipo._id}" 
+              ${isChecked ? 'checked' : ''}
+              class="w-5 h-5 text-blue-600"
+            >
+            <label for="checkbox-rifiuto-${tipo._id}" class="flex-grow">${tipo.nome}</label>
+          `;
+          
+          // Aggiungi evento al checkbox per aggiornare il set dei rifiuti selezionati
+          const checkbox = div.querySelector(`#checkbox-rifiuto-${tipo._id}`);
+          checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+              rifiutiSelezionati.add(tipo._id.toString());
+            } else {
+              rifiutiSelezionati.delete(tipo._id.toString());
+            }
+          });
+          
+          container.appendChild(div);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento dei tipi di rifiuto:', error);
+      }
+    }
+
+    // Funzione per salvare i rifiuti accettati dall'ecocentro
+    async function salvaRifiutiAccettati() {
+      if (!ecocentroSelezionatoPerRifiuti) {
+        alert('Seleziona prima un ecocentro');
+        return;
+      }
+      
+      try {
+        // Prima ottieni l'ecocentro attuale per conservare le percentuali esistenti
+        const response = await fetch(`${API_ECOCENTRO}/${ecocentroSelezionatoPerRifiuti}`);
+        const ecocentro = await response.json();
+        
+        // Crea una mappa con le percentuali esistenti per tipo di rifiuto
+        const percentualiEsistenti = new Map();
+        if (ecocentro.situazioneRifiuti && ecocentro.situazioneRifiuti.length > 0) {
+          ecocentro.situazioneRifiuti.forEach(item => {
+            if (item.tipoRifiuto) {
+              const tipoRifiutoId = (item.tipoRifiuto._id || item.tipoRifiuto).toString();
+              percentualiEsistenti.set(tipoRifiutoId, item.percentuale);
+            }
+          });
+        }
+        
+        // Crea il nuovo array situazioneRifiuti basato sui checkbox selezionati
+        const nuovaSituazioneRifiuti = Array.from(rifiutiSelezionati).map(tipoRifiutoId => {
+          // Usa la percentuale esistente se disponibile, altrimenti 0
+          const percentuale = percentualiEsistenti.has(tipoRifiutoId) ? 
+            percentualiEsistenti.get(tipoRifiutoId) : 0;
+          
+          return {
+            tipoRifiuto: tipoRifiutoId,
+            percentuale: percentuale
+          };
+        });
+        
+        // Aggiorna l'ecocentro con i nuovi tipi di rifiuto
+        const updateResponse = await fetch(`${API_ECOCENTRO}/${ecocentroSelezionatoPerRifiuti}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            situazioneRifiuti: nuovaSituazioneRifiuti
+          })
+        });
+        
+        if (updateResponse.ok) {
+          alert('Tipi di rifiuto accettati aggiornati con successo');
+          // Ricarica i rifiuti accettati
+          loadRifiutiAccettati(ecocentroSelezionatoPerRifiuti);
+        } else {
+          const error = await updateResponse.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nell\'aggiornamento dei tipi di rifiuto:', error);
+        alert('Errore nell\'aggiornamento dei tipi di rifiuto');
       }
     }
 
@@ -437,6 +825,19 @@
       }
     });
     document.getElementById('percentualiForm').addEventListener('submit', updatePercentuali);
+    document.getElementById('ecocentroSelectRifiuti').addEventListener('change', function() {
+      const ecocentroId = this.value;
+      document.getElementById('loadRifiutiAccettati').disabled = !ecocentroId;
+    });
+    document.getElementById('loadRifiutiAccettati').addEventListener('click', function() {
+      const ecocentroId = document.getElementById('ecocentroSelectRifiuti').value;
+      if (ecocentroId) {
+        loadRifiutiAccettati(ecocentroId);
+      }
+    });
+    document.getElementById('salvaRifiutiAccettati').addEventListener('click', salvaRifiutiAccettati);
+    document.getElementById('loadTipiRifiutoBtn').addEventListener('click', loadTipiRifiutoUI);
+    document.getElementById('nuovoTipoRifiutoForm').addEventListener('submit', creaNuovoTipoRifiuto);
   </script>
 </body>
 </html>

@@ -1,88 +1,97 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoTrack Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-    }
-    input, button {
-      margin: 5px 0;
-      padding: 10px;
-      width: 100%;
-    }
-    #users {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>EcoTrack Dashboard</h1>
-    <h2>Lista Utenti Registrati</h2>
-    <button onclick="getUsers()">Carica Utenti</button>
-    <ul id="users"></ul>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestione Utenti - EcoTrack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
 
-    <h2>Aggiungi Nuovo Utente</h2>
-    <form id="userForm" onsubmit="addUser(event)">
-      <input type="text" id="username" placeholder="Nome utente" required>
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="text" id="telefono" placeholder="Telefono" required>
-      <button type="submit">Aggiungi Utente</button>
-    </form>
-  </div>
+    <h1 class="text-3xl font-bold text-center mt-6 mb-4">Gestione Utenti</h1>
 
-  <script>
-    const API_URL = 'api/utenteRegistrato';
+    <div class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xl">
+      <h2 class="text-xl font-semibold mb-2 text-gray-800">Lista Utenti Registrati</h2>
+      <button onclick="getUsers()" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 mb-4">
+        Carica Utenti
+      </button>
+      <ul id="users" class="space-y-2 text-sm text-gray-700"></ul>
+    </div>
 
-    async function getUsers() {
-      try {
-        const response = await fetch(API_URL);
-        const users = await response.json();
-        const usersList = document.getElementById('users');
-        usersList.innerHTML = '';
-        users.forEach(user => {
-          const li = document.createElement('li');
-          li.textContent = `${user.username} - ${user.email} - ${user.telefono}`;
-          usersList.appendChild(li);
-        });
-      } catch (error) {
-        console.error('Errore nel caricamento degli utenti:', error);
-      }
-    }
+    <div class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xl mt-6">
+      <h2 class="text-xl font-semibold mb-2 text-gray-800">Aggiungi Nuovo Utente</h2>
+      <form id="userForm" onsubmit="addUser(event)" class="space-y-4">
+        <input type="text" id="username" placeholder="Nome utente" required
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <input type="email" id="email" placeholder="Email" required
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <input type="text" id="telefono" placeholder="Telefono" required
+          class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <button type="submit"
+          class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-700 transition duration-200">
+          Aggiungi Utente
+        </button>
+      </form>
+    </div>
 
-    async function addUser(event) {
-      event.preventDefault();
-      const username = document.getElementById('username').value;
-      const email = document.getElementById('email').value;
-      const telefono = document.getElementById('telefono').value;
+    <!-- Pulsante Esci -->
+    <div class="w-full max-w-xl mt-8">
+      <button onclick="logout()"
+        class="bg-black text-white text-lg py-3 rounded-full w-full shadow-md hover:opacity-90 transition duration-300">
+        Esci
+      </button>
+    </div>
 
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, email, telefono }),
-        });
-        if (response.ok) {
-          alert('Utente aggiunto con successo!');
-          document.getElementById('userForm').reset();
-          getUsers();
-        } else {
-          alert('Errore nell\'aggiunta dell\'utente.');
+    <script>
+      const API_URL = 'api/utenteRegistrato';
+
+      async function getUsers() {
+        try {
+          const response = await fetch(API_URL);
+          const users = await response.json();
+          const usersList = document.getElementById('users');
+          usersList.innerHTML = '';
+          users.forEach(user => {
+            const li = document.createElement('li');
+            li.textContent = `${user.username} - ${user.email} - ${user.telefono}`;
+            li.className = "bg-gray-100 px-4 py-2 rounded shadow";
+            usersList.appendChild(li);
+          });
+        } catch (error) {
+          console.error('Errore nel caricamento degli utenti:', error);
         }
-      } catch (error) {
-        console.error('Errore nell\'aggiunta dell\'utente:', error);
       }
-    }
-  </script>
-</body>
+
+      async function addUser(event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const telefono = document.getElementById('telefono').value;
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, email, telefono }),
+          });
+          if (response.ok) {
+            alert('Utente aggiunto con successo!');
+            document.getElementById('userForm').reset();
+            getUsers();
+          } else {
+            alert('Errore nell\'aggiunta dell\'utente.');
+          }
+        } catch (error) {
+          console.error('Errore nell\'aggiunta dell\'utente:', error);
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem('adminLoggedIn');
+        window.location.href = '/index.html';
+      }
+    </script>
+  </body>
 </html>

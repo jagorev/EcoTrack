@@ -10,7 +10,7 @@ mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology
 // Funzione per creare un nuovo amministratore
 async function creaAdmin() {
   const nuovoAdmin = new UtenteAmministratore({
-    username: 'giulio',
+    username: 'tommaso',
     password: '123' // In produzione, usa una password hashata!
   });
 

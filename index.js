@@ -13,6 +13,9 @@ app.use(express.json()); // Importante per leggere body JSON
 const routeUtenteRegistrato = require('./routes/routeUtenteRegistrato');
 app.use(routeUtenteRegistrato);
 
+const routeUtenteAmministratore = require('./routes/routeUtenteAmministratore');
+app.use(routeUtenteAmministratore);
+
 // Configurazione Swagger
 const swaggerOptions = {
   definition: {

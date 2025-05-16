@@ -59,6 +59,7 @@
           if (response.ok) {
             // Reindirizza alla dashboard se il login è valido
             window.location.href = '/dashboard.html';
+            localStorage.setItem('adminLoggedIn', 'true');
           } else {
             // Mostra errore
             document.getElementById("error").classList.remove("hidden");

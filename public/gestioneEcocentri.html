@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack - Gestione Ecocentri</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Gestione Ecocentri</h1>
+      <a href="index.html" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Torna alla Dashboard</a>
+    </div>
+
+    <!-- Lista Ecocentri -->
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+      <h2 class="text-xl font-semibold mb-4">Ecocentri Esistenti</h2>
+      <button id="loadEcocentri" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Carica Ecocentri</button>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr class="bg-gray-200 text-gray-700">
+              <th class="py-2 px-4 text-left">Nome</th>
+              <th class="py-2 px-4 text-left">Indirizzo</th>
+              <th class="py-2 px-4 text-left">Orari</th>
+              <th class="py-2 px-4 text-left">Telefono</th>
+              <th class="py-2 px-4 text-left">Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="ecocentroList"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Form Nuovo Ecocentro -->
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+      <h2 class="text-xl font-semibold mb-4">Crea Nuovo Ecocentro</h2>
+      <form id="ecocentroForm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <!-- Nome -->
+          <div>
+            <label class="block text-gray-700 mb-2">Nome</label>
+            <input type="text" id="nome" class="w-full border rounded px-3 py-2" required>
+          </div>
+
+          <!-- Indirizzo -->
+          <div>
+            <label class="block text-gray-700 mb-2">Indirizzo</label>
+            <input type="text" id="indirizzo" class="w-full border rounded px-3 py-2" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <!-- Orari -->
+          <div>
+            <label class="block text-gray-700 mb-2">Orari Apertura</label>
+            <input type="text" id="orariApertura" class="w-full border rounded px-3 py-2" required placeholder="Es: Lun-Ven 9-18, Sab 9-12">
+          </div>
+
+          <!-- Telefono -->
+          <div>
+            <label class="block text-gray-700 mb-2">Telefono</label>
+            <input type="text" id="telefono" class="w-full border rounded px-3 py-2" required>
+          </div>
+        </div>
+
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Crea Ecocentro</button>
+      </form>
+    </div>
+
+    <!-- Gestione Percentuali Rifiuti -->
+    <div class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-xl font-semibold mb-4">Gestione Percentuali Rifiuti</h2>
+      
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Seleziona Ecocentro</label>
+        <select id="ecocentroSelect" class="w-full border rounded px-3 py-2">
+          <option value="">-- Seleziona un ecocentro --</option>
+        </select>
+        <button id="loadRifiuti" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" disabled>Carica Percentuali</button>
+      </div>
+      
+      <div id="percentualiContainer" class="hidden">
+        <h3 class="text-lg font-semibold mb-3">Percentuali Attuali</h3>
+        <div id="percentualiList" class="mb-4 space-y-2"></div>
+        
+        <h3 class="text-lg font-semibold mb-3">Aggiorna Percentuali</h3>
+        <form id="percentualiForm">
+          <div id="tipiRifiutoInputs" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"></div>
+          <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Aggiorna Percentuali</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // URL delle API
+    const API_ECOCENTRO = '/api/ecocentro';
+    const API_TIPI_RIFIUTO = '/api/tipoRifiuto';
+    
+    // Liste di dati
+    let tipiRifiutoList = [];
+    let ecocentroSelezionato = null;
+
+    // Carica dati iniziali
+    window.onload = () => {
+      loadEcocentriSelect();
+      loadTipiRifiuto();
+    };
+
+    // Funzione per caricare gli ecocentri
+    async function loadEcocentri() {
+      try {
+        const response = await fetch(API_ECOCENTRO);
+        const ecocentri = await response.json();
+        const ecocentroList = document.getElementById('ecocentroList');
+        ecocentroList.innerHTML = '';
+
+        ecocentri.forEach(ecocentro => {
+          const row = document.createElement('tr');
+          row.className = 'border-b hover:bg-gray-50';
+          
+          row.innerHTML = `
+            <td class="py-2 px-4">${ecocentro.nome}</td>
+            <td class="py-2 px-4">${ecocentro.indirizzo}</td>
+            <td class="py-2 px-4">${ecocentro.orariApertura}</td>
+            <td class="py-2 px-4">${ecocentro.telefono}</td>
+            <td class="py-2 px-4">
+              <button onclick="deleteEcocentro('${ecocentro._id}')" class="text-red-500 hover:text-red-700 mr-2">Elimina</button>
+              <button onclick="editEcocentro('${ecocentro._id}')" class="text-blue-500 hover:text-blue-700">Modifica</button>
+            </td>
+          `;
+          
+          ecocentroList.appendChild(row);
+        });
+        
+        // Aggiorna anche la select per la gestione delle percentuali
+        loadEcocentriSelect();
+      } catch (error) {
+        console.error('Errore nel caricamento degli ecocentri:', error);
+        alert('Errore nel caricamento degli ecocentri');
+      }
+    }
+    
+    // Carica la select degli ecocentri per la gestione delle percentuali
+    async function loadEcocentriSelect() {
+      try {
+        const response = await fetch(API_ECOCENTRO);
+        const ecocentri = await response.json();
+        const select = document.getElementById('ecocentroSelect');
+        
+        // Mantieni solo la prima opzione
+        select.innerHTML = '<option value="">-- Seleziona un ecocentro --</option>';
+        
+        ecocentri.forEach(ecocentro => {
+          const option = document.createElement('option');
+          option.value = ecocentro._id;
+          option.textContent = ecocentro.nome;
+          select.appendChild(option);
+        });
+        
+        select.disabled = ecocentri.length === 0;
+        document.getElementById('loadRifiuti').disabled = true;
+      } catch (error) {
+        console.error('Errore nel caricamento degli ecocentri:', error);
+      }
+    }
+
+    // Carica tipi di rifiuto
+    async function loadTipiRifiuto() {
+      try {
+        const response = await fetch(API_TIPI_RIFIUTO);
+        tipiRifiutoList = await response.json();
+      } catch (error) {
+        console.error('Errore nel caricamento dei tipi di rifiuto:', error);
+      }
+    }
+    
+    // Carica percentuali per un ecocentro specifico
+    async function loadPercentuali(ecocentroId) {
+      try {
+        const response = await fetch(`${API_ECOCENTRO}/${ecocentroId}/rifiuti`);
+        const percentuali = await response.json();
+        
+        document.getElementById('percentualiContainer').classList.remove('hidden');
+        
+        // Mostra le percentuali attuali
+        const percentualiList = document.getElementById('percentualiList');
+        percentualiList.innerHTML = '';
+        
+        if (percentuali.length === 0) {
+          percentualiList.innerHTML = '<div class="text-gray-500">Nessuna percentuale configurata</div>';
+        } else {
+          percentuali.forEach(p => {
+            const tipoRifiuto = p.tipoRifiuto ? p.tipoRifiuto.nome : 'Sconosciuto';
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between bg-gray-50 p-2 rounded';
+            div.innerHTML = `
+              <span>${tipoRifiuto}</span>
+              <div class="w-1/2 bg-gray-200 rounded-full h-4 relative">
+                <div class="bg-blue-600 h-4 rounded-full" style="width: ${p.percentuale}%"></div>
+                <span class="absolute text-xs right-1 top-0">${p.percentuale}%</span>
+              </div>
+            `;
+            percentualiList.appendChild(div);
+          });
+        }
+        
+        // Prepara form per aggiornare le percentuali
+        const tipiRifiutoInputs = document.getElementById('tipiRifiutoInputs');
+        tipiRifiutoInputs.innerHTML = '';
+        
+        // Crea un input per ogni tipo di rifiuto disponibile
+        tipiRifiutoList.forEach(tipo => {
+          // Cerca se c'è già una percentuale configurata per questo tipo
+          const percentualeEsistente = percentuali.find(p => 
+            p.tipoRifiuto && p.tipoRifiuto._id === tipo._id
+          );
+          
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <label class="block text-gray-700 mb-1">${tipo.nome}</label>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value="${percentualeEsistente ? percentualeEsistente.percentuale : 0}" 
+              class="w-full" 
+              id="rifiuto-${tipo._id}"
+              oninput="document.getElementById('value-${tipo._id}').textContent = this.value + '%'"
+            >
+            <span id="value-${tipo._id}" class="text-sm text-gray-600">
+              ${percentualeEsistente ? percentualeEsistente.percentuale : 0}%
+            </span>
+          `;
+          
+          tipiRifiutoInputs.appendChild(div);
+        });
+        
+        ecocentroSelezionato = ecocentroId;
+      } catch (error) {
+        console.error('Errore nel caricamento delle percentuali:', error);
+        alert('Errore nel caricamento delle percentuali');
+      }
+    }
+
+    // Elimina ecocentro
+    async function deleteEcocentro(id) {
+      if (!confirm('Sei sicuro di voler eliminare questo ecocentro?')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_ECOCENTRO}/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          alert('Ecocentro eliminato con successo');
+          loadEcocentri();
+        } else {
+          alert('Errore nell\'eliminazione dell\'ecocentro');
+        }
+      } catch (error) {
+        console.error('Errore nell\'eliminazione dell\'ecocentro:', error);
+        alert('Errore nell\'eliminazione dell\'ecocentro');
+      }
+    }
+
+    // Modifica ecocentro (apre il form con i dati precompilati)
+    async function editEcocentro(id) {
+      try {
+        const response = await fetch(`${API_ECOCENTRO}/${id}`);
+        const ecocentro = await response.json();
+        
+        // Compila il form con i dati dell'ecocentro
+        document.getElementById('nome').value = ecocentro.nome;
+        document.getElementById('indirizzo').value = ecocentro.indirizzo;
+        document.getElementById('orariApertura').value = ecocentro.orariApertura;
+        document.getElementById('telefono').value = ecocentro.telefono;
+        
+        // Modifica il form per fare un'operazione di PATCH invece di POST
+        const form = document.getElementById('ecocentroForm');
+        form.onsubmit = (event) => updateEcocentro(event, id);
+        
+        // Cambia il testo del pulsante
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Aggiorna Ecocentro';
+        submitBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600';
+        
+        // Scorri fino al form
+        form.scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        console.error('Errore nel caricamento dei dati dell\'ecocentro:', error);
+      }
+    }
+
+    // Aggiorna un ecocentro esistente
+    async function updateEcocentro(event, id) {
+      event.preventDefault();
+      
+      const ecocentroData = {
+        nome: document.getElementById('nome').value,
+        indirizzo: document.getElementById('indirizzo').value,
+        orariApertura: document.getElementById('orariApertura').value,
+        telefono: document.getElementById('telefono').value
+      };
+      
+      try {
+        const response = await fetch(`${API_ECOCENTRO}/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(ecocentroData)
+        });
+        
+        if (response.ok) {
+          alert('Ecocentro aggiornato con successo');
+          
+          // Resetta il form per tornare in modalità creazione
+          document.getElementById('ecocentroForm').reset();
+          document.getElementById('ecocentroForm').onsubmit = createEcocentro;
+          const submitBtn = document.getElementById('ecocentroForm').querySelector('button[type="submit"]');
+          submitBtn.textContent = 'Crea Ecocentro';
+          submitBtn.className = 'bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600';
+          
+          // Ricarica la lista degli ecocentri
+          loadEcocentri();
+        } else {
+          const error = await response.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nell\'aggiornamento dell\'ecocentro:', error);
+        alert('Errore nell\'aggiornamento dell\'ecocentro');
+      }
+    }
+
+    // Event listener per il form di creazione ecocentro
+    async function createEcocentro(event) {
+      event.preventDefault();
+      
+      const ecocentroData = {
+        nome: document.getElementById('nome').value,
+        indirizzo: document.getElementById('indirizzo').value,
+        orariApertura: document.getElementById('orariApertura').value,
+        telefono: document.getElementById('telefono').value,
+        situazioneRifiuti: []
+      };
+      
+      try {
+        const response = await fetch(API_ECOCENTRO, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(ecocentroData)
+        });
+        
+        if (response.ok) {
+          alert('Ecocentro creato con successo');
+          document.getElementById('ecocentroForm').reset();
+          loadEcocentri();
+        } else {
+          const error = await response.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nella creazione dell\'ecocentro:', error);
+        alert('Errore nella creazione dell\'ecocentro');
+      }
+    }
+
+    // Invia aggiornamento percentuali
+    async function updatePercentuali(event) {
+      event.preventDefault();
+      
+      if (!ecocentroSelezionato) {
+        alert('Seleziona prima un ecocentro');
+        return;
+      }
+      
+      // Raccogli i dati dai range inputs
+      const percentuali = tipiRifiutoList.map(tipo => {
+        const value = document.getElementById(`rifiuto-${tipo._id}`).value;
+        // Includi solo tipi di rifiuto con percentuale > 0
+        if (value > 0) {
+          return {
+            tipoRifiuto: tipo._id,
+            percentuale: parseInt(value)
+          };
+        }
+        return null;
+      }).filter(Boolean); // Rimuovi i valori null
+      
+      if (percentuali.length === 0) {
+        alert('Imposta almeno una percentuale maggiore di zero');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_ECOCENTRO}/${ecocentroSelezionato}/rifiuti`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(percentuali)
+        });
+        
+        if (response.ok) {
+          alert('Percentuali aggiornate con successo');
+          // Ricarica le percentuali
+          loadPercentuali(ecocentroSelezionato);
+        } else {
+          const error = await response.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nell\'aggiornamento delle percentuali:', error);
+        alert('Errore nell\'aggiornamento delle percentuali');
+      }
+    }
+
+    // Event listeners
+    document.getElementById('loadEcocentri').addEventListener('click', loadEcocentri);
+    document.getElementById('ecocentroForm').addEventListener('submit', createEcocentro);
+    document.getElementById('ecocentroSelect').addEventListener('change', function() {
+      const ecocentroId = this.value;
+      document.getElementById('loadRifiuti').disabled = !ecocentroId;
+    });
+    document.getElementById('loadRifiuti').addEventListener('click', function() {
+      const ecocentroId = document.getElementById('ecocentroSelect').value;
+      if (ecocentroId) {
+        loadPercentuali(ecocentroId);
+      }
+    });
+    document.getElementById('percentualiForm').addEventListener('submit', updatePercentuali);
+  </script>
+</body>
+</html>

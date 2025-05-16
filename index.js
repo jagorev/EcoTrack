@@ -3,15 +3,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-
 const path = require('path');
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+//   });
 app.use(express.json()); // Importante per leggere body JSON
 
-const routeUtenteRegistrato = require('./routes/routeUtenteRegistrato');  //rest api per gli utenti registrati
+//Routes API
+const routeUtenteRegistrato = require('./routes/routeUtenteRegistrato');
 app.use(routeUtenteRegistrato);
+const routeTrifiuto = require('./routes/routeTrifiuto');
+app.use(routeTrifiuto);
+const routeEcocentro = require('./routes/routeEcocentro');
+app.use(routeEcocentro);
+const routePrenotazione = require('./routes/routePrenotazione');
+app.use(routePrenotazione);
 
 // Configurazione Swagger
 const swaggerOptions = {

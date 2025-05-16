@@ -16,7 +16,7 @@ const Ecocentro = require('../models/Ecocentro');
  */
 router.get('/api/ecocentro', async (req, res) => {
   try {
-    const ecocentri = await Ecocentro.find();
+    const ecocentri = await Ecocentro.find().populate('situazioneRifiuti.tipoRifiuto');
     res.json(ecocentri);
   } catch (errore) {
     res.status(500).json({ messaggio: errore.message });
@@ -46,7 +46,7 @@ router.get('/api/ecocentro', async (req, res) => {
  */
 router.get('/api/ecocentro/:id', async (req, res) => {
   try {
-    const ecocentro = await Ecocentro.findById(req.params.id);
+    const ecocentro = await Ecocentro.findById(req.params.id).populate('situazioneRifiuti.tipoRifiuto');
     if (!ecocentro) {
       return res.status(404).json({ messaggio: 'Ecocentro non trovato' });
     }
@@ -81,6 +81,17 @@ router.get('/api/ecocentro/:id', async (req, res) => {
  *               telefono:
  *                 type: string
  *                 description: Numero di telefono
+ *               situazioneRifiuti:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     tipoRifiuto:
+ *                       type: string
+ *                       description: ID del tipo di rifiuto
+ *                     percentuale:
+ *                       type: number
+ *                       description: Percentuale di riempimento
  *             required:
  *               - nome
  *               - indirizzo
@@ -134,6 +145,18 @@ router.post('/api/ecocentro', async (req, res) => {
  *               telefono:
  *                 type: string
  *                 description: Numero di telefono
+ *               situazioneRifiuti:
+ *                 type: array
+ *                 description: Percentuali di riempimento per i vari tipi di rifiuto
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     tipoRifiuto:
+ *                       type: string
+ *                       description: ID del tipo di rifiuto
+ *                     percentuale:
+ *                       type: number
+ *                       description: Percentuale di riempimento (0-100)
  *     responses:
  *       200:
  *         description: Ecocentro modificato con successo
@@ -192,6 +215,111 @@ router.delete('/api/ecocentro/:id', async (req, res) => {
     res.json({ messaggio: 'Ecocentro eliminato con successo' });
   } catch (errore) {
     res.status(500).json({ messaggio: errore.message });
+  }
+});
+
+/**
+ * @swagger
+ * /api/ecocentro/{id}/rifiuti:
+ *   get:
+ *     summary: Recupera le percentuali di rifiuti di un ecocentro
+ *     description: Ottiene tutte le percentuali dei diversi tipi di rifiuto per un ecocentro specifico
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID dell'ecocentro
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Percentuali rifiuti recuperate con successo
+ *       404:
+ *         description: Ecocentro non trovato
+ *       500:
+ *         description: Errore del server
+ */
+router.get('/api/ecocentro/:id/rifiuti', async (req, res) => {
+  try {
+    const ecocentro = await Ecocentro.findById(req.params.id)
+      .populate('situazioneRifiuti.tipoRifiuto');
+    
+    if (!ecocentro) {
+      return res.status(404).json({ messaggio: 'Ecocentro non trovato' });
+    }
+    
+    res.json(ecocentro.situazioneRifiuti);
+  } catch (errore) {
+    res.status(500).json({ messaggio: errore.message });
+  }
+});
+
+/**
+ * @swagger
+ * /api/ecocentro/{id}/rifiuti:
+ *   patch:
+ *     summary: Aggiorna le percentuali di rifiuti di un ecocentro
+ *     description: Aggiorna o aggiunge percentuali per specifici tipi di rifiuto in un ecocentro
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID dell'ecocentro
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 tipoRifiuto:
+ *                   type: string
+ *                   description: ID del tipo di rifiuto
+ *                 percentuale:
+ *                   type: number
+ *                   description: Percentuale di riempimento (0-100)
+ *               required:
+ *                 - tipoRifiuto
+ *                 - percentuale
+ *     responses:
+ *       200:
+ *         description: Percentuali rifiuti aggiornate con successo
+ *       404:
+ *         description: Ecocentro non trovato
+ *       400:
+ *         description: Dati non validi
+ */
+router.patch('/api/ecocentro/:id/rifiuti', async (req, res) => {
+  try {
+    const ecocentro = await Ecocentro.findById(req.params.id);
+    
+    if (!ecocentro) {
+      return res.status(404).json({ messaggio: 'Ecocentro non trovato' });
+    }
+    
+    // Rimuovi i tipi di rifiuto esistenti che stai aggiornando
+    const nuoviTipiRifiutoIds = req.body.map(item => item.tipoRifiuto.toString());
+    
+    // Mantieni solo i tipi di rifiuto che non sono nella richiesta
+    ecocentro.situazioneRifiuti = ecocentro.situazioneRifiuti.filter(item => 
+      !nuoviTipiRifiutoIds.includes(item.tipoRifiuto.toString())
+    );
+    
+    // Aggiungi i nuovi tipi di rifiuto/percentuali
+    ecocentro.situazioneRifiuti = [
+      ...ecocentro.situazioneRifiuti,
+      ...req.body
+    ];
+    
+    await ecocentro.save();
+    
+    res.json(ecocentro.situazioneRifiuti);
+  } catch (errore) {
+    res.status(400).json({ messaggio: errore.message });
   }
 });
 

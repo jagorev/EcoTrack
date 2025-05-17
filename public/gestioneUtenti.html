@@ -56,8 +56,8 @@
 
     <!-- Pulsante Esci -->
     <div class="w-full max-w-xl mt-8">
-      <button onclick="logout()" class="bg-black text-white text-lg py-3 rounded-full w-full shadow-md hover:opacity-90 transition duration-300">
-        Esci
+      <button onclick="dashboard()" class="bg-black text-white text-lg py-3 rounded-full w-full shadow-md hover:opacity-90 transition duration-300">
+        Torna alla Dashboard
       </button>
     </div>
 
@@ -66,6 +66,9 @@
 
       function getApiUrl() {
         const type = document.getElementById('userType').value;
+        if (type === 'UtenteAmministratore') {
+          return `${API_BASE}/UtenteAmministratore`;
+        }
         return `${API_BASE}/${type}`;
       }
 
@@ -150,6 +153,9 @@
       function logout() {
         localStorage.removeItem('adminLoggedIn');
         window.location.href = '/index.html';
+      }
+      function dashboard() {
+        window.location.href = '/dashboard.html';
       }
     </script>
   </body>

@@ -27,7 +27,7 @@ const router = express.Router();
  *       401:
  *         description: Credenziali non valide
  */
-router.post('/api/UtenteAmministratore', async (req, res) => {
+router.post('/api/loginAdmin', async (req, res) => {
   const { username, password } = req.body;
   const admin = await UtenteAmministratore.findOne({ username, password });
   if (admin) {
@@ -65,14 +65,24 @@ router.post('/api/UtenteAmministratore', async (req, res) => {
  *       401:
  *         description: Credenziali non valide
  */
+// router.get('/api/UtenteAmministratore', async (req, res) => {
+//   const { username, password } = req.query;
+//   const admin = await UtenteAmministratore.findOne({ username, password });
+//   if (admin) {
+//     res.sendStatus(200);
+//   } else {
+//     res.sendStatus(401);
+//   }
+// });
 router.get('/api/UtenteAmministratore', async (req, res) => {
-  const { username, password } = req.query;
-  const admin = await UtenteAmministratore.findOne({ username, password });
-  if (admin) {
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(401);
-  }
+  const admins = await UtenteAmministratore.find();
+  res.json(admins);
 });
+router.post('/api/UtenteAmministratore', async (req, res) => {
+  const nuovoUtente = new UtenteAmministratore(req.body);
+  await nuovoUtente.save();
+  res.status(201).json(nuovoUtente);
+});
+
 
 module.exports = router;

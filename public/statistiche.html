@@ -4,11 +4,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTrack - Statistiche</title>
+    <title>EcoTrack - Statistiche Segnalazioni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 min-h-screen p-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold mb-4 md:mb-0">Statistiche delle Segnalazioni</h1>
+            <div class="flex space-x-3">
+                <a href="dashboard.html"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-200">
+                    Torna alla Dashboard
+                </a>
+            </div>
+        </div>
 
+        <!-- Card Statistiche -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div id="cardTotale"
+                class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center cursor-pointer hover:bg-blue-50 transition">
+                <span class="text-gray-500 mb-2">Totale Segnalazioni</span>
+                <span id="totaleSegnalazioni" class="text-3xl font-bold text-blue-700">0</span>
+            </div>
+            <div id="cardCompletate"
+                class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center cursor-pointer hover:bg-green-50 transition">
+                <span class="text-gray-500 mb-2">Completate</span>
+                <span id="segnalazioniCompletate" class="text-3xl font-bold text-green-600">0</span>
+                <span id="percCompletate" class="text-sm text-gray-400"></span>
+            </div>
+            <div id="cardPreseInCarico"
+                class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center cursor-pointer hover:bg-yellow-50 transition">
+                <span class="text-gray-500 mb-2">Prese in Carico</span>
+                <span id="segnalazioniPreseInCarico" class="text-3xl font-bold text-yellow-600">0</span>
+                <span id="percPreseInCarico" class="text-sm text-gray-400"></span>
+            </div>
+            <div id="cardInSospeso"
+                class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center cursor-pointer hover:bg-red-50 transition">
+                <span class="text-gray-500 mb-2">In Sospeso</span>
+                <span id="segnalazioniInSospeso" class="text-3xl font-bold text-red-600">0</span>
+                <span id="percInSospeso" class="text-sm text-gray-400"></span>
+            </div>
+        </div>
+
+        <!-- Grafico a barre (opzionale, solo struttura) -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Distribuzione Segnalazioni per Stato</h2>
+            <canvas id="barChart" height="80"></canvas>
+        </div>
+
+        <!-- Lista segnalazioni filtrate -->
+        <div id="listaSegnalazioni" class="mb-8"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const API_SEGNALAZIONI = '/api/segnalazione';
+        let tutteLeSegnalazioni = [];
+
+        function renderListaSegnalazioni(lista, titolo) {
+            const container = document.getElementById('listaSegnalazioni');
+            if (lista.length === 0) {
+                container.innerHTML = `<div class="bg-white p-4 rounded shadow text-center text-gray-500">Nessuna segnalazione trovata.</div>`;
+                return;
+            }
+            container.innerHTML = `
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-lg font-semibold mb-4">${titolo} (${lista.length})</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="px-4 py-2">ID</th>
+                                    <th class="px-4 py-2">Utente</th>
+                                    <th class="px-4 py-2">Data</th>
+                                    <th class="px-4 py-2">Stato</th>
+                                    <th class="px-4 py-2">Corpo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${lista.map(s => `
+                                    <tr>
+                                        <td class="border px-4 py-2">${s._id}</td>
+                                        <td class="border px-4 py-2">${typeof s.idUtente === 'object' ? (s.idUtente.username || s.idUtente.email || s.idUtente._id) : (s.idUtente || '-')}</td>
+                                        <td class="border px-4 py-2">${s.data ? new Date(s.data).toLocaleString() : '-'}</td>
+                                        <td class="border px-4 py-2">${s.stato || '-'}</td>
+                                        <td class="border px-4 py-2">${s.corpoSegnalazione || '-'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadStatistiche() {
+            try {
+                const response = await fetch(API_SEGNALAZIONI);
+                const segnalazioni = await response.json();
+                tutteLeSegnalazioni = segnalazioni;
+
+                const totale = segnalazioni.length;
+                const completate = segnalazioni.filter(s => s.stato && s.stato.toLowerCase() === 'completata');
+                const preseInCarico = segnalazioni.filter(s => s.stato && s.stato.toLowerCase() === 'presa in carico');
+                const inSospeso = segnalazioni.filter(s => s.stato && s.stato.toLowerCase() === 'in sospeso');
+
+                // Percentuali
+                const perc = x => totale > 0 ? ((x / totale) * 100).toFixed(1) + '%' : '0%';
+
+                document.getElementById('totaleSegnalazioni').textContent = totale;
+                document.getElementById('segnalazioniCompletate').textContent = completate.length;
+                document.getElementById('segnalazioniPreseInCarico').textContent = preseInCarico.length;
+                document.getElementById('segnalazioniInSospeso').textContent = inSospeso.length;
+
+                document.getElementById('percCompletate').textContent = perc(completate.length);
+                document.getElementById('percPreseInCarico').textContent = perc(preseInCarico.length);
+                document.getElementById('percInSospeso').textContent = perc(inSospeso.length);
+
+                // Grafico a barre
+                if (window.barChart && typeof window.barChart.destroy === 'function') {
+                    window.barChart.destroy();
+                }
+                const ctx = document.getElementById('barChart').getContext('2d');
+                window.barChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Completate', 'Prese in Carico', 'In Sospeso'],
+                        datasets: [{
+                            label: 'Numero Segnalazioni',
+                            data: [completate.length, preseInCarico.length, inSospeso.length],
+                            backgroundColor: [
+                                '#16a34a', // verde
+                                '#eab308', // giallo
+                                '#dc2626'  // rosso
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, precision: 0 }
+                        }
+                    }
+                });
+
+                // Event listeners per i riquadri
+                document.getElementById('cardTotale').onclick = () => renderListaSegnalazioni(segnalazioni, 'Tutte le segnalazioni');
+                document.getElementById('cardCompletate').onclick = () => renderListaSegnalazioni(completate, 'Segnalazioni completate');
+                document.getElementById('cardPreseInCarico').onclick = () => renderListaSegnalazioni(preseInCarico, 'Segnalazioni prese in carico');
+                document.getElementById('cardInSospeso').onclick = () => renderListaSegnalazioni(inSospeso, 'Segnalazioni in sospeso');
+
+            } catch (error) {
+                console.error('Errore nel caricamento delle statistiche:', error);
+                alert('Errore nel caricamento delle statistiche');
+            }
+        }
+
+        window.onload = loadStatistiche;
+    </script>
 </body>
 
 </html>

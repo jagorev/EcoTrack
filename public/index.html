@@ -57,9 +57,10 @@
           });
 
           if (response.ok) {
-            // Reindirizza alla dashboard se il login è valido
-            window.location.href = '/dashboard.html';
+            const data = await response.json();
+            localStorage.setItem('adminToken', data.token);
             localStorage.setItem('adminLoggedIn', 'true');
+            window.location.href = '/dashboard.html';
           } else {
             // Mostra errore
             document.getElementById("error").classList.remove("hidden");

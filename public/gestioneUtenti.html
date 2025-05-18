@@ -74,7 +74,12 @@
 
       async function getUsers() {
         try {
-          const response = await fetch(getApiUrl());
+          const token = localStorage.getItem('adminToken');
+          const response = await fetch(getApiUrl(), {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          });
           const users = await response.json();
           const usersList = document.getElementById('users');
           usersList.innerHTML = '';
@@ -156,6 +161,10 @@
       }
       function dashboard() {
         window.location.href = '/dashboard.html';
+      }
+
+      if (!localStorage.getItem('adminToken')) {
+        window.location.href = '/index.html';
       }
     </script>
   </body>

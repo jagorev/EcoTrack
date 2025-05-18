@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EcoTrack Dashboard</title>
     <script>
-      if (localStorage.getItem('adminLoggedIn') !== 'true') {
+      if (!localStorage.getItem('adminToken')) {
         window.location.href = '/index.html';
       }
     </script>

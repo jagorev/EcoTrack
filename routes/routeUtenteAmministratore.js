@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const UtenteAmministratore = require('../models/UtenteAmministratore');
 const router = express.Router();
 
@@ -31,7 +32,13 @@ router.post('/api/loginAdmin', async (req, res) => {
   const { username, password } = req.body;
   const admin = await UtenteAmministratore.findOne({ username, password });
   if (admin) {
-    res.sendStatus(200);
+    // Genera un token JWT valido per 2 ore
+    const token = jwt.sign(
+      { username: admin.username, id: admin._id },
+      process.env.JWT_SECRET || 'supersegreto',
+      { expiresIn: '2h' }
+    );
+    res.json({ token });
   } else {
     res.sendStatus(401);
   }
@@ -74,7 +81,19 @@ router.post('/api/loginAdmin', async (req, res) => {
 //     res.sendStatus(401);
 //   }
 // });
-router.get('/api/UtenteAmministratore', async (req, res) => {
+function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ error: 'Token mancante' });
+  const token = authHeader.split(' ')[1];
+  jwt.verify(token, process.env.JWT_SECRET || 'supersegreto', (err, user) => {
+    if (err) return res.status(403).json({ error: 'Token non valido' });
+    req.user = user;
+    next();
+  });
+}
+
+// Esempio: proteggi la lista amministratori
+router.get('/api/UtenteAmministratore', verifyToken, async (req, res) => {
   const admins = await UtenteAmministratore.find();
   res.json(admins);
 });

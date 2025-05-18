@@ -57,10 +57,21 @@
           });
 
           if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('adminToken', data.token);
-            localStorage.setItem('adminLoggedIn', 'true');
-            window.location.href = '/dashboard.html';
+            // Controlla se la risposta ha contenuto JSON
+            let data = null;
+            try {
+              data = await response.json();
+            } catch (e) {
+              // Se non c'è JSON, non fare nulla
+            }
+            if (data && data.token) {
+              localStorage.setItem('adminToken', data.token);
+              localStorage.setItem('adminLoggedIn', 'true');
+              window.location.href = '/dashboard.html';
+            } else {
+              // Mostra errore se manca il token
+              document.getElementById("error").classList.remove("hidden");
+            }
           } else {
             // Mostra errore
             document.getElementById("error").classList.remove("hidden");

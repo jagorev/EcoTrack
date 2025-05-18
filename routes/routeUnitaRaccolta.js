@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const UnitaRaccolta = require('../models/UnitaRaccolta');
+const TipoRaccolta = require('../models/TipoRaccolta');
+const TipoSensore = require('../models/TipoSensore');
 
 /**
  * @swagger
@@ -17,8 +19,8 @@ const UnitaRaccolta = require('../models/UnitaRaccolta');
 router.get('/api/unitaRaccolta', async (req, res) => {
     try {
         const unitaRaccolta = await UnitaRaccolta.find()
-            .populate('tipoRaccolta')
-            .populate('sensore');
+            .populate('tipoRaccolta', 'tipo')
+            .populate('sensore', 'tipo');
         res.json(unitaRaccolta);
     } catch (err) {
         console.error('Errore durante il recupero delle unità di raccolta:', err);

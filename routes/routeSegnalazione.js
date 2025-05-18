@@ -16,15 +16,7 @@ const Segnalazione = require('../models/Segnalazione');
  */
 router.get('/api/segnalazione', async (req, res) => {
     try {
-        const segnalazioni = await Segnalazione.find()
-            .populate('idSegnalazione')
-            .populate('idUtente')
-            .populate('data')
-            .populate('posizione')
-            .populate('corpoSegnalazione')
-            .populate('stato')
-            .populate('media');
-        console.log(json(segnalazioni));
+        const segnalazioni = await Segnalazione.find().populate('idUtente', 'username');
         res.json(segnalazioni);
     }
     catch (err) {

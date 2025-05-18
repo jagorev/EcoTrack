@@ -21,6 +21,8 @@ const routeEcocentro = require('./routes/routeEcocentro');
 app.use(routeEcocentro);
 const routePrenotazione = require('./routes/routePrenotazione');
 app.use(routePrenotazione);
+const routeSegnalazione = require('./routes/routeSegnalazione');
+app.use(routeSegnalazione);
 
 // Configurazione Swagger
 const swaggerOptions = {
@@ -48,8 +50,8 @@ mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('✅ Connesso a MongoDB Atlas'))
-.catch(err => console.error('❌ Errore connessione:', err));
+  .then(() => console.log('✅ Connesso a MongoDB Atlas'))
+  .catch(err => console.error('❌ Errore connessione:', err));
 
 // Avvio del server
 const PORT = process.env.PORT || 4000;

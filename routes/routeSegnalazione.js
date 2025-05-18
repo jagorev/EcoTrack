@@ -16,7 +16,7 @@ const Segnalazione = require('../models/Segnalazione');
  */
 router.get('/api/segnalazione', async (req, res) => {
     try {
-        const segnalazioni = Segnalazione.find()
+        const segnalazioni = await Segnalazione.find()
             .populate('idSegnalazione')
             .populate('idUtente')
             .populate('data')
@@ -24,6 +24,7 @@ router.get('/api/segnalazione', async (req, res) => {
             .populate('corpoSegnalazione')
             .populate('stato')
             .populate('media');
+        console.log(json(segnalazioni));
         res.json(segnalazioni);
     }
     catch (err) {
@@ -33,37 +34,58 @@ router.get('/api/segnalazione', async (req, res) => {
 
 /**
  * @swagger
- * /api/segnalazione
- *      post:
- *          summary: Crea una nuova segnalazione
- *          description: Registra una nuova prenotazione nel sistema.
- *          requestBody:
- *              required: true
- *              content:
- *                  application/json:
- *                      schema:
- *                          type: object
- *                          properties:
- * i                            idSegnalazione:
- *                                  type: string
- *                                  description: ID della segnalazione
- *                              idUtente:
- *                                  type: string
- *                                  description: ID dell'utente che invia la segnalazione
- *                              data:
- *                                  type: Date
- *                                  description: Data in cui è stata ricevuta la segnalazione         
- *                              posizione:
- *                                  type: posizioneSchema
- *                                  description: Luogo in cui è stata effettuata la segnalazione
- *                              corpoSegnalazione:
- *                                  type: string
- *                                  description: Contenuto testuale della segnalazione
- *                              stato:
- *                                  type: string
- *                                  description: Stato della la segnalazione
+ * /api/segnalazione:
+ *   post:
+ *     summary: Crea una nuova segnalazione
+ *     description: Registra una nuova segnalazione nel sistema.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idSegnalazione:
+ *                 type: string
+ *                 description: ID della segnalazione
+ *               idUtente:
+ *                 type: string
+ *                 description: ID dell'utente che invia la segnalazione
+ *               data:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Data in cui è stata ricevuta la segnalazione
+ *               posizione:
+ *                 type: object
+ *                 properties:
+ *                   latitudeGradi:
+ *                     type: number
+ *                   latitudeMinuti:
+ *                     type: number
+ *                   latitudeSecondi:
+ *                     type: number
+ *                   longitudeGradi:
+ *                     type: number
+ *                   longitudeMinuti:
+ *                     type: number
+ *                   longitudeSecondi:
+ *                     type: number
+ *                 description: Coordinate della posizione della segnalazione
+ *               corpoSegnalazione:
+ *                 type: string
+ *                 description: Contenuto testuale della segnalazione
+ *               stato:
+ *                 type: string
+ *                 description: Stato della segnalazione
+ *               media:
+ *                 type: string
+ *                 description: URL o percorso del file multimediale allegato (opzionale)
+ *     responses:
+ *       201:
+ *         description: Segnalazione creata con successo
+ *       400:
+ *         description: Richiesta non valida
  */
-
 router.post('/api/segnalazione', async (req, res) => {
     try {
         const nuovaSegnalazione = new Segnalazione(req.body);

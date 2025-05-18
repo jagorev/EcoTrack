@@ -23,6 +23,8 @@ const routePrenotazione = require('./routes/routePrenotazione');
 app.use(routePrenotazione);
 const routeSegnalazione = require('./routes/routeSegnalazione');
 app.use(routeSegnalazione);
+const routeUnitaRaccolta = require('./routes/routeUnitaRaccolta');
+app.use(routeUnitaRaccolta);
 
 // Configurazione Swagger
 const swaggerOptions = {

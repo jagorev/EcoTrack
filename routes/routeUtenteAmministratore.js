@@ -36,8 +36,8 @@ router.post('/api/loginAdmin', async (req, res) => {
     const token = jwt.sign(
       { username: admin.username, id: admin._id },
       process.env.JWT_SECRET || 'supersegreto',
-      //{ expiresIn: '2h' }
-      { expiresIn: '1m' } // Cambiato da 2h a 1m
+      { expiresIn: '2h' }
+      //{ expiresIn: '1m' } // Cambiato da 2h a 1m
     );
     res.json({ token });
   } else {

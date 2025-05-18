@@ -32,11 +32,12 @@ router.post('/api/loginAdmin', async (req, res) => {
   const { username, password } = req.body;
   const admin = await UtenteAmministratore.findOne({ username, password });
   if (admin) {
-    // Genera un token JWT valido per 2 ore
+    // Genera un token JWT valido per 2 minuti
     const token = jwt.sign(
       { username: admin.username, id: admin._id },
       process.env.JWT_SECRET || 'supersegreto',
-      { expiresIn: '2h' }
+      //{ expiresIn: '2h' }
+      { expiresIn: '1m' } // Cambiato da 2h a 1m
     );
     res.json({ token });
   } else {

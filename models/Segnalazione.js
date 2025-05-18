@@ -11,7 +11,7 @@ const posizioneSchema = new mongoose.Schema({
 // _id: false purchè mongoose non crei un id anche per la subdocument posizione
 
 const segnalazioneSchema = new mongoose.Schema({
-  idSegnalazione: { type: mongoose.Schema.Types.ObjectId, required: true },
+  idSegnalazione: { type: mongoose.Schema.Types.ObjectId, ref: 'Segnalazione', required: true },
   idUtente: { type: mongoose.Schema.Types.ObjectId, ref: 'UtenteRegistrato', required: true },
   data: { type: Date, default: Date.now }, // di default prende il momento attuale
   posizione: { type: posizioneSchema, required: true }, // posizione annidata

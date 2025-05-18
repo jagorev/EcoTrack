@@ -7,14 +7,19 @@ const router = express.Router();
  * @swagger
  * /api/loginAdmin:
  *   post:
- *     summary: Login per l'amministratore
- *     description: Permette all'amministratore di accedere tramite username e password nel body.
+ *     summary: Login per amministratore
+ *     description: Autentica un amministratore con username e password forniti nel body.
+ *     tags:
+ *       - Autenticazione
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - username
+ *               - password
  *             properties:
  *               username:
  *                 type: string
@@ -24,7 +29,14 @@ const router = express.Router();
  *                 example: password123
  *     responses:
  *       200:
- *         description: Login effettuato con successo
+ *         description: Login effettuato con successo, token JWT restituito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
  *       401:
  *         description: Credenziali non valide
  */
@@ -32,12 +44,10 @@ router.post('/api/loginAdmin', async (req, res) => {
   const { username, password } = req.body;
   const admin = await UtenteAmministratore.findOne({ username, password });
   if (admin) {
-    // Genera un token JWT valido per 2 minuti
     const token = jwt.sign(
       { username: admin.username, id: admin._id },
       process.env.JWT_SECRET || 'supersegreto',
       { expiresIn: '1h' }
-      //{ expiresIn: '1m' } // Cambiato da 2h a 1m
     );
     res.json({ token });
   } else {
@@ -47,41 +57,62 @@ router.post('/api/loginAdmin', async (req, res) => {
 
 /**
  * @swagger
- * /api/loginAdmin:
+ * /api/UtenteAmministratore:
  *   get:
- *     summary: Login (via query) per l'amministratore
- *     description: |
- *       Versione GET dello stesso login:
- *       le credenziali vengono passate in query string
- *       (/api/loginAdmin?username=admin&password=pwd).
- *     parameters:
- *       - in: query
- *         name: username
- *         required: true
- *         schema:
- *           type: string
- *         example: admin
- *       - in: query
- *         name: password
- *         required: true
- *         schema:
- *           type: string
- *         example: password123
+ *     summary: Ottiene la lista degli amministratori
+ *     description: Restituisce tutti gli amministratori. Richiede un token JWT valido.
+ *     tags:
+ *       - Amministratori
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Login effettuato con successo
+ *         description: Lista di amministratori restituita con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UtenteAmministratore'
  *       401:
- *         description: Credenziali non valide
+ *         description: Token mancante
+ *       403:
+ *         description: Token non valido
  */
-// router.get('/api/UtenteAmministratore', async (req, res) => {
-//   const { username, password } = req.query;
-//   const admin = await UtenteAmministratore.findOne({ username, password });
-//   if (admin) {
-//     res.sendStatus(200);
-//   } else {
-//     res.sendStatus(401);
-//   }
-// });
+router.get('/api/UtenteAmministratore', verifyToken, async (req, res) => {
+  const admins = await UtenteAmministratore.find();
+  res.json(admins);
+});
+
+/**
+ * @swagger
+ * /api/UtenteAmministratore:
+ *   post:
+ *     summary: Crea un nuovo amministratore
+ *     description: Inserisce un nuovo utente amministratore nel sistema.
+ *     tags:
+ *       - Amministratori
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UtenteAmministratore'
+ *     responses:
+ *       201:
+ *         description: Amministratore creato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UtenteAmministratore'
+ */
+router.post('/api/UtenteAmministratore', async (req, res) => {
+  const nuovoUtente = new UtenteAmministratore(req.body);
+  await nuovoUtente.save();
+  res.status(201).json(nuovoUtente);
+});
+
+// Middleware per verifica token
 function verifyToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   if (!authHeader) return res.status(401).json({ error: 'Token mancante' });
@@ -92,17 +123,5 @@ function verifyToken(req, res, next) {
     next();
   });
 }
-
-// Esempio: proteggi la lista amministratori
-router.get('/api/UtenteAmministratore', verifyToken, async (req, res) => {
-  const admins = await UtenteAmministratore.find();
-  res.json(admins);
-});
-router.post('/api/UtenteAmministratore', async (req, res) => {
-  const nuovoUtente = new UtenteAmministratore(req.body);
-  await nuovoUtente.save();
-  res.status(201).json(nuovoUtente);
-});
-
 
 module.exports = router;

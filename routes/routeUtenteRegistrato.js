@@ -61,5 +61,19 @@ router.post('/api/utenteRegistrato', async (req, res) => {
   }
 });
 
+/**
+ * DELETE /api/utenteRegistrato/:id
+ * Elimina un utente registrato per id
+ */
+router.delete('/api/utenteRegistrato/:id', async (req, res) => {
+  try {
+    const deleted = await UtenteRegistrato.findByIdAndDelete(req.params.id);
+    if (deleted) res.json({ message: 'Utente eliminato' });
+    else res.status(404).json({ error: 'Utente non trovato' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 module.exports = router;
+

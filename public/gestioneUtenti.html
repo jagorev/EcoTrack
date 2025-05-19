@@ -53,6 +53,30 @@
     <div class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xl">
       <h2 class="text-xl font-semibold mb-2 text-gray-800">Lista Utenti</h2>
       <ul id="users" class="space-y-2 text-sm text-gray-700"></ul>
+      <script>
+        // Funzione per eliminare un utente
+        async function deleteUser(userId, userType) {
+          if (!confirm('Sei sicuro di voler eliminare questo utente?')) return;
+          const token = localStorage.getItem('adminToken');
+          let endpoint = '';
+          if (userType === 'UtenteAmministratore') endpoint = 'UtenteAmministratore';
+          else if (userType === 'operatoriEcologici') endpoint = 'operatoriEcologici';
+          else endpoint = 'utenteRegistrato';
+          try {
+            const response = await fetch(`/api/${endpoint}/${userId}`, {
+              method: 'DELETE',
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (response.ok) {
+              getUsers();
+            } else {
+              alert('Errore durante l\'eliminazione dell\'utente.');
+            }
+          } catch (e) {
+            alert('Errore durante l\'eliminazione dell\'utente.');
+          }
+        }
+      </script>
     </div>
 
     <!-- Aggiungi Utente -->
@@ -118,7 +142,13 @@
             if (user.id_lavorativo) text += ` - ID: ${user.id_lavorativo}`;
             if (user.zona) text += ` - Zona: ${user.zona}`;
             li.textContent = text;
-            li.className = "bg-gray-100 px-4 py-2 rounded shadow";
+            li.className = "bg-gray-100 px-4 py-2 rounded shadow flex justify-between items-center";
+            // Bottone elimina
+            const btn = document.createElement('button');
+            btn.textContent = 'Elimina';
+            btn.className = 'ml-4 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700';
+            btn.onclick = () => deleteUser(user._id, document.getElementById('userType').value);
+            li.appendChild(btn);
             usersList.appendChild(li);
           });
         } catch (error) {

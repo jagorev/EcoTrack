@@ -112,6 +112,37 @@ router.post('/api/UtenteAmministratore', async (req, res) => {
   res.status(201).json(nuovoUtente);
 });
 
+/**
+ * @swagger
+ * /api/UtenteAmministratore/{id}:
+ *   delete:
+ *     summary: Elimina un amministratore
+ *     description: Elimina un amministratore dal sistema. Richiede token JWT.
+ *     tags:
+ *       - Amministratori
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Amministratore eliminato
+ *       401:
+ *         description: Token mancante
+ *       403:
+ *         description: Token non valido
+ *       404:
+ *         description: Amministratore non trovato
+ */
+router.delete('/api/UtenteAmministratore/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const deleted = await UtenteAmministratore.findByIdAndDelete(id);
+  if (deleted) res.json({ message: 'Amministratore eliminato' });
+  else res.status(404).json({ error: 'Amministratore non trovato' });
+});
+
 // Middleware per verifica token
 function verifyToken(req, res, next) {
   const authHeader = req.headers['authorization'];

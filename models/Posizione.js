@@ -1,38 +1,30 @@
-const mongoose = require('mongoose');
-
-// Schema per le coordinate geografiche (gradi, primi, secondi)
-const posizioneSchema = new mongoose.Schema({
-  latitudineGradi: {      // NB: nel requisito c'è una doppia “ti”
-    type: Number,
-    required: true
-  },
-  latitudinePrimi: {
-    type: Number,
-    required: true
-  },
-  latitudineSecondi: {
-    type: Number,
-    required: true
-  },
-  longitudineGradi: {
-    type: Number,
-    required: true
-  },
-  longitudinePrimi: {
-    type: Number,
-    required: true
-  },
-  longitudineSecondi: {
-    type: Number,
-    required: true
+/**
+ * Classe semplice per rappresentare coordinate geografiche in formato gradi, primi, secondi
+ */
+class Posizione {
+  /**
+   * @param {number} latitudineGradi - Gradi di latitudine
+   * @param {number} latitudinePrimi - Primi di latitudine
+   * @param {number} latitudineSecondi - Secondi di latitudine
+   * @param {number} longitudineGradi - Gradi di longitudine
+   * @param {number} longitudinePrimi - Primi di longitudine
+   * @param {number} longitudineSecondi - Secondi di longitudine
+   */
+  constructor(
+    latitudineGradi, 
+    latitudinePrimi, 
+    latitudineSecondi, 
+    longitudineGradi, 
+    longitudinePrimi, 
+    longitudineSecondi
+  ) {
+    this.latitudineGradi = latitudineGradi;
+    this.latitudinePrimi = latitudinePrimi;
+    this.latitudineSecondi = latitudineSecondi;
+    this.longitudineGradi = longitudineGradi;
+    this.longitudinePrimi = longitudinePrimi;
+    this.longitudineSecondi = longitudineSecondi;
   }
-});
-
-// Compilo lo schema in un Model e fisso la collezione a “posizioni”
-const Posizione = mongoose.model(
-  'Posizione',     // nome del Model
-  posizioneSchema, // schema appena definito
-  'posizioni'      // nome esatto della collezione su MongoDB
-);
+}
 
 module.exports = Posizione;

@@ -4,6 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoTrack - Gestione Prenotazioni</title>
+  <script>
+    if (!localStorage.getItem('adminToken')) {
+      window.location.href = '/index.html';
+    } else {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const payload = JSON.parse(jsonPayload);
+        if (!payload.exp || Date.now() >= payload.exp * 1000) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminLoggedIn');
+          window.location.href = '/index.html';
+        }
+      } catch (e) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminLoggedIn');
+        window.location.href = '/index.html';
+      }
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-6">

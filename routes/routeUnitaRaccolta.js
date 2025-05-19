@@ -15,6 +15,8 @@ const TipoSensore = require('../models/TipoSensore');
  *         description: Lista di unità di raccolta ottenuta con successo
  *       500:
  *         description: Errore interno del server
+ *     tags:
+ *       - Unità di Raccolta
  */
 router.get('/api/unitaRaccolta', async (req, res) => {
     try {
@@ -58,6 +60,8 @@ router.get('/api/unitaRaccolta', async (req, res) => {
  *         description: Unità di raccolta creata con successo
  *       500:
  *         description: Errore interno del server
+ *     tags:
+ *       - Unità di Raccolta
  */
 router.post('/api/unitaRaccolta', async (req, res) => {
     const { tipoRaccolta, sensore, livelloSaturazione, capienza } = req.body;
@@ -117,6 +121,8 @@ router.post('/api/unitaRaccolta', async (req, res) => {
  *         description: Unità di raccolta non trovata
  *       500:
  *         description: Errore interno del server
+ *     tags:
+ *       - Unità di Raccolta
  */
 router.patch('/api/unitaRaccolta/:id', async (req, res) => {
 
@@ -159,6 +165,8 @@ router.patch('/api/unitaRaccolta/:id', async (req, res) => {
  *         description: Unità di raccolta non trovata
  *       500:
  *         description: Errore interno del server
+ *     tags:
+ *       - Unità di Raccolta
  */
 router.delete('/api/unitaRaccolta/:id', async (req, res) => {
     try {

@@ -10,7 +10,7 @@ const router = express.Router();
  *     summary: Login per amministratore
  *     description: Autentica un amministratore con username e password forniti nel body.
  *     tags:
- *       - Autenticazione
+ *       - Amministratore
  *     requestBody:
  *       required: true
  *       content:
@@ -62,7 +62,7 @@ router.post('/api/loginAdmin', async (req, res) => {
  *     summary: Ottiene la lista degli amministratori
  *     description: Restituisce tutti gli amministratori. Richiede un token JWT valido.
  *     tags:
- *       - Amministratori
+ *       - Amministratore
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -91,7 +91,7 @@ router.get('/api/UtenteAmministratore', verifyToken, async (req, res) => {
  *     summary: Crea un nuovo amministratore
  *     description: Inserisce un nuovo utente amministratore nel sistema.
  *     tags:
- *       - Amministratori
+ *       - Amministratore
  *     requestBody:
  *       required: true
  *       content:
@@ -119,7 +119,7 @@ router.post('/api/UtenteAmministratore', async (req, res) => {
  *     summary: Elimina un amministratore
  *     description: Elimina un amministratore dal sistema. Richiede token JWT.
  *     tags:
- *       - Amministratori
+ *       - Amministratore
  *     parameters:
  *       - in: path
  *         name: id

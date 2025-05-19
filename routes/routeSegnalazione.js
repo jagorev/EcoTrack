@@ -13,6 +13,8 @@ const Segnalazione = require('../models/Segnalazione');
  *         description: Lista di segnalazioni ottenuta con successo
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Segnalazione
  */
 router.get('/api/segnalazione', async (req, res) => {
     try {
@@ -77,6 +79,8 @@ router.get('/api/segnalazione', async (req, res) => {
  *         description: Segnalazione creata con successo
  *       400:
  *         description: Richiesta non valida
+ *     tags:
+ *       - Segnalazione
  */
 router.post('/api/segnalazione', async (req, res) => {
     try {
@@ -151,6 +155,8 @@ router.post('/api/segnalazione', async (req, res) => {
  *         description: Segnalazione non trovata
  *       400:
  *         description: Richiesta non valida
+ *     tags:
+ *       - Segnalazione
  */
 router.patch('/api/prenotazione/:id', async (req, res) => {
     try {
@@ -191,6 +197,8 @@ router.patch('/api/prenotazione/:id', async (req, res) => {
  *         description: Segnalazione non trovata
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Segnalazione
  */
 router.delete('/api/prenotazione/:id', async (req, res) => {
     try {

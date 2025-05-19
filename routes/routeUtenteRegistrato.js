@@ -9,7 +9,7 @@ const UtenteRegistrato = require('../models/UtenteRegistrato');
  *     summary: Recupera tutti gli utenti registrati
  *     description: Restituisce la lista completa degli utenti registrati nel sistema.
  *     tags:
- *       - Utenti Registrati
+ *       - Utente Registrato
  *     responses:
  *       200:
  *         description: Lista di utenti recuperata con successo
@@ -33,7 +33,7 @@ router.get('/api/utenteRegistrato', async (req, res) => {
  *     summary: Registra un nuovo utente
  *     description: Crea e salva un nuovo utente nel database.
  *     tags:
- *       - Utenti Registrati
+ *       - Utente Registrato
  *     requestBody:
  *       required: true
  *       content:

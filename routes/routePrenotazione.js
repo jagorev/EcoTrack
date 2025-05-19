@@ -13,6 +13,8 @@ const Prenotazione = require('../models/Prenotazione');
  *         description: Lista di prenotazioni ottenuta con successo
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Prenotazione
  */
 router.get('/api/prenotazione', async (req, res) => {
   try {
@@ -46,6 +48,8 @@ router.get('/api/prenotazione', async (req, res) => {
  *         description: Prenotazione non trovata
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Prenotazione
  */
 router.get('/api/prenotazione/:id', async (req, res) => {
   try {
@@ -102,6 +106,8 @@ router.get('/api/prenotazione/:id', async (req, res) => {
  *         description: Prenotazione creata con successo
  *       400:
  *         description: Dati non validi
+ *     tags:
+ *       - Prenotazione
  */
 router.post('/api/prenotazione', async (req, res) => {
   try {
@@ -152,6 +158,8 @@ router.post('/api/prenotazione', async (req, res) => {
  *         description: Prenotazione non trovata
  *       400:
  *         description: Richiesta non valida
+ *     tags:
+ *       - Prenotazione
  */
 router.patch('/api/prenotazione/:id', async (req, res) => {
   try {
@@ -191,6 +199,8 @@ router.patch('/api/prenotazione/:id', async (req, res) => {
  *         description: Prenotazione non trovata
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Prenotazione
  */
 router.delete('/api/prenotazione/:id', async (req, res) => {
   try {

@@ -34,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _onRegister() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final url = Uri.parse('http://localhost:3000/api/utenteRegistrato');
+      final url = Uri.parse('http://10.0.2.2:3000/api/utenteRegistrato');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -70,13 +70,13 @@ class _ProfilePageState extends State<ProfilePage> {
       }
       if (widget.userType == UserType.operator) {
         const String idOperatore = '682b0d198d5ed5ad49091674';
-        endpoint = 'http://localhost:3000/api/operatoriEcologici/$idOperatore';
+        endpoint = 'http://10.0.2.2:3000/api/operatoriEcologici/$idOperatore';
         body['zonaOperativa'] = _zonaOperativaController.text;
         body['idBadge'] = _idBadgeController.text;
       } else {
         const String idUtenteRegistrato = '681b8364d1e11c5d634eb4b7';
         endpoint =
-            'http://localhost:3000/api/utenteRegistrato/$idUtenteRegistrato';
+            'http://10.0.2.2:3000/api/utenteRegistrato/$idUtenteRegistrato';
       }
 
       final response = await http.put(

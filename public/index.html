@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Amministratore | EcoTrack</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+      <h1 class="text-3xl font-bold text-center text-green-700 mb-6">EcoTrack</h1>
+      <h2 class="text-xl font-semibold text-center mb-4">Accesso Amministratore</h2>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            class="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-green-600 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-green-700 transition duration-200"
+        >
+          Accedi
+        </button>
+      </form>
+
+      <p id="error" class="text-red-600 text-sm mt-4 text-center hidden">Credenziali non valide.</p>
+    </div>
+
+    <script>
+      async function handleLogin(event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const response = await fetch('/api/loginAdmin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          if (response.ok) {
+            // Controlla se la risposta ha contenuto JSON
+            let data = null;
+            try {
+              data = await response.json();
+            } catch (e) {
+              // Se non c'è JSON, non fare nulla
+            }
+            if (data && data.token) {
+              localStorage.setItem('adminToken', data.token);
+              localStorage.setItem('adminLoggedIn', 'true');
+              window.location.href = '/dashboard.html';
+            } else {
+              // Mostra errore se manca il token
+              document.getElementById("error").classList.remove("hidden");
+            }
+          } else {
+            // Mostra errore
+            document.getElementById("error").classList.remove("hidden");
+          }
+        } catch (error) {
+          console.error('Errore nel login:', error);
+          document.getElementById("error").classList.remove("hidden");
+        }
+      }
+    </script>
+  </body>
+</html>

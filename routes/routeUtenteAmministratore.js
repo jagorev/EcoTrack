@@ -106,7 +106,7 @@ router.get('/api/UtenteAmministratore', verifyToken, async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/UtenteAmministratore'
  */
-router.post('/api/UtenteAmministratore', async (req, res) => {
+router.post('/api/UtenteAmministratore', verifyToken, async (req, res) => {
   const nuovoUtente = new UtenteAmministratore(req.body);
   await nuovoUtente.save();
   res.status(201).json(nuovoUtente);

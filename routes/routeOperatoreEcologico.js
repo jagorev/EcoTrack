@@ -66,7 +66,7 @@ router.get('/api/operatoriEcologici', verifyToken, async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/OperatoreEcologico'
  */
-router.post('/api/operatoriEcologici', async (req, res) => {
+router.post('/api/operatoriEcologici', verifyToken, async (req, res) => {
   try {
     const nuovoOperatore = new OperatoreEcologico(req.body);
     await nuovoOperatore.save();

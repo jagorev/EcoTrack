@@ -41,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
         body: jsonEncode({
           'username': _nameController.text,
           'email': _emailController.text,
+          'telefono': _phoneController.text,
           'password': _passwordController.text,
         }),
       );
@@ -140,6 +141,12 @@ class _ProfilePageState extends State<ProfilePage> {
             validator:
                 (v) =>
                     v == null || !v.contains('@') ? 'Email non valida' : null,
+          ),
+          _inputField(
+            _phoneController,
+            'Telefono',
+            validator:
+                (v) => v == null || v.isEmpty ? 'Campo obbligatorio' : null,
           ),
           _inputField(
             _passwordController,

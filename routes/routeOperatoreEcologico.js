@@ -19,10 +19,10 @@ function verifyToken(req, res, next) {
  * @swagger
  * /api/operatoriEcologici:
  *   get:
- *     summary: Ottiene la lista degli operatori ecologici
- *     description: Restituisce tutti gli operatori. Richiede un token JWT valido.
  *     tags:
  *       - Operatore Ecologico
+ *     summary: Ottiene la lista degli operatori ecologici
+ *     description: Restituisce tutti gli operatori. Richiede un token JWT valido.
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -48,10 +48,10 @@ router.get('/api/operatoriEcologici', verifyToken, async (req, res) => {
  * @swagger
  * /api/operatoriEcologici:
  *   post:
- *     summary: Crea un nuovo operatore ecologico
- *     description: Inserisce un nuovo operatore ecologico nel sistema.
  *     tags:
  *       - Operatore Ecologico
+ *     summary: Crea un nuovo operatore ecologico
+ *     description: Inserisce un nuovo operatore ecologico nel sistema.
  *     requestBody:
  *       required: true
  *       content:
@@ -80,10 +80,10 @@ router.post('/api/operatoriEcologici', async (req, res) => {
  * @swagger
  * /api/operatoriEcologici/{id}:
  *   delete:
- *     summary: Elimina un operatore ecologico
- *     description: Elimina un operatore dal sistema. Richiede token JWT.
  *     tags:
  *       - Operatore Ecologico
+ *     summary: Elimina un operatore ecologico
+ *     description: Elimina un operatore dal sistema. Richiede token JWT.
  *     parameters:
  *       - in: path
  *         name: id

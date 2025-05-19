@@ -8,21 +8,14 @@ const Segnalazione = require('../models/Segnalazione');
  *   get:
  *     summary: Recupera tutte le Segnalazioni
  *     description: Ottiene la lista di tutte le segnalazioni con relativi dettagli
+ *     tags:
+ *       - Segnalazione
  *     responses:
  *       200:
  *         description: Lista di segnalazioni ottenuta con successo
  *       500:
  *         description: Errore del server
  */
-router.get('/api/segnalazione', async (req, res) => {
-    try {
-        const segnalazioni = await Segnalazione.find().populate('idUtente', 'username');
-        res.json(segnalazioni);
-    }
-    catch (err) {
-        res.status(500).json({ messaggio: err.message });
-    }
-});
 
 /**
  * @swagger
@@ -30,6 +23,8 @@ router.get('/api/segnalazione', async (req, res) => {
  *   post:
  *     summary: Crea una nuova segnalazione
  *     description: Registra una nuova segnalazione nel sistema.
+ *     tags:
+ *       - Segnalazione
  *     requestBody:
  *       required: true
  *       content:
@@ -77,6 +72,8 @@ router.get('/api/segnalazione', async (req, res) => {
  *         description: Segnalazione creata con successo
  *       400:
  *         description: Richiesta non valida
+ *     tags:
+ *       - Segnalazione
  */
 router.post('/api/segnalazione', async (req, res) => {
     try {
@@ -151,6 +148,8 @@ router.post('/api/segnalazione', async (req, res) => {
  *         description: Segnalazione non trovata
  *       400:
  *         description: Richiesta non valida
+ *     tags:
+ *       - Segnalazione
  */
 router.patch('/api/prenotazione/:id', async (req, res) => {
     try {
@@ -191,6 +190,8 @@ router.patch('/api/prenotazione/:id', async (req, res) => {
  *         description: Segnalazione non trovata
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Segnalazione
  */
 router.delete('/api/prenotazione/:id', async (req, res) => {
     try {

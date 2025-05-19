@@ -13,6 +13,8 @@ const Ecocentro = require('../models/Ecocentro');
  *         description: Lista di ecocentri ottenuta con successo
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Ecocentro
  */
 router.get('/api/ecocentro', async (req, res) => {
   try {
@@ -43,6 +45,8 @@ router.get('/api/ecocentro', async (req, res) => {
  *         description: Ecocentro non trovato
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Ecocentro
  */
 router.get('/api/ecocentro/:id', async (req, res) => {
   try {
@@ -102,6 +106,8 @@ router.get('/api/ecocentro/:id', async (req, res) => {
  *         description: Ecocentro creato con successo
  *       400:
  *         description: Dati non validi
+ *     tags:
+ *       - Ecocentro
  */
 router.post('/api/ecocentro', async (req, res) => {
   try {
@@ -164,6 +170,8 @@ router.post('/api/ecocentro', async (req, res) => {
  *         description: Ecocentro non trovato
  *       400:
  *         description: Richiesta non valida
+ *     tags:
+ *       - Ecocentro
  */
 router.patch('/api/ecocentro/:id', async (req, res) => {
   try {
@@ -203,6 +211,8 @@ router.patch('/api/ecocentro/:id', async (req, res) => {
  *         description: Ecocentro non trovato
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Ecocentro
  */
 router.delete('/api/ecocentro/:id', async (req, res) => {
   try {
@@ -238,6 +248,8 @@ router.delete('/api/ecocentro/:id', async (req, res) => {
  *         description: Ecocentro non trovato
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Ecocentro
  */
 router.get('/api/ecocentro/:id/rifiuti', async (req, res) => {
   try {
@@ -292,6 +304,8 @@ router.get('/api/ecocentro/:id/rifiuti', async (req, res) => {
  *         description: Ecocentro non trovato
  *       400:
  *         description: Dati non validi
+ *     tags:
+ *       - Ecocentro
  */
 router.patch('/api/ecocentro/:id/rifiuti', async (req, res) => {
   try {

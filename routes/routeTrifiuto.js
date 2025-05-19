@@ -13,6 +13,8 @@ const TipoRifiuto = require('../models/Trifiuto');
  *         description: Lista di tipi di rifiuto ottenuta con successo
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Tipo di Rifiuto
  */
 router.get('/api/tipoRifiuto', async (req, res) => {
   try {
@@ -43,6 +45,8 @@ router.get('/api/tipoRifiuto', async (req, res) => {
  *         description: Tipo di rifiuto non trovato
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Tipo di Rifiuto
  */
 router.get('/api/tipoRifiuto/:id', async (req, res) => {
   try {
@@ -81,6 +85,8 @@ router.get('/api/tipoRifiuto/:id', async (req, res) => {
  *         description: Tipo di rifiuto creato con successo
  *       400:
  *         description: Dati non validi
+ *     tags:
+ *       - Tipo di Rifiuto
  */
 router.post('/api/tipoRifiuto', async (req, res) => {
   try {
@@ -122,6 +128,8 @@ router.post('/api/tipoRifiuto', async (req, res) => {
  *         description: Tipo di rifiuto non trovato
  *       400:
  *         description: Richiesta non valida
+ *     tags:
+ *       - Tipo di Rifiuto
  */
 router.patch('/api/tipoRifiuto/:id', async (req, res) => {
   try {
@@ -161,6 +169,8 @@ router.patch('/api/tipoRifiuto/:id', async (req, res) => {
  *         description: Tipo di rifiuto non trovato
  *       500:
  *         description: Errore del server
+ *     tags:
+ *       - Tipo di Rifiuto
  */
 router.delete('/api/tipoRifiuto/:id', async (req, res) => {
   try {

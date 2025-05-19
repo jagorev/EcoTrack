@@ -39,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'nome': _nameController.text,
+          'username': _nameController.text,
           'email': _emailController.text,
           'password': _passwordController.text,
         }),

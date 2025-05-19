@@ -69,11 +69,14 @@ class _ProfilePageState extends State<ProfilePage> {
         body['password'] = _passwordController.text;
       }
       if (widget.userType == UserType.operator) {
-        endpoint = 'http://localhost:3000/api/operatoriEcologici/ID_OPERATORE';
+        const String idOperatore = '682b0d198d5ed5ad49091674';
+        endpoint = 'http://localhost:3000/api/operatoriEcologici/$idOperatore';
         body['zonaOperativa'] = _zonaOperativaController.text;
         body['idBadge'] = _idBadgeController.text;
       } else {
-        endpoint = 'http://localhost:3000/api/utenteRegistrato/ID_UTENTE';
+        const String idUtenteRegistrato = '681b8364d1e11c5d634eb4b7';
+        endpoint =
+            'http://localhost:3000/api/utenteRegistrato/$idUtenteRegistrato';
       }
 
       final response = await http.put(

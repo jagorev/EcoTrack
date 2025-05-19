@@ -80,10 +80,25 @@ class _MapPageState extends State<MapPage> {
     }
     return Scaffold(
       appBar: AppBar(title: const Text('EcoTrack Map')),
-      body: GoogleMap(
-        initialCameraPosition: _initialPosition,
-        onMapCreated: (c) => _mapController = c,
-        markers: _markers,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: GoogleMap(
+              initialCameraPosition: _initialPosition,
+              onMapCreated: (c) => _mapController = c,
+              markers: _markers,
+            ),
+          ),
+        ),
       ),
     );
   }

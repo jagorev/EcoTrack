@@ -23,6 +23,7 @@ const Segnalazione = require('./models/Segnalazione');
 
 async function creaSegnalazione() {
   const nuovaSegnalazione = new Segnalazione({
+    idUtente: 0,
     posizione: {
       latitudeGradi: 45,
       latitudeMinuti: 46,
@@ -32,6 +33,7 @@ async function creaSegnalazione() {
       longitudeSecondi: 50
     },
     corpoSegnalazione: "Cassonetto troppo pieno",
+    stato: "Presa in Carico",
     media: "https://esempio.com/foto.jpg"
   });
 

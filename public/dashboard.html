@@ -1,73 +1,83 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EcoTrack Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
-    <!-- Titolo -->
-    <h1 class="text-3xl font-bold text-center mt-6">EcoTrack Dashboard</h1>
 
-    <!-- Griglia dei Widget -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 w-full max-w-5xl px-4">
-      <!-- Gestione Utenti -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
-        <a href="gestioneUtenti.html" class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center hover:shadow-xl transition duration-200">
-        <svg class="w-12 h-12 text-blue-600 mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m0 0V9a4 4 0 118 0v5m-8 0h8"></path>
-    </svg>
-    <h2 class="text-lg font-semibold">Gestione Utenti</h2>
-    <p class="text-sm text-gray-600">Modifica utenti registrati.</p>
-    </a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-      </div>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+  <!-- Titolo -->
+  <h1 class="text-3xl font-bold text-center mt-6">EcoTrack Dashboard</h1>
 
-      <!-- Statistiche -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
+  <!-- Griglia dei Widget -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 w-full max-w-5xl px-4">
+    <!-- Gestione Utenti -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
+      <a href="gestioneUtenti.html"
+        class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center hover:shadow-xl transition duration-200">
+        <svg class="w-12 h-12 text-blue-600 mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m0 0V9a4 4 0 118 0v5m-8 0h8"></path>
+        </svg>
+        <h2 class="text-lg font-semibold">Gestione Utenti</h2>
+        <p class="text-sm text-gray-600">Modifica utenti registrati.</p>
+      </a>
+
+    </div>
+
+    <!-- Statistiche -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
+      <a href="statistiche.html"
+        class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center hover:shadow-xl transition duration-200">
         <svg class="w-12 h-12 text-green-600 mb-3" fill="none" stroke="currentColor" stroke-width="2"
           viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M11 19V6m4 13V10m-8 9v-4"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11 19V6m4 13V10m-8 9v-4"></path>
         </svg>
         <h2 class="text-lg font-semibold">Statistiche</h2>
-        <p class="text-sm text-gray-600">Monitora l'uso della piattaforma.</p>
-      </div>
+        <p class="text-sm text-gray-600">Monitora la situazione ecologica.</p>
+      </a>
+    </div>
 
-      <!-- Gestione Smaltimento -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
-        <a href="gestioneEcocentri.html" class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center hover:shadow-xl transition duration-200">
-          <svg class="w-12 h-12 text-red-600 mb-3" fill="none" stroke="currentColor" stroke-width="2"
-            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z"></path>
-          </svg>
-          <h2 class="text-lg font-semibold">Gestione Smaltimento</h2>
-          <p class="text-sm text-gray-600">Supervisiona le richieste.</p>
-        </a>
-      </div>
-
-      <!-- Impostazioni -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
-        <svg class="w-12 h-12 text-gray-600 mb-3" fill="none" stroke="currentColor" stroke-width="2"
-          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gestione Smaltimento -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
+      <a href="gestioneEcocentri.html"
+        class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center hover:shadow-xl transition duration-200">
+        <svg class="w-12 h-12 text-red-600 mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round"
-            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l.284.874a1.001 1.001 0 00.95.69h.924c.96 0 1.356 1.23.588 1.81l-.755.55a1.001 1.001 0 000 1.62l.755.55c.768.58.372 1.81-.588 1.81h-.924a1.001 1.001 0 00-.95.69l-.284.874c-.3.921-1.603.921-1.902 0l-.284-.874a1.001 1.001 0 00-.95-.69H8.87c-.96 0-1.356-1.23-.588-1.81l.755-.55a1.001 1.001 0 000-1.62l-.755-.55c-.768-.58-.372-1.81.588-1.81h.924a1.001 1.001 0 00.95-.69l.284-.874z"></path>
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M12 15v2m0 4h.01"></path>
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M10 3h4a1 1 0 011 1v2H9V4a1 1 0 011-1z">
+          </path>
         </svg>
-        <h2 class="text-lg font-semibold">Impostazioni</h2>
-        <p class="text-sm text-gray-600">Configura le opzioni.</p>
-      </div>
+        <h2 class="text-lg font-semibold">Gestione Smaltimento</h2>
+        <p class="text-sm text-gray-600">Supervisiona le richieste.</p>
+      </a>
     </div>
 
-    <!-- Pulsante Esci -->
-    <div class="w-full max-w-5xl px-4 mt-8">
-      <button
-        class="bg-black text-white text-lg py-3 rounded-full w-full shadow-md hover:opacity-90 transition duration-300">
-        Esci
-      </button>
+    <!-- Impostazioni -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
+      <svg class="w-12 h-12 text-gray-600 mb-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l.284.874a1.001 1.001 0 00.95.69h.924c.96 0 1.356 1.23.588 1.81l-.755.55a1.001 1.001 0 000 1.62l.755.55c.768.58.372 1.81-.588 1.81h-.924a1.001 1.001 0 00-.95.69l-.284.874c-.3.921-1.603.921-1.902 0l-.284-.874a1.001 1.001 0 00-.95-.69H8.87c-.96 0-1.356-1.23-.588-1.81l.755-.55a1.001 1.001 0 000-1.62l-.755-.55c-.768-.58-.372-1.81.588-1.81h.924a1.001 1.001 0 00.95-.69l.284-.874z">
+        </path>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m0 4h.01"></path>
+      </svg>
+      <h2 class="text-lg font-semibold">Impostazioni</h2>
+      <p class="text-sm text-gray-600">Configura le opzioni.</p>
     </div>
-  </body>
+  </div>
+
+  <!-- Pulsante Esci -->
+  <div class="w-full max-w-5xl px-4 mt-8">
+    <button
+      class="bg-black text-white text-lg py-3 rounded-full w-full shadow-md hover:opacity-90 transition duration-300">
+      Esci
+    </button>
+  </div>
+</body>
+
 </html>

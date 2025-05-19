@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack - Gestione Prenotazioni</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold mb-4 md:mb-0">Gestione Prenotazioni</h1>
+      <div class="flex space-x-3">
+        <a href="gestioneEcocentri.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">
+          Gestione Ecocentri
+        </a>
+        <a href="dashboard.html" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-200">
+          Torna alla Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Lista Prenotazioni -->
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+      <h2 class="text-xl font-semibold mb-4">Prenotazioni Esistenti</h2>
+      <button id="loadPrenotazioni" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Carica Prenotazioni</button>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr class="bg-gray-200 text-gray-700">
+              <th class="py-2 px-4 text-left">Utente</th>
+              <th class="py-2 px-4 text-left">Ecocentro</th>
+              <th class="py-2 px-4 text-left">Data</th>
+              <th class="py-2 px-4 text-left">Tipi Rifiuto</th>
+              <th class="py-2 px-4 text-left">Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="prenotazioniList"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Form Nuova Prenotazione -->
+    <div class="bg-white p-6 rounded-xl shadow-md">
+      <h2 class="text-xl font-semibold mb-4">Crea Nuova Prenotazione</h2>
+      <form id="prenotazioneForm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <!-- Selezione Utente -->
+          <div>
+            <label class="block text-gray-700 mb-2">Utente</label>
+            <select id="idUtente" class="w-full border rounded px-3 py-2" required>
+              <option value="">Seleziona un utente</option>
+            </select>
+          </div>
+
+          <!-- Selezione Ecocentro -->
+          <div>
+            <label class="block text-gray-700 mb-2">Ecocentro</label>
+            <select id="idEcocentro" class="w-full border rounded px-3 py-2" required>
+              <option value="">Seleziona un ecocentro</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Data e Ora -->
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Data e Ora</label>
+          <input type="datetime-local" id="data" class="w-full border rounded px-3 py-2" required>
+        </div>
+
+        <!-- Selezione Tipi di Rifiuto -->
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Tipi di Rifiuto</label>
+          <div id="tipiRifiutoCheckboxes" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+        </div>
+
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Crea Prenotazione</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // URL delle API
+    const API_PRENOTAZIONE = '/api/prenotazione';
+    const API_UTENTI = '/api/utenteRegistrato';
+    const API_ECOCENTRI = '/api/ecocentro';
+    const API_TIPI_RIFIUTO = '/api/tipoRifiuto';
+
+    // Carica dati iniziali
+    window.onload = () => {
+      loadUtenti();
+      loadEcocentri();
+      loadTipiRifiuto();
+    };
+
+    // Funzione per caricare le prenotazioni
+    async function loadPrenotazioni() {
+      try {
+        const response = await fetch(API_PRENOTAZIONE);
+        const prenotazioni = await response.json();
+        const prenotazioniList = document.getElementById('prenotazioniList');
+        prenotazioniList.innerHTML = '';
+
+        prenotazioni.forEach(prenotazione => {
+          const row = document.createElement('tr');
+          row.className = 'border-b hover:bg-gray-50';
+
+          const utente = prenotazione.idUtente ? prenotazione.idUtente.username : 'N/A';
+          const ecocentro = prenotazione.idEcocentro ? prenotazione.idEcocentro.nome : 'N/A';
+          const data = new Date(prenotazione.data).toLocaleString();
+          
+          let tipiRifiuto = 'Nessuno';
+          if (prenotazione.tipiRifiuto && prenotazione.tipiRifiuto.length > 0) {
+            tipiRifiuto = prenotazione.tipiRifiuto
+              .map(tipo => tipo.nome || 'Sconosciuto')
+              .join(', ');
+          }
+          
+          row.innerHTML = `
+            <td class="py-2 px-4">${utente}</td>
+            <td class="py-2 px-4">${ecocentro}</td>
+            <td class="py-2 px-4">${data}</td>
+            <td class="py-2 px-4">${tipiRifiuto}</td>
+            <td class="py-2 px-4">
+              <button onclick="deletePrenotazione('${prenotazione._id}')" class="text-red-500 hover:text-red-700">Elimina</button>
+            </td>
+          `;
+          
+          prenotazioniList.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento delle prenotazioni:', error);
+        alert('Errore nel caricamento delle prenotazioni');
+      }
+    }
+
+    // Carica utenti per il select
+    async function loadUtenti() {
+      try {
+        const response = await fetch(API_UTENTI);
+        const utenti = await response.json();
+        const select = document.getElementById('idUtente');
+        
+        utenti.forEach(utente => {
+          const option = document.createElement('option');
+          option.value = utente._id;
+          option.textContent = `${utente.username} - ${utente.email}`;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento degli utenti:', error);
+      }
+    }
+
+    // Carica ecocentri per il select
+    async function loadEcocentri() {
+      try {
+        const response = await fetch(API_ECOCENTRI);
+        const ecocentri = await response.json();
+        const select = document.getElementById('idEcocentro');
+        
+        ecocentri.forEach(ecocentro => {
+          const option = document.createElement('option');
+          option.value = ecocentro._id;
+          option.textContent = `${ecocentro.nome} - ${ecocentro.indirizzo}`;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento degli ecocentri:', error);
+      }
+    }
+
+    // Carica tipi di rifiuto per i checkbox
+    async function loadTipiRifiuto() {
+      try {
+        const response = await fetch(API_TIPI_RIFIUTO);
+        const tipiRifiuto = await response.json();
+        const container = document.getElementById('tipiRifiutoCheckboxes');
+        
+        tipiRifiuto.forEach(tipo => {
+          const div = document.createElement('div');
+          div.className = 'flex items-center';
+          div.innerHTML = `
+            <input type="checkbox" id="rifiuto-${tipo._id}" name="tipiRifiuto" value="${tipo._id}" class="mr-2">
+            <label for="rifiuto-${tipo._id}">${tipo.nome}</label>
+          `;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento dei tipi di rifiuto:', error);
+      }
+    }
+
+    // Elimina prenotazione
+    async function deletePrenotazione(id) {
+      if (!confirm('Sei sicuro di voler eliminare questa prenotazione?')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_PRENOTAZIONE}/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          alert('Prenotazione eliminata con successo');
+          loadPrenotazioni();
+        } else {
+          alert('Errore nell\'eliminazione della prenotazione');
+        }
+      } catch (error) {
+        console.error('Errore nell\'eliminazione della prenotazione:', error);
+        alert('Errore nell\'eliminazione della prenotazione');
+      }
+    }
+
+    // Event listener per il form di creazione prenotazione
+    document.getElementById('prenotazioneForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      // Raccogli i dati dal form
+      const idUtente = document.getElementById('idUtente').value;
+      const idEcocentro = document.getElementById('idEcocentro').value;
+      const data = document.getElementById('data').value;
+      
+      // Raccogli i checkbox selezionati per i tipi di rifiuto
+      const tipiRifiutoCheckboxes = document.querySelectorAll('input[name="tipiRifiuto"]:checked');
+      const tipiRifiuto = Array.from(tipiRifiutoCheckboxes).map(checkbox => checkbox.value);
+      
+      if (tipiRifiuto.length === 0) {
+        alert('Seleziona almeno un tipo di rifiuto');
+        return;
+      }
+      
+      // Crea l'oggetto prenotazione
+      const prenotazione = {
+        idUtente,
+        idEcocentro,
+        data,
+        tipiRifiuto
+      };
+      
+      try {
+        const response = await fetch(API_PRENOTAZIONE, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(prenotazione)
+        });
+        
+        if (response.ok) {
+          alert('Prenotazione creata con successo');
+          document.getElementById('prenotazioneForm').reset();
+          loadPrenotazioni();
+        } else {
+          const error = await response.json();
+          alert(`Errore: ${error.messaggio}`);
+        }
+      } catch (error) {
+        console.error('Errore nella creazione della prenotazione:', error);
+        alert('Errore nella creazione della prenotazione');
+      }
+    });
+
+    // Event listener per il pulsante di caricamento prenotazioni
+    document.getElementById('loadPrenotazioni').addEventListener('click', loadPrenotazioni);
+  </script>
+</body>
+</html>

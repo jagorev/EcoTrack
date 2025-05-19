@@ -3,6 +3,7 @@ const router = express.Router();
 const UnitaRaccolta = require('../models/UnitaRaccolta');
 const TipoRaccolta = require('../models/TipoRaccolta');
 const TipoSensore = require('../models/TipoSensore');
+const Posizione = require('../models/Posizione');
 
 /**
  * @swagger
@@ -22,7 +23,8 @@ router.get('/api/unitaRaccolta', async (req, res) => {
     try {
         const unitaRaccolta = await UnitaRaccolta.find()
             .populate('tipoRaccolta', 'tipo')
-            .populate('sensore', 'tipo');
+            .populate('sensore', 'tipo')
+            //.populate('posizione', 'latitudineGradi latitudinePrimi latitudineSecondi longitudineGradi longitudinePrimi longitudineSecondi');
         res.json(unitaRaccolta);
     } catch (err) {
         console.error('Errore durante il recupero delle unità di raccolta:', err);
@@ -55,6 +57,8 @@ router.get('/api/unitaRaccolta', async (req, res) => {
  *               capienza:
  *                 type: number
  *                 description: Capienza massima dell'unità di raccolta
+ * 
+ *        
  *     responses:
  *       201:
  *         description: Unità di raccolta creata con successo
@@ -64,14 +68,23 @@ router.get('/api/unitaRaccolta', async (req, res) => {
  *       - Unità di Raccolta
  */
 router.post('/api/unitaRaccolta', async (req, res) => {
-    const { tipoRaccolta, sensore, livelloSaturazione, capienza } = req.body;
+    const { tipoRaccolta, sensore, livelloSaturazione, capienza, latGradi, latPrimi, latSecondi, lonGradi, lonPrimi, lonSecondi } = req.body;
 
-    try {
+    try { //converti i dati in oggetti di tipo posizione
+        const posizioneOggetto = {
+            latitudineGradi: latGradi,
+            latitudinePrimi: latPrimi,
+            latitudineSecondi: latSecondi,
+            longitudineGradi: lonGradi,
+            longitudinePrimi: lonPrimi,
+            longitudineSecondi: lonSecondi
+        };
         const unitaRaccolta = new UnitaRaccolta({
             tipoRaccolta,
             sensore,
             livelloSaturazione,
-            capienza
+            capienza,
+            posizione: posizioneOggetto
         });
         await unitaRaccolta.save();
         res.status(201).json(unitaRaccolta);

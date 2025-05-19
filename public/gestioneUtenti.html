@@ -119,8 +119,10 @@
         const type = document.getElementById('userType').value;
         if (type === 'UtenteAmministratore') {
           return `${API_BASE}/UtenteAmministratore`;
+        } else if (type === 'operatoriEcologici') {
+          return `${API_BASE}/operatoriEcologici`;
         }
-        return `${API_BASE}/${type}`;
+        return `${API_BASE}/utenteRegistrato`;
       }
 
       async function getUsers() {
@@ -194,9 +196,10 @@
         }
 
         try {
+          const token = localStorage.getItem('adminToken');
           const response = await fetch(`${API_BASE}/${endpoint}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
             body: JSON.stringify(body),
           });
 

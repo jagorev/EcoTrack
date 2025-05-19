@@ -16,6 +16,9 @@ app.use(routeUtenteRegistrato);
 const routeUtenteAmministratore = require('./routes/routeUtenteAmministratore');
 app.use(routeUtenteAmministratore);
 
+const routeOperatoreEcologico = require('./routes/routeOperatoreEcologico');
+app.use(routeOperatoreEcologico);
+
 // Configurazione Swagger
 const swaggerOptions = {
   definition: {

@@ -8,11 +8,6 @@ const Prenotazione = require('../models/Prenotazione');
  *   get:
  *     summary: Recupera tutte le prenotazioni
  *     description: Ottiene la lista di tutte le prenotazioni con relativi dettagli
- *     responses:
- *       200:
- *         description: Lista di prenotazioni ottenuta con successo
- *       500:
- *         description: Errore del server
  *     tags:
  *       - Prenotazione
  */

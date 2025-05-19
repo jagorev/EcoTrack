@@ -8,23 +8,14 @@ const Segnalazione = require('../models/Segnalazione');
  *   get:
  *     summary: Recupera tutte le Segnalazioni
  *     description: Ottiene la lista di tutte le segnalazioni con relativi dettagli
+ *     tags:
+ *       - Segnalazione
  *     responses:
  *       200:
  *         description: Lista di segnalazioni ottenuta con successo
  *       500:
  *         description: Errore del server
- *     tags:
- *       - Segnalazione
  */
-router.get('/api/segnalazione', async (req, res) => {
-    try {
-        const segnalazioni = await Segnalazione.find().populate('idUtente', 'username');
-        res.json(segnalazioni);
-    }
-    catch (err) {
-        res.status(500).json({ messaggio: err.message });
-    }
-});
 
 /**
  * @swagger
@@ -32,6 +23,8 @@ router.get('/api/segnalazione', async (req, res) => {
  *   post:
  *     summary: Crea una nuova segnalazione
  *     description: Registra una nuova segnalazione nel sistema.
+ *     tags:
+ *       - Segnalazione
  *     requestBody:
  *       required: true
  *       content:

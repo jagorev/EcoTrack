@@ -33,7 +33,8 @@ function verifyToken(req, res, next) {
  *                 $ref: '#/components/schemas/UtenteRegistrato'
  */
 // Rotta per ottenere tutti gli utenti
-router.get('/api/utenteRegistrato', async (req, res) => {
+// Proteggi la GET degli utenti registrati
+router.get('/api/utenteRegistrato', verifyToken, async (req, res) => {
   const utentiRegistrati = await UtenteRegistrato.find();
   res.json(utentiRegistrati);
 });

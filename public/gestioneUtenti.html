@@ -1,88 +1,228 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoTrack Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-    }
-    input, button {
-      margin: 5px 0;
-      padding: 10px;
-      width: 100%;
-    }
-    #users {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>EcoTrack Dashboard</h1>
-    <h2>Lista Utenti Registrati</h2>
-    <button onclick="getUsers()">Carica Utenti</button>
-    <ul id="users"></ul>
-
-    <h2>Aggiungi Nuovo Utente</h2>
-    <form id="userForm" onsubmit="addUser(event)">
-      <input type="text" id="username" placeholder="Nome utente" required>
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="text" id="telefono" placeholder="Telefono" required>
-      <button type="submit">Aggiungi Utente</button>
-    </form>
-  </div>
-
-  <script>
-    const API_URL = 'api/utenteRegistrato';
-
-    async function getUsers() {
-      try {
-        const response = await fetch(API_URL);
-        const users = await response.json();
-        const usersList = document.getElementById('users');
-        usersList.innerHTML = '';
-        users.forEach(user => {
-          const li = document.createElement('li');
-          li.textContent = `${user.username} - ${user.email} - ${user.telefono}`;
-          usersList.appendChild(li);
-        });
-      } catch (error) {
-        console.error('Errore nel caricamento degli utenti:', error);
-      }
-    }
-
-    async function addUser(event) {
-      event.preventDefault();
-      const username = document.getElementById('username').value;
-      const email = document.getElementById('email').value;
-      const telefono = document.getElementById('telefono').value;
-
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, email, telefono }),
-        });
-        if (response.ok) {
-          alert('Utente aggiunto con successo!');
-          document.getElementById('userForm').reset();
-          getUsers();
-        } else {
-          alert('Errore nell\'aggiunta dell\'utente.');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestione Utenti - EcoTrack</title>
+    <script>
+      // BLOCCO ACCESSO PRIMA DEL CARICAMENTO PAGINA
+      (function() {
+        var token = localStorage.getItem('adminToken');
+        if (!token) {
+          window.location.replace('/index.html');
+          return;
         }
-      } catch (error) {
-        console.error('Errore nell\'aggiunta dell\'utente:', error);
+        try {
+          var base64Url = token.split('.')[1];
+          var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          var payload = JSON.parse(jsonPayload);
+          if (!payload.exp || Date.now() >= payload.exp * 1000) {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminLoggedIn');
+            window.location.replace('/index.html');
+          }
+        } catch (e) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminLoggedIn');
+          window.location.replace('/index.html');
+        }
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+
+    <h1 class="text-3xl font-bold text-center mt-6 mb-4">Gestione Utenti</h1>
+
+    <!-- Selettore tipo utente -->
+    <div class="mb-4 w-full max-w-xl">
+      <label for="userType" class="text-lg font-semibold text-gray-700">Seleziona il tipo di utenti da visualizzare:</label>
+      <div class="flex gap-2 mt-2">
+        <select id="userType" class="flex-1 px-3 py-2 border rounded-lg">
+          <option value="utenteRegistrato">Utenti Registrati</option>
+          <option value="UtenteAmministratore">Amministratori</option>
+          <option value="operatoriEcologici">Operatori Ecologici</option>
+        </select>
+        <button onclick="getUsers()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Carica Utenti</button>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xl">
+      <h2 class="text-xl font-semibold mb-2 text-gray-800">Lista Utenti</h2>
+      <ul id="users" class="space-y-2 text-sm text-gray-700"></ul>
+      <script>
+        // Funzione per eliminare un utente
+        async function deleteUser(userId, userType) {
+          if (!confirm('Sei sicuro di voler eliminare questo utente?')) return;
+          const token = localStorage.getItem('adminToken');
+          let endpoint = '';
+          if (userType === 'UtenteAmministratore') endpoint = 'UtenteAmministratore';
+          else if (userType === 'operatoriEcologici') endpoint = 'operatoriEcologici';
+          else endpoint = 'utenteRegistrato';
+          try {
+            const response = await fetch(`/api/${endpoint}/${userId}`, {
+              method: 'DELETE',
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (response.ok) {
+              getUsers();
+            } else {
+              alert('Errore durante l\'eliminazione dell\'utente.');
+            }
+          } catch (e) {
+            alert('Errore durante l\'eliminazione dell\'utente.');
+          }
+        }
+      </script>
+    </div>
+
+    <!-- Aggiungi Utente -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xl mt-6">
+      <h2 class="text-xl font-semibold mb-2 text-gray-800">Aggiungi Nuovo Utente</h2>
+      <form id="userForm" onsubmit="addUser(event)" class="space-y-4">
+        <select id="userRole" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+          <option value="utente">Utente</option>
+          <option value="operatore">Operatore Ecologico</option>
+          <option value="amministratore">Amministratore</option>
+        </select>
+        <input type="text" id="username" placeholder="Nome utente" required class="w-full border border-gray-300 rounded-lg px-4 py-2" />
+        <input type="email" id="email" placeholder="Email" class="w-full border border-gray-300 rounded-lg px-4 py-2" />
+        <input type="text" id="telefono" placeholder="Telefono" class="w-full border border-gray-300 rounded-lg px-4 py-2" />
+
+        <!-- Campi aggiuntivi per operatori -->
+        <input type="text" id="id_lavorativo" placeholder="ID Lavorativo" class="w-full border border-gray-300 rounded-lg px-4 py-2 hidden" />
+        <input type="text" id="zona" placeholder="Zona di assegnazione" class="w-full border border-gray-300 rounded-lg px-4 py-2 hidden" />
+
+        <!-- Campi aggiuntivi per amministratori -->
+        <input type="password" id="password" placeholder="Password" class="w-full border border-gray-300 rounded-lg px-4 py-2 hidden" />
+
+        <button type="submit" class="bg-green-600 text-white w-full py-2 rounded-lg hover:bg-green-700 transition duration-200">
+          Aggiungi Utente
+        </button>
+      </form>
+    </div>
+
+    <!-- Pulsante Esci -->
+    <div class="w-full max-w-xl mt-8">
+      <button onclick="dashboard()" class="bg-black text-white text-lg py-3 rounded-full w-full shadow-md hover:opacity-90 transition duration-300">
+        Torna alla Dashboard
+      </button>
+    </div>
+
+    <script>
+      const API_BASE = '/api';
+
+      function getApiUrl() {
+        const type = document.getElementById('userType').value;
+        if (type === 'UtenteAmministratore') {
+          return `${API_BASE}/UtenteAmministratore`;
+        } else if (type === 'operatoriEcologici') {
+          return `${API_BASE}/operatoriEcologici`;
+        }
+        return `${API_BASE}/utenteRegistrato`;
       }
-    }
-  </script>
-</body>
+
+      async function getUsers() {
+        try {
+          const token = localStorage.getItem('adminToken');
+          const response = await fetch(getApiUrl(), {
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          });
+          const users = await response.json();
+          const usersList = document.getElementById('users');
+          usersList.innerHTML = '';
+          users.forEach(user => {
+            const li = document.createElement('li');
+            let text = `${user.username}`;
+            if (user.email) text += ` - ${user.email}`;
+            if (user.telefono) text += ` - ${user.telefono}`;
+            if (user.id_lavorativo) text += ` - ID: ${user.id_lavorativo}`;
+            if (user.zona) text += ` - Zona: ${user.zona}`;
+            li.textContent = text;
+            li.className = "bg-gray-100 px-4 py-2 rounded shadow flex justify-between items-center";
+            // Bottone elimina
+            const btn = document.createElement('button');
+            btn.textContent = 'Elimina';
+            btn.className = 'ml-4 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700';
+            btn.onclick = () => deleteUser(user._id, document.getElementById('userType').value);
+            li.appendChild(btn);
+            usersList.appendChild(li);
+          });
+        } catch (error) {
+          console.error('Errore nel caricamento degli utenti:', error);
+        }
+      }
+
+      document.getElementById('userRole').addEventListener('change', (e) => {
+        const role = e.target.value;
+        document.getElementById('id_lavorativo').classList.toggle('hidden', role !== 'operatore');
+        document.getElementById('zona').classList.toggle('hidden', role !== 'operatore');
+        document.getElementById('telefono').classList.toggle('hidden', role === 'amministratore');
+        document.getElementById('email').classList.toggle('hidden', role === 'amministratore');
+        document.getElementById('password').classList.toggle('hidden', role !== 'amministratore');
+      });
+
+      async function addUser(event) {
+        event.preventDefault();
+        const role = document.getElementById('userRole').value;
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const telefono = document.getElementById('telefono').value;
+        const id_lavorativo = document.getElementById('id_lavorativo').value;
+        const zona = document.getElementById('zona').value;
+        const password = document.getElementById('password').value;
+
+        const body = { username };
+        let endpoint = '';
+
+        if (role === 'utente') {
+          body.email = email;
+          body.telefono = telefono;
+          endpoint = 'utenteRegistrato';
+        } else if (role === 'operatore') {
+          body.email = email;
+          body.telefono = telefono;
+          body.id_lavorativo = id_lavorativo;
+          body.zona = zona;
+          endpoint = 'operatoriEcologici';
+        } else if (role === 'amministratore') {
+          body.password = password;
+          endpoint = 'UtenteAmministratore';
+        }
+
+        try {
+          const token = localStorage.getItem('adminToken');
+          const response = await fetch(`${API_BASE}/${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify(body),
+          });
+
+          if (response.ok) {
+            alert('Utente aggiunto con successo!');
+            document.getElementById('userForm').reset();
+            getUsers();
+          } else {
+            alert("Errore nell'aggiunta dell'utente.");
+          }
+        } catch (error) {
+          console.error("Errore nell'aggiunta dell'utente:", error);
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminLoggedIn');
+        window.location.href = '/index.html';
+      }
+      function dashboard() {
+        window.location.href = '/dashboard.html';
+      }
+    </script>
+  </body>
 </html>

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'accedi.dart';
+import 'registrati.dart';
 
 class EcoTrackHomePage extends StatelessWidget {
   Widget buildMenuItem(IconData icon, Color color, String title, String subtitle) {
@@ -42,6 +44,15 @@ class EcoTrackHomePage extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  IconButton(
+                    icon: Icon(Icons.settings, color: Colors.black87),
+                    onPressed: () {
+                      // TODO: Azione impostazioni
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Impostazioni (prossimamente)')),
+                      );
+                    },
+                  ),
                   SizedBox(width: 8),
                   Text("EcoTrack",
                       style: TextStyle(
@@ -62,11 +73,13 @@ class EcoTrackHomePage extends StatelessWidget {
                   "Prenota lo smaltimento presso un ecocentro."),
               buildMenuItem(Icons.attach_money, Colors.purple, "Simula Tasse",
                   "Calcola le tasse sulla gestione dei rifiuti."),
-              buildMenuItem(Icons.settings, Colors.grey, "Impostazioni",
-                  "Gestisci preferenze, notifiche e privacy."),
               Spacer(),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const AccediPage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                   backgroundColor: Colors.black,
@@ -76,7 +89,11 @@ class EcoTrackHomePage extends StatelessWidget {
                 child: Text("Accedi", style: TextStyle(fontSize: 16)),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const RegistratiPage()),
+                  );
+                },
                 child: Text("Registrati",
                     style: TextStyle(
                         fontSize: 16,

@@ -64,7 +64,7 @@ router.get('/api/utenteRegistrato', verifyToken, async (req, res) => {
  *         description: Richiesta non valida
  */
 // Rotta per aggiungere un nuovo utente
-router.post('/api/utenteRegistrato', verifyToken, async (req, res) => {
+router.post('/api/utenteRegistrato', async (req, res) => {
   try {
     const nuovoUtente = new UtenteRegistrato(req.body);
     await nuovoUtente.save();

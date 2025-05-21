@@ -5,3 +5,11 @@
 # Xcode-related
 **/dgph
 **/xcuserdata/
+
+app/linux/flutter/generated_plugin_registrant.cc
+app/linux/flutter/generated_plugin_registrant.h
+app/linux/flutter/generated_plugins.cmake
+app/macos/Flutter/GeneratedPluginRegistrant.swift
+app/windows/flutter/generated_plugin_registrant.cc
+app/windows/flutter/generated_plugin_registrant.h
+app/windows/flutter/generated_plugins.cmake

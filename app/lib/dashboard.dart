@@ -45,23 +45,7 @@ class EcoTrackHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('EcoTrack Map'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => const ProfilePage(userType: UserType.guest),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+      
       backgroundColor: Color(0xFFF0F2F5),
       body: SafeArea(
         child: Padding(
@@ -71,15 +55,7 @@ class EcoTrackHomePage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.settings, color: Colors.black87),
-                    onPressed: () {
-                      // TODO: Azione impostazioni
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Impostazioni (prossimamente)')),
-                      );
-                    },
-                  ),
+                  
                   SizedBox(width: 8),
                   Text(
                     "EcoTrack",
@@ -88,6 +64,28 @@ class EcoTrackHomePage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.account_circle),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  const ProfilePage(userType: UserType.guest),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.settings, color: Colors.black87),
+                    onPressed: () {
+                      // TODO: Azione impostazioni
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Impostazioni (prossimamente)')),
+                      );
+                    },
                   ),
                 ],
               ),

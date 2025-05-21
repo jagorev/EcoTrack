@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Posizione = require('./Posizione'); // Importo il modello Posizione
 
 // Schema per una unità di raccolta dei rifiuti
 const unitaRaccoltaSchema = new mongoose.Schema({
@@ -19,7 +20,11 @@ const unitaRaccoltaSchema = new mongoose.Schema({
   capienza: { 
     type: Number, 
     required: true 
-  } // Capacità massima in litri o kg
+  }, // Capacità massima in litri o kg
+  posizione: { 
+    type: Posizione, // Posizione annidata
+    required: true 
+  }
 });
 
 // Creo il modello e specifico la collezione 'unitaRaccolta'

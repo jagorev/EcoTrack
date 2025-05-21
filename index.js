@@ -31,6 +31,10 @@ app.use(routeUtenteAmministratore);
 
 const routeOperatoreEcologico = require('./routes/routeOperatoreEcologico');
 app.use(routeOperatoreEcologico);
+const tipoSensoreRoutes = require('./routes/routeTipoSensore');
+app.use(tipoSensoreRoutes);
+const tipoRaccoltaRoutes = require('./routes/routeTipoRaccolta');
+app.use(tipoRaccoltaRoutes);
 
 // Configurazione Swagger
 const swaggerOptions = {

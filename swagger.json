@@ -1,0 +1,1365 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "EcoTrack API",
+    "version": "1.0.0",
+    "description": "API per il sistema EcoTrack"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/api/ecocentro": {
+      "get": {
+        "summary": "Recupera tutti gli ecocentri",
+        "description": "Ottiene la lista di tutti gli ecocentri disponibili",
+        "responses": {
+          "200": {
+            "description": "Lista di ecocentri ottenuta con successo"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Ecocentro"
+        ]
+      },
+      "post": {
+        "summary": "Crea un nuovo ecocentro",
+        "description": "Aggiunge un nuovo ecocentro al database",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Nome dell'ecocentro"
+                  },
+                  "indirizzo": {
+                    "type": "string",
+                    "description": "Indirizzo dell'ecocentro"
+                  },
+                  "orariApertura": {
+                    "type": "string",
+                    "description": "Orari di apertura"
+                  },
+                  "telefono": {
+                    "type": "string",
+                    "description": "Numero di telefono"
+                  },
+                  "situazioneRifiuti": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "tipoRifiuto": {
+                          "type": "string",
+                          "description": "ID del tipo di rifiuto"
+                        },
+                        "percentuale": {
+                          "type": "number",
+                          "description": "Percentuale di riempimento"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "nome",
+                  "indirizzo",
+                  "orariApertura",
+                  "telefono"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ecocentro creato con successo"
+          },
+          "400": {
+            "description": "Dati non validi"
+          }
+        },
+        "tags": [
+          "Ecocentro"
+        ]
+      }
+    },
+    "/api/ecocentro/{id}": {
+      "get": {
+        "summary": "Recupera un ecocentro specifico",
+        "description": "Ottiene i dettagli di un ecocentro tramite il suo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID dell'ecocentro",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dettagli ecocentro recuperati con successo"
+          },
+          "404": {
+            "description": "Ecocentro non trovato"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Ecocentro"
+        ]
+      },
+      "patch": {
+        "summary": "Aggiornamento parziale di un ecocentro",
+        "description": "Modifica solo i campi specificati di un ecocentro",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID dell'ecocentro da modificare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Nome dell'ecocentro"
+                  },
+                  "indirizzo": {
+                    "type": "string",
+                    "description": "Indirizzo dell'ecocentro"
+                  },
+                  "orariApertura": {
+                    "type": "string",
+                    "description": "Orari di apertura"
+                  },
+                  "telefono": {
+                    "type": "string",
+                    "description": "Numero di telefono"
+                  },
+                  "situazioneRifiuti": {
+                    "type": "array",
+                    "description": "Percentuali di riempimento per i vari tipi di rifiuto",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "tipoRifiuto": {
+                          "type": "string",
+                          "description": "ID del tipo di rifiuto"
+                        },
+                        "percentuale": {
+                          "type": "number",
+                          "description": "Percentuale di riempimento (0-100)"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ecocentro modificato con successo"
+          },
+          "400": {
+            "description": "Richiesta non valida"
+          },
+          "404": {
+            "description": "Ecocentro non trovato"
+          }
+        },
+        "tags": [
+          "Ecocentro"
+        ]
+      },
+      "delete": {
+        "summary": "Elimina un ecocentro",
+        "description": "Rimuove un ecocentro dal database tramite il suo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID dell'ecocentro da eliminare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ecocentro eliminato con successo"
+          },
+          "404": {
+            "description": "Ecocentro non trovato"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Ecocentro"
+        ]
+      }
+    },
+    "/api/ecocentro/{id}/rifiuti": {
+      "get": {
+        "summary": "Recupera le percentuali di rifiuti di un ecocentro",
+        "description": "Ottiene tutte le percentuali dei diversi tipi di rifiuto per un ecocentro specifico",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID dell'ecocentro",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Percentuali rifiuti recuperate con successo"
+          },
+          "404": {
+            "description": "Ecocentro non trovato"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Ecocentro"
+        ]
+      },
+      "patch": {
+        "summary": "Aggiorna le percentuali di rifiuti di un ecocentro",
+        "description": "Aggiorna o aggiunge percentuali per specifici tipi di rifiuto in un ecocentro",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID dell'ecocentro",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tipoRifiuto": {
+                      "type": "string",
+                      "description": "ID del tipo di rifiuto"
+                    },
+                    "percentuale": {
+                      "type": "number",
+                      "description": "Percentuale di riempimento (0-100)"
+                    }
+                  },
+                  "required": [
+                    "tipoRifiuto",
+                    "percentuale"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Percentuali rifiuti aggiornate con successo"
+          },
+          "400": {
+            "description": "Dati non validi"
+          },
+          "404": {
+            "description": "Ecocentro non trovato"
+          }
+        },
+        "tags": [
+          "Ecocentro"
+        ]
+      }
+    },
+    "/api/operatoriEcologici": {
+      "get": {
+        "tags": [
+          "Operatore Ecologico"
+        ],
+        "summary": "Ottiene la lista degli operatori ecologici",
+        "description": "Restituisce tutti gli operatori. Richiede un token JWT valido.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista di operatori restituita con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OperatoreEcologico"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mancante"
+          },
+          "403": {
+            "description": "Token non valido"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Operatore Ecologico"
+        ],
+        "summary": "Crea un nuovo operatore ecologico",
+        "description": "Inserisce un nuovo operatore ecologico nel sistema.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OperatoreEcologico"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Operatore creato con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatoreEcologico"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/operatoriEcologici/{id}": {
+      "delete": {
+        "tags": [
+          "Operatore Ecologico"
+        ],
+        "summary": "Elimina un operatore ecologico",
+        "description": "Elimina un operatore dal sistema. Richiede token JWT.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operatore eliminato"
+          },
+          "401": {
+            "description": "Token mancante"
+          },
+          "403": {
+            "description": "Token non valido"
+          },
+          "404": {
+            "description": "Operatore non trovato"
+          }
+        }
+      }
+    },
+    "/api/prenotazione": {
+      "get": {
+        "summary": "Recupera tutte le prenotazioni",
+        "description": "Ottiene la lista di tutte le prenotazioni con relativi dettagli",
+        "tags": [
+          "Prenotazione"
+        ]
+      },
+      "post": {
+        "summary": "Crea una nuova prenotazione",
+        "description": "Registra una nuova prenotazione nel sistema",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idUtente": {
+                    "type": "string",
+                    "description": "ID dell'utente che effettua la prenotazione"
+                  },
+                  "idEcocentro": {
+                    "type": "string",
+                    "description": "ID dell'ecocentro dove conferire i rifiuti"
+                  },
+                  "data": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Data e ora della prenotazione"
+                  },
+                  "tipiRifiuto": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array di ID dei tipi di rifiuto da conferire"
+                  }
+                },
+                "required": [
+                  "idUtente",
+                  "idEcocentro",
+                  "data",
+                  "tipiRifiuto"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Prenotazione creata con successo"
+          },
+          "400": {
+            "description": "Dati non validi"
+          }
+        },
+        "tags": [
+          "Prenotazione"
+        ]
+      }
+    },
+    "/api/prenotazione/{id}": {
+      "get": {
+        "summary": "Recupera una prenotazione specifica",
+        "description": "Ottiene i dettagli di una prenotazione tramite il suo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID della prenotazione",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dettagli prenotazione recuperati con successo"
+          },
+          "404": {
+            "description": "Prenotazione non trovata"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Prenotazione"
+        ]
+      },
+      "patch": {
+        "summary": "Modifica una segnalazione",
+        "description": "Modifica solo i campi specificati di una segnalazione esistente.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID della segnalazione da modificare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idEcocentro": {
+                    "type": "string",
+                    "description": "ID dell'ecocentro dove conferire i rifiuti"
+                  },
+                  "data": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Data in cui è stata ricevuta la segnalazione"
+                  },
+                  "tipiRifiuto": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array di ID dei tipi di rifiuto da conferire"
+                  },
+                  "idSegnalazione": {
+                    "type": "string",
+                    "description": "ID della segnalazione"
+                  },
+                  "idUtente": {
+                    "type": "string",
+                    "description": "ID dell'utente che invia la segnalazione"
+                  },
+                  "posizione": {
+                    "type": "object",
+                    "properties": {
+                      "latitudeGradi": {
+                        "type": "number"
+                      },
+                      "latitudeMinuti": {
+                        "type": "number"
+                      },
+                      "latitudeSecondi": {
+                        "type": "number"
+                      },
+                      "longitudeGradi": {
+                        "type": "number"
+                      },
+                      "longitudeMinuti": {
+                        "type": "number"
+                      },
+                      "longitudeSecondi": {
+                        "type": "number"
+                      }
+                    },
+                    "description": "Coordinate della posizione della segnalazione"
+                  },
+                  "corpoSegnalazione": {
+                    "type": "string",
+                    "description": "Contenuto testuale della segnalazione"
+                  },
+                  "stato": {
+                    "type": "string",
+                    "description": "Stato della segnalazione"
+                  },
+                  "media": {
+                    "type": "string",
+                    "description": "URL o percorso del file multimediale allegato (opzionale)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Segnalazione aggiornata con successo"
+          },
+          "400": {
+            "description": "Richiesta non valida"
+          },
+          "404": {
+            "description": "Segnalazione non trovata"
+          }
+        },
+        "tags": [
+          "Segnalazione"
+        ]
+      },
+      "delete": {
+        "summary": "Elimina una segnalazione",
+        "description": "Rimuove una segnalazione dal sistema.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID della segnalazione da eliminare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Segnalazione eliminata con successo"
+          },
+          "404": {
+            "description": "Segnalazione non trovata"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Segnalazione"
+        ]
+      }
+    },
+    "/api/segnalazione": {
+      "get": {
+        "summary": "Recupera tutte le Segnalazioni",
+        "description": "Ottiene la lista di tutte le segnalazioni con relativi dettagli",
+        "tags": [
+          "Segnalazione"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista di segnalazioni ottenuta con successo"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        }
+      }
+    },
+    "/api/tipoRaccolta": {
+      "get": {
+        "summary": "Recupera tutti i tipi di raccolta",
+        "description": "Ottiene la lista di tutti i tipi di raccolta disponibili",
+        "tags": [
+          "Tipo di Raccolta"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista di tipi di raccolta ottenuta con successo"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea un nuovo tipo di raccolta",
+        "description": "Aggiunge un nuovo tipo di raccolta al sistema",
+        "tags": [
+          "Tipo di Raccolta"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tipo": {
+                    "type": "string",
+                    "description": "Nome del tipo di raccolta (es. \"Carta\", \"Vetro\", \"Plastica\")"
+                  }
+                },
+                "required": [
+                  "tipo"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipo di raccolta creato con successo"
+          },
+          "400": {
+            "description": "Dati non validi"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        }
+      }
+    },
+    "/api/tipoSensore": {
+      "get": {
+        "summary": "Recupera tutti i tipi di sensore",
+        "description": "Ottiene la lista di tutti i tipi di sensore disponibili",
+        "tags": [
+          "Tipo di Sensore"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista di tipi di sensore ottenuta con successo"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea un nuovo tipo di sensore",
+        "description": "Aggiunge un nuovo tipo di sensore al sistema",
+        "tags": [
+          "Tipo di Sensore"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tipo": {
+                    "type": "string",
+                    "description": "Nome del tipo di sensore (es. \"Tliv\", \"Tpress\")"
+                  }
+                },
+                "required": [
+                  "tipo"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipo di sensore creato con successo"
+          },
+          "400": {
+            "description": "Dati non validi"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        }
+      }
+    },
+    "/api/tipoSensore/{id}": {
+      "delete": {
+        "summary": "Elimina un tipo di sensore",
+        "description": "Rimuove un tipo di sensore dal sistema",
+        "tags": [
+          "Tipo di Sensore"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID del tipo di sensore da eliminare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipo di sensore eliminato con successo"
+          },
+          "404": {
+            "description": "Tipo di sensore non trovato"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        }
+      }
+    },
+    "/api/tipoRifiuto": {
+      "get": {
+        "summary": "Recupera tutti i tipi di rifiuto",
+        "description": "Ottiene la lista di tutti i tipi di rifiuto disponibili",
+        "responses": {
+          "200": {
+            "description": "Lista di tipi di rifiuto ottenuta con successo"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Tipo di Rifiuto"
+        ]
+      },
+      "post": {
+        "summary": "Crea un nuovo tipo di rifiuto",
+        "description": "Registra un nuovo tipo di rifiuto nel sistema",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Nome del tipo di rifiuto (es. Plastica, Vetro)"
+                  }
+                },
+                "required": [
+                  "nome"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipo di rifiuto creato con successo"
+          },
+          "400": {
+            "description": "Dati non validi"
+          }
+        },
+        "tags": [
+          "Tipo di Rifiuto"
+        ]
+      }
+    },
+    "/api/tipoRifiuto/{id}": {
+      "get": {
+        "summary": "Recupera un tipo di rifiuto specifico",
+        "description": "Ottiene i dettagli di un tipo di rifiuto tramite il suo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID del tipo di rifiuto",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dettagli tipo di rifiuto recuperati con successo"
+          },
+          "404": {
+            "description": "Tipo di rifiuto non trovato"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Tipo di Rifiuto"
+        ]
+      },
+      "patch": {
+        "summary": "Aggiorna un tipo di rifiuto",
+        "description": "Modifica i dati di un tipo di rifiuto esistente",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID del tipo di rifiuto da modificare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "description": "Nome del tipo di rifiuto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tipo di rifiuto aggiornato con successo"
+          },
+          "400": {
+            "description": "Richiesta non valida"
+          },
+          "404": {
+            "description": "Tipo di rifiuto non trovato"
+          }
+        },
+        "tags": [
+          "Tipo di Rifiuto"
+        ]
+      },
+      "delete": {
+        "summary": "Elimina un tipo di rifiuto",
+        "description": "Rimuove un tipo di rifiuto dal sistema",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID del tipo di rifiuto da eliminare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipo di rifiuto eliminato con successo"
+          },
+          "404": {
+            "description": "Tipo di rifiuto non trovato"
+          },
+          "500": {
+            "description": "Errore del server"
+          }
+        },
+        "tags": [
+          "Tipo di Rifiuto"
+        ]
+      }
+    },
+    "/api/unitaRaccolta": {
+      "get": {
+        "summary": "Recupera tutte le Unità di Raccolta",
+        "description": "Ottiene la lista di tutte le unità di raccolta con i relativi dettagli, inclusi tipo raccolta e sensore associato.",
+        "responses": {
+          "200": {
+            "description": "Lista di unità di raccolta ottenuta con successo"
+          },
+          "500": {
+            "description": "Errore interno del server"
+          }
+        },
+        "tags": [
+          "Unità di Raccolta"
+        ]
+      },
+      "post": {
+        "summary": "Crea una nuova Unità di Raccolta",
+        "description": "Registra una nuova unità di raccolta nel sistema.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tipoRaccolta": {
+                    "type": "string",
+                    "description": "ID del tipo di raccolta associato"
+                  },
+                  "sensore": {
+                    "type": "string",
+                    "description": "ID del sensore associato"
+                  },
+                  "livelloSaturazione": {
+                    "type": "number",
+                    "description": "Livello di saturazione dell'unità di raccolta"
+                  },
+                  "capienza": {
+                    "type": "number",
+                    "description": "Capienza massima dell'unità di raccolta"
+                  },
+                  "latGradi": {
+                    "type": "number",
+                    "description": "Gradi di latitudine"
+                  },
+                  "latPrimi": {
+                    "type": "number",
+                    "description": "Primi di latitudine"
+                  },
+                  "latSecondi": {
+                    "type": "number",
+                    "description": "Secondi di latitudine"
+                  },
+                  "lonGradi": {
+                    "type": "number",
+                    "description": "Gradi di longitudine"
+                  },
+                  "lonPrimi": {
+                    "type": "number",
+                    "description": "Primi di longitudine"
+                  },
+                  "lonSecondi": {
+                    "type": "number",
+                    "description": "Secondi di longitudine"
+                  }
+                },
+                "required": [
+                  "tipoRaccolta",
+                  "sensore",
+                  "livelloSaturazione",
+                  "capienza",
+                  "latGradi",
+                  "latPrimi",
+                  "latSecondi",
+                  "lonGradi",
+                  "lonPrimi",
+                  "lonSecondi"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Unità di raccolta creata con successo"
+          },
+          "500": {
+            "description": "Errore interno del server"
+          }
+        },
+        "tags": [
+          "Unità di Raccolta"
+        ]
+      }
+    },
+    "/api/unitaRaccolta/{id}": {
+      "patch": {
+        "summary": "Modifica un'Unità di Raccolta",
+        "description": "Modifica i campi specificati di una unità di raccolta esistente.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID dell'unità di raccolta da modificare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tipoRaccolta": {
+                    "type": "string",
+                    "description": "ID del tipo di raccolta associato"
+                  },
+                  "sensore": {
+                    "type": "string",
+                    "description": "ID del sensore associato"
+                  },
+                  "livelloSaturazione": {
+                    "type": "number",
+                    "description": "Livello di saturazione dell'unità di raccolta"
+                  },
+                  "capienza": {
+                    "type": "number",
+                    "description": "Capienza massima dell'unità di raccolta"
+                  },
+                  "posizione": {
+                    "type": "object",
+                    "properties": {
+                      "latitudineGradi": {
+                        "type": "number"
+                      },
+                      "latitudinePrimi": {
+                        "type": "number"
+                      },
+                      "latitudineSecondi": {
+                        "type": "number"
+                      },
+                      "longitudineGradi": {
+                        "type": "number"
+                      },
+                      "longitudinePrimi": {
+                        "type": "number"
+                      },
+                      "longitudineSecondi": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unità di raccolta aggiornata con successo"
+          },
+          "404": {
+            "description": "Unità di raccolta non trovata"
+          },
+          "500": {
+            "description": "Errore interno del server"
+          }
+        },
+        "tags": [
+          "Unità di Raccolta"
+        ]
+      },
+      "delete": {
+        "summary": "Elimina un'Unità di Raccolta",
+        "description": "Rimuove una unità di raccolta dal sistema tramite il suo ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID dell'unità di raccolta da eliminare",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unità di raccolta eliminata con successo"
+          },
+          "404": {
+            "description": "Unità di raccolta non trovata"
+          },
+          "500": {
+            "description": "Errore interno del server"
+          }
+        },
+        "tags": [
+          "Unità di Raccolta"
+        ]
+      }
+    },
+    "/api/loginAdmin": {
+      "post": {
+        "summary": "Login per amministratore",
+        "description": "Autentica un amministratore con username e password forniti nel body.",
+        "tags": [
+          "Amministratore"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "admin"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login effettuato con successo, token JWT restituito",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenziali non valide"
+          }
+        }
+      }
+    },
+    "/api/UtenteAmministratore": {
+      "get": {
+        "summary": "Ottiene la lista degli amministratori",
+        "description": "Restituisce tutti gli amministratori. Richiede un token JWT valido.",
+        "tags": [
+          "Amministratore"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista di amministratori restituita con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UtenteAmministratore"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mancante"
+          },
+          "403": {
+            "description": "Token non valido"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea un nuovo amministratore",
+        "description": "Inserisce un nuovo utente amministratore nel sistema.",
+        "tags": [
+          "Amministratore"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtenteAmministratore"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Amministratore creato con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UtenteAmministratore"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UtenteAmministratore/{id}": {
+      "delete": {
+        "summary": "Elimina un amministratore",
+        "description": "Elimina un amministratore dal sistema. Richiede token JWT.",
+        "tags": [
+          "Amministratore"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Amministratore eliminato"
+          },
+          "401": {
+            "description": "Token mancante"
+          },
+          "403": {
+            "description": "Token non valido"
+          },
+          "404": {
+            "description": "Amministratore non trovato"
+          }
+        }
+      }
+    },
+    "/api/utenteRegistrato": {
+      "get": {
+        "summary": "Recupera tutti gli utenti registrati",
+        "description": "Restituisce la lista completa degli utenti registrati nel sistema.",
+        "tags": [
+          "Utente Registrato"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista di utenti recuperata con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UtenteRegistrato"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Registra un nuovo utente",
+        "description": "Crea e salva un nuovo utente nel database.",
+        "tags": [
+          "Utente Registrato"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtenteRegistratoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Utente creato con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UtenteRegistrato"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta non valida"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

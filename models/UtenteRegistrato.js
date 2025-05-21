@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const utenteRegistratoSchema = new mongoose.Schema({
   username: { type: String, required: true }, // Nome utente
   email: { type: String, required: true },     // Email di contatto
-  telefono: { type: String, required: true },  // Numero di telefono
+  telefono: { type: String, required: false },  // Numero di telefono
 });
 
 // Creo il modello e specifico la collezione 'utentiRegistrati'

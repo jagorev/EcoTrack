@@ -1,31 +1,17 @@
 import 'package:flutter/material.dart';
-import 'map_page.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dashboard.dart';
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: EcoTrackHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
+import 'profile_page.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({ super.key });
+  const MapPage({super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  // Posizione iniziale: Trento
+  late GoogleMapController _mapController;
+
   static const CameraPosition _initialPosition = CameraPosition(
     target: LatLng(46.0711, 11.1217),
     zoom: 13,
@@ -54,7 +40,7 @@ class _MapPageState extends State<MapPage> {
       body: GoogleMap(
         initialCameraPosition: _initialPosition,
         onMapCreated: (GoogleMapController controller) {
-          // _mapController = controller; // Rimosso perché non più usato
+          _mapController = controller;
         },
         myLocationEnabled: false,
       ),

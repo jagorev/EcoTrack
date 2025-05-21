@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'accedi.dart';
 import 'registrati.dart';
 import 'profile_page.dart';
+import 'map_page.dart';
 
 class EcoTrackHomePage extends StatelessWidget {
   Widget buildMenuItem(
@@ -90,11 +91,18 @@ class EcoTrackHomePage extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 24),
-              buildMenuItem(
-                Icons.map,
-                Colors.green,
-                "Mappa Interattiva",
-                "Visualizza i cassonetti e il livello di riempimento.",
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const MapPage()),
+                  );
+                },
+                child: buildMenuItem(
+                  Icons.map,
+                  Colors.green,
+                  "Mappa Interattiva",
+                  "Visualizza i cassonetti e il livello di riempimento.",
+                ),
               ),
               buildMenuItem(
                 Icons.notifications,

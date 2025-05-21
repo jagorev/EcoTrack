@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MapPage extends StatefulWidget {
-  const MapPage({ super.key });
+  const MapPage({super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -34,23 +34,7 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('EcoTrack Map'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => const ProfilePage(userType: UserType.guest),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('EcoTrack Map')),
       body: GoogleMap(
         initialCameraPosition: _initialPosition,
         onMapCreated: (GoogleMapController controller) {

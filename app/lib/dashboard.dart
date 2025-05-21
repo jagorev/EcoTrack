@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'accedi.dart';
 import 'registrati.dart';
+import 'profile_page.dart';
 
 class EcoTrackHomePage extends StatelessWidget {
-  Widget buildMenuItem(IconData icon, Color color, String title, String subtitle) {
+  Widget buildMenuItem(
+    IconData icon,
+    Color color,
+    String title,
+    String subtitle,
+  ) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6),
       padding: EdgeInsets.all(16),
@@ -19,14 +25,18 @@ class EcoTrackHomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
                 SizedBox(height: 4),
-                Text(subtitle,
-                    style: TextStyle(color: Colors.black54, fontSize: 13)),
+                Text(
+                  subtitle,
+                  style: TextStyle(color: Colors.black54, fontSize: 13),
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -35,6 +45,23 @@ class EcoTrackHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('EcoTrack Map'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => const ProfilePage(userType: UserType.guest),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       backgroundColor: Color(0xFFF0F2F5),
       body: SafeArea(
         child: Padding(
@@ -54,25 +81,47 @@ class EcoTrackHomePage extends StatelessWidget {
                     },
                   ),
                   SizedBox(width: 8),
-                  Text("EcoTrack",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      )),
+                  Text(
+                    "EcoTrack",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 24),
-              buildMenuItem(Icons.map, Colors.green, "Mappa Interattiva",
-                  "Visualizza i cassonetti e il livello di riempimento."),
-              buildMenuItem(Icons.notifications, Colors.blue, "Promemoria Raccolta",
-                  "Ricevi notifiche per la raccolta porta a porta."),
-              buildMenuItem(Icons.camera_alt, Colors.red, "Segnalazioni",
-                  "Segnala aree inquinate con foto."),
-              buildMenuItem(Icons.calendar_today, Colors.amber[800]!, "Prenota Smaltimento",
-                  "Prenota lo smaltimento presso un ecocentro."),
-              buildMenuItem(Icons.attach_money, Colors.purple, "Simula Tasse",
-                  "Calcola le tasse sulla gestione dei rifiuti."),
+              buildMenuItem(
+                Icons.map,
+                Colors.green,
+                "Mappa Interattiva",
+                "Visualizza i cassonetti e il livello di riempimento.",
+              ),
+              buildMenuItem(
+                Icons.notifications,
+                Colors.blue,
+                "Promemoria Raccolta",
+                "Ricevi notifiche per la raccolta porta a porta.",
+              ),
+              buildMenuItem(
+                Icons.camera_alt,
+                Colors.red,
+                "Segnalazioni",
+                "Segnala aree inquinate con foto.",
+              ),
+              buildMenuItem(
+                Icons.calendar_today,
+                Colors.amber[800]!,
+                "Prenota Smaltimento",
+                "Prenota lo smaltimento presso un ecocentro.",
+              ),
+              buildMenuItem(
+                Icons.attach_money,
+                Colors.purple,
+                "Simula Tasse",
+                "Calcola le tasse sulla gestione dei rifiuti.",
+              ),
               Spacer(),
               ElevatedButton(
                 onPressed: () {
@@ -84,22 +133,28 @@ class EcoTrackHomePage extends StatelessWidget {
                   minimumSize: Size(double.infinity, 50),
                   backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: Text("Accedi", style: TextStyle(fontSize: 16)),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const RegistratiPage()),
+                    MaterialPageRoute(
+                      builder: (context) => const RegistratiPage(),
+                    ),
                   );
                 },
-                child: Text("Registrati",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500)),
-              )
+                child: Text(
+                  "Registrati",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

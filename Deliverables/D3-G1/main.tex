@@ -1,0 +1,90 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsfonts} 
+\usepackage[table]{xcolor}
+\usepackage{makecell}
+\usepackage[table]{xcolor}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\renewcommand{\arraystretch}{1.4}
+\usepackage{array, cellspace}
+\setlength{\cellspacetoplimit}{4pt}
+\setlength{\cellspacebottomlimit}{4pt}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{amsmath}
+\usepackage[export]{adjustbox} 
+\usepackage{float}
+\usepackage{tabularx} % Da inserire nel preambolo se non già presente
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\geometry{a4paper, margin=1in} % margini comodi
+
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+\usepackage{
+        geometry,
+	plain,
+	setspace, 
+	titlesec,
+}
+
+\geometry{
+	paperheight = 29.7cm,
+	paperwidth = 21cm,
+        left = 2.5cm,
+        right = 2.5cm,
+	top = 2cm,
+	bottom = 2cm
+}
+\lstdefinestyle{ocl}{
+  backgroundcolor=\color{gray!10},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black},
+  captionpos=b,
+  tabsize=2,
+  language=OCL
+}
+\singlespacing
+
+\usepackage{blindtext}
+\usepackage{nameref}
+
+\newcounter{mylabelcounter}
+
+\makeatletter
+\newcommand{\labelText}[2]{%
+#1\refstepcounter{mylabelcounter}%
+\immediate\write\@auxout{%
+  \string\newlabel{#2}{{1}{\thepage}{{\unexpanded{#1}}}{mylabelcounter.\number\value{mylabelcounter}}{}}%
+}%
+}
+\makeatother
+
+\begin{document}
+
+
+
+\include{D3-G1/Chapters/0Cover}
+\tableofcontents
+\include{D3-G1/Chapters/1Backlogs}
+
+\end{document}

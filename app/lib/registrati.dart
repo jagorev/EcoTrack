@@ -66,10 +66,19 @@ class RegistratiPage extends StatelessWidget {
                 backgroundColor: Colors.green,
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                 ),
+                elevation: 4,
+                shadowColor: Colors.greenAccent,
               ),
-              child: const Text('Registrati', style: TextStyle(fontSize: 16)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.check_circle, color: Colors.white),
+                  SizedBox(width: 10),
+                  Text('Registrati', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                ],
+              ),
             ),
           ],
         ),

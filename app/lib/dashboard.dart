@@ -137,12 +137,28 @@ class EcoTrackHomePage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 4,
+                  shadowColor: Colors.greenAccent,
                 ),
-                child: Text("Accedi", style: TextStyle(fontSize: 16)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.login, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      "Accedi",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               TextButton(
                 onPressed: () {

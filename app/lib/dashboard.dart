@@ -139,28 +139,31 @@ class EcoTrackHomePage extends StatelessWidget {
                   minimumSize: Size(double.infinity, 50),
                   backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  elevation: 4,
+                  elevation: 6,
                   shadowColor: Colors.greenAccent,
+                  padding: EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Icon(Icons.login, color: Colors.white),
-                    SizedBox(width: 8),
+                    Icon(Icons.login, color: Colors.white, size: 26),
+                    SizedBox(width: 10),
                     Text(
                       "Accedi",
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        letterSpacing: 1.1,
                       ),
                     ),
                   ],
                 ),
               ),
-              TextButton(
+              const SizedBox(height: 16),
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -168,30 +171,29 @@ class EcoTrackHomePage extends StatelessWidget {
                     ),
                   );
                 },
-                style: TextButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.green,
-                  minimumSize: Size(double.infinity, 48),
+                  backgroundColor: Colors.green.shade700,
+                  minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  textStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  elevation: 2,
+                  elevation: 6,
+                  shadowColor: Colors.greenAccent,
+                  padding: EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Icon(Icons.person_add, color: Colors.white),
-                    SizedBox(width: 8),
+                    Icon(Icons.person_add, color: Colors.white, size: 26),
+                    SizedBox(width: 10),
                     Text(
                       "Registrati",
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        letterSpacing: 1.1,
                       ),
                     ),
                   ],

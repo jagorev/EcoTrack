@@ -42,23 +42,26 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Switch(
-                  value: notificheAttive,
-                  onChanged: (val) {
-                    setState(() {
-                      notificheAttive = val;
-                    });
-                  },
-                  activeColor: Colors.green,
-                ),
-                const SizedBox(width: 8),
-                const Text(
-                  'Attiva notifiche promemoria raccolta rifiuti',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Switch(
+                    value: notificheAttive,
+                    onChanged: (val) {
+                      setState(() {
+                        notificheAttive = val;
+                      });
+                    },
+                    activeColor: Colors.green,
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Attiva notifiche promemoria raccolta rifiuti',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
             const Text(

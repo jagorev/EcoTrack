@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class PromemoriaRaccoltaPage extends StatefulWidget {
-  const PromemoriaRaccoltaPage({Key? key}) : super(key: key);
+  const PromemoriaRaccoltaPage({Key? key, this.notificheAttive}) : super(key: key);
+
+  final bool? notificheAttive;
 
   @override
   State<PromemoriaRaccoltaPage> createState() => _PromemoriaRaccoltaPageState();
 }
 
 class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
-  bool notificheAttive = true;
+  late bool notificheAttive;
   final List<String> notifichePrecedenti = [
     'Raccolta carta: 2 giugno 2025, ore 7:00',
     'Raccolta plastica: 1 giugno 2025, ore 7:00',
@@ -17,11 +19,23 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    notificheAttive = widget.notificheAttive ?? true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Promemoria Raccolta'),
         backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop(notificheAttive);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

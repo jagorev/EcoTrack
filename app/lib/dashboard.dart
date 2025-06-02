@@ -3,8 +3,18 @@ import 'accedi.dart';
 import 'registrati.dart';
 import 'profile_page.dart';
 import 'map_page.dart';
+import 'promemoria_raccolta.dart';
 
-class EcoTrackHomePage extends StatelessWidget {
+class EcoTrackHomePage extends StatefulWidget {
+  const EcoTrackHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<EcoTrackHomePage> createState() => _EcoTrackHomePageState();
+}
+
+class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
+  bool _notificheAttiveDashboard = true; // Stato delle notifiche nella dashboard
+
   Widget buildMenuItem(
     IconData icon,
     Color color,
@@ -104,11 +114,27 @@ class EcoTrackHomePage extends StatelessWidget {
                   "Visualizza i cassonetti e il livello di riempimento.",
                 ),
               ),
-              buildMenuItem(
-                Icons.notifications,
-                Colors.blue,
-                "Promemoria Raccolta",
-                "Ricevi notifiche per la raccolta porta a porta.",
+              GestureDetector(
+                onTap: () async {
+                  final result = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (context) => PromemoriaRaccoltaPage(
+                        notificheAttive: _notificheAttiveDashboard,
+                      ),
+                    ),
+                  );
+                  if (result != null) {
+                    setState(() {
+                      _notificheAttiveDashboard = result;
+                    });
+                  }
+                },
+                child: buildMenuItem(
+                  Icons.notifications,
+                  Colors.blue,
+                  "Promemoria Raccolta",
+                  "Ricevi notifiche per la raccolta porta a porta.",
+                ),
               ),
               buildMenuItem(
                 Icons.camera_alt,

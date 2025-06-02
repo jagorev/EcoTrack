@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impostazioni - EcoTrack</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+  <style>
+    body { background: #f7f7f7; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 32px; }
+    h2 { margin-top: 0; }
+    .success { color: #218838; margin-top: 10px; }
+    .error { color: #c82333; margin-top: 10px; }
+    .section { margin-bottom: 32px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Impostazioni</h2>
+    <div class="section">
+      <h4>Invia notifica utenti</h4>
+      <form id="notificaForm">
+        <label for="corpoNotifica">Testo notifica</label>
+        <textarea id="corpoNotifica" required placeholder="Scrivi il messaggio..." rows="3"></textarea>
+        <label for="destinatario">ID Utente Destinatario</label>
+        <input type="text" id="destinatario" required placeholder="Inserisci l'ID dell'utente registrato">
+        <button type="submit" class="button-primary">Invia notifica</button>
+      </form>
+      <div id="notificaMsg"></div>
+    </div>
+    <!-- Altre sezioni impostazioni qui -->
+  </div>
+  <script>
+    document.getElementById('notificaForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const corpoNotifica = document.getElementById('corpoNotifica').value.trim();
+      const destinatario = document.getElementById('destinatario').value.trim();
+      const msgDiv = document.getElementById('notificaMsg');
+      msgDiv.textContent = '';
+      msgDiv.className = '';
+      if (!corpoNotifica || !destinatario) {
+        msgDiv.textContent = 'Compila tutti i campi.';
+        msgDiv.className = 'error';
+        return;
+      }
+      try {
+        const res = await fetch('/api/notifiche', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ corpoNotifica, destinatario })
+        });
+        if (res.ok) {
+          msgDiv.textContent = 'Notifica inviata con successo!';
+          msgDiv.className = 'success';
+          document.getElementById('notificaForm').reset();
+        } else {
+          const data = await res.json();
+          msgDiv.textContent = data.message || 'Errore nell\'invio della notifica.';
+          msgDiv.className = 'error';
+        }
+      } catch (err) {
+        msgDiv.textContent = 'Errore di rete o server.';
+        msgDiv.className = 'error';
+      }
+    });
+  </script>
+</body>
+</html>

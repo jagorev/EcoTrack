@@ -5,7 +5,7 @@ const Notifica = require('../models/Notifica');
 // GET tutte le notifiche
 router.get('/', async (req, res) => {
   try {
-    const notifiche = await Notifica.find().populate('destinatario');
+    const notifiche = await Notifica.find();
     res.json(notifiche);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 // GET notifica per ID
 router.get('/:id', async (req, res) => {
   try {
-    const notifica = await Notifica.findById(req.params.id).populate('destinatario');
+    const notifica = await Notifica.findById(req.params.id);
     if (!notifica) return res.status(404).json({ message: 'Notifica non trovata' });
     res.json(notifica);
   } catch (err) {
@@ -23,12 +23,11 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST nuova notifica
+// POST nuova notifica (senza destinatario)
 router.post('/', async (req, res) => {
   try {
     const notifica = new Notifica({
-      corpoNotifica: req.body.corpoNotifica,
-      destinatario: req.body.destinatario,
+      corpoNotifica: req.body.corpoNotifica
     });
     const nuovaNotifica = await notifica.save();
     res.status(201).json(nuovaNotifica);

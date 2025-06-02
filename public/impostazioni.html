@@ -4,65 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Impostazioni - EcoTrack</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
-  <style>
-    body { background: #f7f7f7; }
-    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 32px; }
-    h2 { margin-top: 0; }
-    .success { color: #218838; margin-top: 10px; }
-    .error { color: #c82333; margin-top: 10px; }
-    .section { margin-bottom: 32px; }
-  </style>
+  <script>
+    if (!localStorage.getItem('adminToken')) {
+      window.location.href = '/index.html';
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <h2>Impostazioni</h2>
-    <div class="section">
-      <h4>Invia notifica utenti</h4>
-      <form id="notificaForm">
-        <label for="corpoNotifica">Testo notifica</label>
-        <textarea id="corpoNotifica" required placeholder="Scrivi il messaggio..." rows="3"></textarea>
-        <label for="destinatario">ID Utente Destinatario</label>
-        <input type="text" id="destinatario" required placeholder="Inserisci l'ID dell'utente registrato">
-        <button type="submit" class="button-primary">Invia notifica</button>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+  <div class="w-full max-w-xl bg-white rounded-2xl shadow-lg p-8 mt-10">
+    <h1 class="text-2xl font-bold text-green-700 mb-6 text-center">Impostazioni</h1>
+    <div class="mb-10">
+      <h2 class="text-lg font-semibold text-green-700 mb-4">Invia notifica utenti</h2>
+      <form id="notificaForm" class="space-y-4">
+        <div>
+          <label for="corpoNotifica" class="block text-green-800 font-medium mb-1">Testo notifica</label>
+          <textarea id="corpoNotifica" required rows="3" placeholder="Scrivi il messaggio..." class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition">Invia notifica</button>
       </form>
-      <div id="notificaMsg"></div>
+      <div id="notificaMsg" class="mt-3 text-center"></div>
     </div>
     <!-- Altre sezioni impostazioni qui -->
   </div>
   <script>
+    // --- Controllo token come sulle altre pagine protette ---
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+    function isTokenExpired(token) {
+      if (!token) return true;
+      try {
+        const payload = parseJwt(token);
+        if (!payload || !payload.exp) return true;
+        return Date.now() >= payload.exp * 1000;
+      } catch (e) {
+        return true;
+      }
+    }
+    (function checkToken() {
+      const token = localStorage.getItem('adminToken');
+      if (!token || isTokenExpired(token)) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminLoggedIn');
+        alert('Sessione scaduta, effettua di nuovo il login.');
+        window.location.href = '/index.html';
+      }
+    })();
     document.getElementById('notificaForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const corpoNotifica = document.getElementById('corpoNotifica').value.trim();
-      const destinatario = document.getElementById('destinatario').value.trim();
       const msgDiv = document.getElementById('notificaMsg');
       msgDiv.textContent = '';
       msgDiv.className = '';
-      if (!corpoNotifica || !destinatario) {
-        msgDiv.textContent = 'Compila tutti i campi.';
-        msgDiv.className = 'error';
+      if (!corpoNotifica) {
+        msgDiv.textContent = 'Compila il campo notifica.';
+        msgDiv.className = 'text-red-700 font-semibold';
         return;
       }
       try {
-        const res = await fetch('/api/notifiche', {
+        const res = await fetch('/api/routeNotifica', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('adminToken'),
           },
-          body: JSON.stringify({ corpoNotifica, destinatario })
+          body: JSON.stringify({ corpoNotifica })
         });
         if (res.ok) {
           msgDiv.textContent = 'Notifica inviata con successo!';
-          msgDiv.className = 'success';
+          msgDiv.className = 'text-green-700 font-semibold';
           document.getElementById('notificaForm').reset();
         } else {
           const data = await res.json();
           msgDiv.textContent = data.message || 'Errore nell\'invio della notifica.';
-          msgDiv.className = 'error';
+          msgDiv.className = 'text-red-700 font-semibold';
         }
       } catch (err) {
         msgDiv.textContent = 'Errore di rete o server.';
-        msgDiv.className = 'error';
+        msgDiv.className = 'text-red-700 font-semibold';
       }
     });
   </script>

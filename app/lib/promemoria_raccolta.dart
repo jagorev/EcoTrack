@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class PromemoriaRaccoltaPage extends StatefulWidget {
   const PromemoriaRaccoltaPage({Key? key, this.notificheAttive}) : super(key: key);
@@ -11,17 +13,33 @@ class PromemoriaRaccoltaPage extends StatefulWidget {
 
 class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
   late bool notificheAttive;
-  final List<String> notifichePrecedenti = [
-    'Raccolta carta: 2 giugno 2025, ore 7:00',
-    'Raccolta plastica: 1 giugno 2025, ore 7:00',
-    'Raccolta umido: 31 maggio 2025, ore 7:00',
-    'Raccolta vetro: 30 maggio 2025, ore 7:00',
-  ];
+  List<String> notifichePrecedenti = [];
 
   @override
   void initState() {
     super.initState();
     notificheAttive = widget.notificheAttive ?? true;
+    fetchNotifiche();
+  }
+
+  Future<void> fetchNotifiche() async {
+    try {
+      final response = await http.get(Uri.parse('http://localhost:3000/api/notifiche'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          notifichePrecedenti = data.map((n) => n['corpoNotifica'] as String).toList();
+        });
+      } else {
+        setState(() {
+          notifichePrecedenti = ['Errore nel recupero delle notifiche'];
+        });
+      }
+    } catch (e) {
+      setState(() {
+        notifichePrecedenti = ['Errore di rete'];
+      });
+    }
   }
 
   @override

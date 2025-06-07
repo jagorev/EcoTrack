@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:async';
 
 class PromemoriaRaccoltaPage extends StatefulWidget {
   const PromemoriaRaccoltaPage({Key? key, this.notificheAttive}) : super(key: key);
@@ -17,6 +18,7 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
   List<String> notifichePrecedenti = [];
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   List<String> _lastNotifiche = [];
+  late Timer _pollingTimer;
 
   @override
   void initState() {
@@ -24,6 +26,10 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
     notificheAttive = widget.notificheAttive ?? true;
     _initNotifications();
     fetchNotifiche();
+    // Poll for new notifications every 30 seconds
+    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      fetchNotifiche();
+    });
   }
 
   Future<void> _initNotifications() async {
@@ -76,6 +82,12 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
         notifichePrecedenti = ['Errore di rete'];
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer.cancel();
+    super.dispose();
   }
 
   @override

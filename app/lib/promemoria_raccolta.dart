@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class PromemoriaRaccoltaPage extends StatefulWidget {
   const PromemoriaRaccoltaPage({Key? key, this.notificheAttive}) : super(key: key);
@@ -14,12 +15,39 @@ class PromemoriaRaccoltaPage extends StatefulWidget {
 class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
   late bool notificheAttive;
   List<String> notifichePrecedenti = [];
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  List<String> _lastNotifiche = [];
 
   @override
   void initState() {
     super.initState();
     notificheAttive = widget.notificheAttive ?? true;
+    _initNotifications();
     fetchNotifiche();
+  }
+
+  Future<void> _initNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> _showNotification(String corpo) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'promemoria_channel',
+      'Promemoria Raccolta',
+      channelDescription: 'Notifiche promemoria raccolta rifiuti',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'Nuovo promemoria raccolta',
+      corpo,
+      platformChannelSpecifics,
+    );
   }
 
   Future<void> fetchNotifiche() async {
@@ -27,8 +55,16 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
       final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/notifiche'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        final List<String> nuoveNotifiche = data.map((n) => n['corpoNotifica'] as String).toList();
+        if (notificheAttive && _lastNotifiche.isNotEmpty && nuoveNotifiche.isNotEmpty) {
+          final nuova = nuoveNotifiche.firstWhere((n) => !_lastNotifiche.contains(n), orElse: () => '');
+          if (nuova.isNotEmpty) {
+            _showNotification(nuova);
+          }
+        }
         setState(() {
-          notifichePrecedenti = data.map((n) => n['corpoNotifica'] as String).toList();
+          notifichePrecedenti = nuoveNotifiche;
+          _lastNotifiche = nuoveNotifiche;
         });
       } else {
         setState(() {

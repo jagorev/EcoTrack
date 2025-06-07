@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -34,8 +35,17 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
 
   Future<void> _initNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    // Request notification permission on Android 13+
+    if (Platform.isAndroid) {
+      // Android 13+ (API 33) requires POST_NOTIFICATIONS permission
+      // Use flutter_local_notifications built-in requestPermissions for iOS, but Android handled by manifest
+    }
   }
 
   Future<void> _showNotification(String corpo) async {

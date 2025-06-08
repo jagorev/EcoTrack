@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class MapPage extends StatefulWidget {
-  const MapPage({ super.key });
+  const MapPage({super.key});
   @override
   State<MapPage> createState() => _MapPageState();
 }
@@ -26,7 +26,14 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadPins() async {
-    const api = 'http://10.0.2.2:3000/api/unitaRaccolta'; // <- Android emulator address
+    const api =
+        'http://10.0.2.2:3000/api/unitaRaccolta'; // <- Android emulator address
+    double getHue(num livello) {
+      if (livello < 40) return BitmapDescriptor.hueGreen;
+      if (livello < 80) return BitmapDescriptor.hueOrange;
+      return BitmapDescriptor.hueRed;
+    }
+
     try {
       final resp = await http.get(Uri.parse(api));
       if (resp.statusCode == 200) {
@@ -36,12 +43,28 @@ class _MapPageState extends State<MapPage> {
           final p = item['posizione'];
           double toDec(int g, int m, double s) =>
               (g.sign >= 0 ? 1 : -1) * (g.abs() + m / 60 + s / 3600);
-          final lat = toDec(p['latitudineGradi'], p['latitudinePrimi'], p['latitudineSecondi'].toDouble());
-          final lng = toDec(p['longitudineGradi'], p['longitudinePrimi'], p['longitudineSecondi'].toDouble());
-          markers.add(Marker(
-            markerId: MarkerId(item['_id']),
-            position: LatLng(lat, lng),
-          ));
+          final lat = toDec(
+            p['latitudineGradi'],
+            p['latitudinePrimi'],
+            p['latitudineSecondi'].toDouble(),
+          );
+          final lng = toDec(
+            p['longitudineGradi'],
+            p['longitudinePrimi'],
+            p['longitudineSecondi'].toDouble(),
+          );
+          final livello = item['livelloSaturazione'] ?? 0;
+          markers.add(
+            Marker(
+              markerId: MarkerId(item['_id']),
+              position: LatLng(lat, lng),
+              icon: BitmapDescriptor.defaultMarkerWithHue(getHue(livello)),
+              infoWindow: InfoWindow(
+                title: 'Saturazione: $livello%',
+                snippet: 'Capienza: ${item['capienza']}',
+              ),
+            ),
+          );
         }
         setState(() {
           _markers.clear();
@@ -61,9 +84,7 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
       appBar: AppBar(title: const Text('EcoTrack Map')),
@@ -71,10 +92,7 @@ class _MapPageState extends State<MapPage> {
         padding: const EdgeInsets.all(16.0),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey,
-              width: 2,
-            ),
+            border: Border.all(color: Colors.grey, width: 2),
             borderRadius: BorderRadius.circular(12),
           ),
           child: ClipRRect(
@@ -90,4 +108,3 @@ class _MapPageState extends State<MapPage> {
     );
   }
 }
-

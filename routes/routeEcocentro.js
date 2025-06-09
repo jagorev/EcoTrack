@@ -18,7 +18,10 @@ const Ecocentro = require('../models/Ecocentro');
  */
 router.get('/api/ecocentro', async (req, res) => {
   try {
-    const ecocentri = await Ecocentro.find().populate('situazioneRifiuti.tipoRifiuto');
+    // Popola sia la posizione che i tipi di rifiuto
+    const ecocentri = await Ecocentro.find()
+      .populate('posizione') // Popola la posizione con i dati geografici
+      .populate('situazioneRifiuti.tipoRifiuto');
     res.json(ecocentri);
   } catch (errore) {
     res.status(500).json({ messaggio: errore.message });

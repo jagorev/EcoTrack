@@ -9,7 +9,8 @@ const posizioneSchema = new mongoose.Schema({
   latitudineSecondi: { type: Number, required: true },
   longitudineGradi: { type: Number, required: true },
   longitudinePrimi: { type: Number, required: true },
-  longitudineSecondi: { type: Number, required: true }
+  longitudineSecondi: { type: Number, required: true },
+  nome: { type: String }, // Nome della posizione
 }, { _id: false }); // Non aggiungere _id a questo sotto-documento
 
 // Registra lo schema come tipo utilizzabile

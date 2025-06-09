@@ -1,10 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'accedi.dart';
 import 'registrati.dart';
 import 'profile_page.dart';
 import 'map_page.dart';
 
-class EcoTrackHomePage extends StatelessWidget {
+class EcoTrackHomePage extends StatefulWidget {
+  const EcoTrackHomePage({super.key});
+
+  @override
+  _EcoTrackHomePageState createState() => _EcoTrackHomePageState();
+}
+
+class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAndRequestPermissions();
+  }
+
+  Future<void> _checkAndRequestPermissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final alreadyRequested = prefs.getBool('permissions_requested') ?? false;
+
+    if (!alreadyRequested) {
+      await [
+        Permission.location,
+        Permission.notification,
+        Permission.storage,
+        Permission.camera,
+      ].request();
+      await prefs.setBool('permissions_requested', true);
+    }
+  }
+
   Widget buildMenuItem(
     IconData icon,
     Color color,
@@ -46,7 +76,6 @@ class EcoTrackHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Color(0xFFF0F2F5),
       body: SafeArea(
         child: Padding(
@@ -56,7 +85,6 @@ class EcoTrackHomePage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  
                   SizedBox(width: 8),
                   Text(
                     "EcoTrack",

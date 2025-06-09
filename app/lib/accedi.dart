@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AccediPage extends StatelessWidget {
-  const AccediPage({Key? key}) : super(key: key);
+  const AccediPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,9 @@ class AccediPage extends StatelessWidget {
               onPressed: () {
                 // TODO: Implementa autenticazione
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Login non ancora implementato')),
+                  const SnackBar(
+                    content: Text('Login non ancora implementato'),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(

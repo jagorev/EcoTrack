@@ -74,7 +74,7 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-6">
-  <div class="w-full max-w-2xl glass p-0 mt-10 shadow-xl">
+  <div class="w-full max-w-2xl glass p-0 mt-10 shadow-xl relative">
     <div class="gradient-header p-6 text-center">
       <h1 class="text-3xl font-bold tracking-tight">Gestione Notifiche</h1>
       <p class="mt-2 text-lg font-medium opacity-90">Invia e pianifica notifiche per gli utenti EcoTrack</p>
@@ -130,6 +130,12 @@
       </div>
       <div id="notificheList" class="space-y-3 mt-2"></div>
     </div>
+  </div>
+  <!-- Pulsante Esci -->
+  <div class="w-full max-w-2xl mt-8">
+    <button onclick="dashboard()" class="bg-black text-white text-lg py-3 rounded-full w-full shadow-md hover:opacity-90 transition duration-300">
+      Torna alla Dashboard
+    </button>
   </div>
   <script>
     // --- Controllo token come sulle altre pagine protette ---
@@ -340,6 +346,9 @@
       } catch (err) {
         alert('Errore di rete o server.');
       }
+    }
+    function dashboard() {
+      window.location.href = '/dashboard.html';
     }
   </script>
 </body>

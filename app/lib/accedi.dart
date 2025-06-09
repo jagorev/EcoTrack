@@ -76,9 +76,44 @@ class _AccediPageState extends State<AccediPage> {
               ),
             ),
             const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: _signInWithEmail,
-              child: const Text('Accedi', style: TextStyle(fontSize: 16)),
+            // Pulsante "Accedi" personalizzato con logo EcoTrack
+            GestureDetector(
+              onTap: _signInWithEmail,
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white, // Sfondo bianco
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 2,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/logo_ecotrack.png',
+                      height: 28,
+                      width: 28,
+                    ),
+                    const SizedBox(width: 16),
+                    const Text(
+                      'Accedi',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             SignInButton(

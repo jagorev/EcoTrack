@@ -67,6 +67,7 @@ flutter:
     - assets/unita_marker_green.png
     - assets/unita_marker_orange.png
     - assets/unita_marker_red.png
+    - assets/raccoltaspeciale_marker.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

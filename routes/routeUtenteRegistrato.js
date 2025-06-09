@@ -2,16 +2,21 @@ const express = require('express');
 const router = express.Router();
 const UtenteRegistrato = require('../models/UtenteRegistrato');
 const jwt = require('jsonwebtoken');
+const admin = require('../firebase'); 
 
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  if (!authHeader) return res.status(401).json({ error: 'Token mancante' });
-  const token = authHeader.split(' ')[1];
-  jwt.verify(token, process.env.JWT_SECRET || 'supersegreto', (err, user) => {
-    if (err) return res.status(403).json({ error: 'Token non valido' });
-    req.user = user;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Token mancante' });
+  }
+  const idToken = authHeader.split(' ')[1];
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken;
     next();
-  });
+  } catch (err) {
+    return res.status(403).json({ error: 'Token Firebase non valido' });
+  }
 }
 
 /**
@@ -92,10 +97,10 @@ router.delete('/api/utenteRegistrato/:id', verifyToken, async (req, res) => {
  * PUT /api/utenteRegistrato/:id
  * Modifica i dati di un utente registrato per id
  */
-router.put('/api/utenteRegistrato/:id', verifyToken, async (req, res) => {
+router.put('/api/utenteRegistrato/:uid', verifyToken, async (req, res) => {
   try {
-    const updated = await UtenteRegistrato.findByIdAndUpdate(
-      req.params.id,
+    const updated = await UtenteRegistrato.findOneAndUpdate(
+      { uid: req.params.uid }, // cerca per uid, non per _id
       req.body,
       { new: true, runValidators: true }
     );

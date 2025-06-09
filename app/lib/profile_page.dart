@@ -87,14 +87,13 @@ class _ProfilePageState extends State<ProfilePage> {
         };
       }
 
-      // Ottieni il token Firebase
       final idToken = await user.getIdToken();
 
       final response = await http.put(
         Uri.parse(endpoint),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $idToken', // <-- aggiungi il token qui
+          'Authorization': 'Bearer $idToken',
         },
         body: jsonEncode(body),
       );

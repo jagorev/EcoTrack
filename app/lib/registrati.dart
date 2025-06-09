@@ -30,6 +30,7 @@ class RegistratiPage extends StatelessWidget {
         "username": usernameController.text.trim(),
         "email": emailController.text.trim(),
         "telefono": telefonoController.text.trim(),
+        "uid": user?.uid ?? "", // <-- aggiungi questa riga!
       };
 
       // 4. Invia i dati all'API (POST, Content-Type: application/json)

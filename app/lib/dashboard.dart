@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'accedi.dart';
 import 'registrati.dart';
 import 'profile_page.dart';
@@ -45,8 +46,9 @@ class EcoTrackHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
-      
       backgroundColor: Color(0xFFF0F2F5),
       body: SafeArea(
         child: Padding(
@@ -56,7 +58,6 @@ class EcoTrackHomePage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  
                   SizedBox(width: 8),
                   Text(
                     "EcoTrack",
@@ -130,11 +131,13 @@ class EcoTrackHomePage extends StatelessWidget {
               ),
               Spacer(),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const AccediPage()),
-                  );
-                },
+                onPressed: user == null
+                    ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const AccediPage()),
+                        );
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50),
                   backgroundColor: Colors.green,
@@ -164,13 +167,15 @@ class EcoTrackHomePage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const RegistratiPage(),
-                    ),
-                  );
-                },
+                onPressed: user == null
+                    ? () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const RegistratiPage(),
+                          ),
+                        );
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.green.shade700,

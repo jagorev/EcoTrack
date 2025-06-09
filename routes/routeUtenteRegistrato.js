@@ -88,5 +88,23 @@ router.delete('/api/utenteRegistrato/:id', verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * PUT /api/utenteRegistrato/:id
+ * Modifica i dati di un utente registrato per id
+ */
+router.put('/api/utenteRegistrato/:id', verifyToken, async (req, res) => {
+  try {
+    const updated = await UtenteRegistrato.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (updated) res.json(updated);
+    else res.status(404).json({ error: 'Utente non trovato' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 module.exports = router;
 

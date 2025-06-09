@@ -70,7 +70,6 @@ class _ProfilePageState extends State<ProfilePage> {
       String endpoint;
       Map<String, dynamic> body = {};
       if (widget.userType == UserType.operator) {
-        // OperatoreEcologico
         endpoint = 'http://10.0.2.2:3000/api/operatoriEcologici/${user.uid}';
         body = {
           'username': _usernameController.text.trim(),
@@ -80,7 +79,6 @@ class _ProfilePageState extends State<ProfilePage> {
           'zona': _zonaOperativaController.text.trim(),
         };
       } else {
-        // UtenteRegistrato
         endpoint = 'http://10.0.2.2:3000/api/utenteRegistrato/${user.uid}';
         body = {
           'username': _usernameController.text.trim(),
@@ -89,9 +87,15 @@ class _ProfilePageState extends State<ProfilePage> {
         };
       }
 
+      // Ottieni il token Firebase
+      final idToken = await user.getIdToken();
+
       final response = await http.put(
         Uri.parse(endpoint),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $idToken', // <-- aggiungi il token qui
+        },
         body: jsonEncode(body),
       );
       if (response.statusCode == 200) {

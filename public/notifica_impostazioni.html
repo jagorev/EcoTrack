@@ -21,6 +21,10 @@
           <label for="corpoNotifica" class="block text-green-800 font-medium mb-1">Testo notifica</label>
           <textarea id="corpoNotifica" required rows="3" placeholder="Scrivi il messaggio..." class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2"></textarea>
         </div>
+        <div>
+          <label for="dataInvio" class="block text-green-800 font-medium mb-1">Data invio</label>
+          <input type="date" id="dataInvio" required class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2" />
+        </div>
         <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition">Invia notifica</button>
       </form>
       <div id="notificaMsg" class="mt-3 text-center"></div>
@@ -63,11 +67,17 @@
     document.getElementById('notificaForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const corpoNotifica = document.getElementById('corpoNotifica').value.trim();
+      const dataInvio = document.getElementById('dataInvio').value;
       const msgDiv = document.getElementById('notificaMsg');
       msgDiv.textContent = '';
       msgDiv.className = '';
       if (!corpoNotifica) {
         msgDiv.textContent = 'Compila il campo notifica.';
+        msgDiv.className = 'text-red-700 font-semibold';
+        return;
+      }
+      if (!dataInvio) {
+        msgDiv.textContent = 'Seleziona la data di invio.';
         msgDiv.className = 'text-red-700 font-semibold';
         return;
       }
@@ -78,7 +88,7 @@
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + localStorage.getItem('adminToken'),
           },
-          body: JSON.stringify({ corpoNotifica })
+          body: JSON.stringify({ corpoNotifica, dataInvio })
         });
         if (res.ok) {
           msgDiv.textContent = 'Notifica inviata con successo!';

@@ -12,7 +12,12 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   final Set<Marker> _markers = {};
   bool _loading = true;
+  bool _iconsLoaded = false;
   late GoogleMapController _mapController;
+
+  late BitmapDescriptor greenIcon;
+  late BitmapDescriptor orangeIcon;
+  late BitmapDescriptor redIcon;
 
   static const _initialPosition = CameraPosition(
     target: LatLng(46.0711, 11.1217),
@@ -22,25 +27,52 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     super.initState();
-    _loadPins();
+    _loadIcons().then((_) => _loadPins());
+  }
+
+  Future<void> _loadIcons() async {
+    greenIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(100, 100)),
+      'assets/unita_marker_green.png',
+    );
+    orangeIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(100, 100)),
+      'assets/unita_marker_orange.png',
+    );
+    redIcon = await BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: Size(100, 100)),
+      'assets/unita_marker_red.png',
+    );
+    setState(() {
+      _iconsLoaded = true;
+    });
+  }
+
+  BitmapDescriptor getIcon(num livello) {
+    if (livello < 40) return greenIcon;
+    if (livello < 80) return orangeIcon;
+    return redIcon;
   }
 
   Future<void> _loadPins() async {
     const api =
-        'http://10.0.2.2:3000/api/unitaRaccolta'; // <- Android emulator address
-    double getHue(num livello) {
-      if (livello < 40) return BitmapDescriptor.hueGreen;
-      if (livello < 80) return BitmapDescriptor.hueOrange;
-      return BitmapDescriptor.hueRed;
-    }
+        'http://10.0.2.2:3000/api/unitaRaccolta'; // Android emulator address
 
     try {
       final resp = await http.get(Uri.parse(api));
       if (resp.statusCode == 200) {
         final List data = json.decode(resp.body);
+        debugPrint('DATA: $data');
+
         final markers = <Marker>{};
         for (var item in data) {
+          debugPrint('ITEM: $item');
+
           final p = item['posizione'];
+          if (p == null) {
+            debugPrint('Posizione mancante per item ${item['_id']}');
+            continue;
+          }
           double toDec(int g, int m, double s) =>
               (g.sign >= 0 ? 1 : -1) * (g.abs() + m / 60 + s / 3600);
           final lat = toDec(
@@ -53,12 +85,14 @@ class _MapPageState extends State<MapPage> {
             p['longitudinePrimi'],
             p['longitudineSecondi'].toDouble(),
           );
+          debugPrint('Marker: lat=$lat, lng=$lng, id=${item['_id']}');
+
           final livello = item['livelloSaturazione'] ?? 0;
           markers.add(
             Marker(
               markerId: MarkerId(item['_id']),
               position: LatLng(lat, lng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(getHue(livello)),
+              icon: getIcon(livello),
               infoWindow: InfoWindow(
                 title: 'Saturazione: $livello%',
                 snippet: 'Capienza: ${item['capienza']}',
@@ -83,7 +117,7 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
+    if (_loading || !_iconsLoaded) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(

@@ -104,7 +104,7 @@ class _AccediPageState extends State<AccediPage> {
                     ),
                     const SizedBox(width: 16),
                     const Text(
-                      'Accedi',
+                      'Accedi con EcoTrack',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
@@ -116,22 +116,29 @@ class _AccediPageState extends State<AccediPage> {
               ),
             ),
             const SizedBox(height: 10),
-            SignInButton(
-              Buttons.google,
-              text: "Accedi con Google",
-              onPressed: () async {
-                try {
-                  final userCredential = await AuthService.signInWithGoogle();
-                  setState(() {
-                    displayName = userCredential.user?.displayName
-                        ?? userCredential.user?.email
-                        ?? 'Utente';
-                  });
-                  // naviga alla home o mostra messaggio di successo
-                } catch (e) {
-                  print('Errore login con Google: $e');
-                }
-              },
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: SignInButton(
+                Buttons.google,
+                text: "Accedi con Google",
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                onPressed: () async {
+                  try {
+                    final userCredential = await AuthService.signInWithGoogle();
+                    setState(() {
+                      displayName = userCredential.user?.displayName
+                          ?? userCredential.user?.email
+                          ?? 'Utente';
+                    });
+                    // naviga alla home o mostra messaggio di successo
+                  } catch (e) {
+                    print('Errore login con Google: $e');
+                  }
+                },
+              ),
             ),
           ],
         ),

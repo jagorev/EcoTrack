@@ -20,6 +20,7 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   List<String> _lastNotifiche = [];
   late Timer _pollingTimer;
+  List<Map<String, dynamic>> notificheOrdinate = [];
 
   @override
   void initState() {
@@ -71,6 +72,12 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
       final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/notifiche'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        // Ordina per dataInvio crescente (più imminente in alto)
+        data.sort((a, b) => DateTime.parse(a['dataInvio']).compareTo(DateTime.parse(b['dataInvio'])));
+        notificheOrdinate = data.map((n) => {
+          'corpoNotifica': n['corpoNotifica'],
+          'dataInvio': n['dataInvio'],
+        }).toList();
         final List<String> nuoveNotifiche = data.map((n) => n['corpoNotifica'] as String).toList();
         if (notificheAttive && _lastNotifiche.isNotEmpty && nuoveNotifiche.isNotEmpty) {
           final nuova = nuoveNotifiche.firstWhere((n) => !_lastNotifiche.contains(n), orElse: () => '');
@@ -103,23 +110,36 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF6FFF7),
       appBar: AppBar(
-        title: const Text('Promemoria Raccolta'),
-        backgroundColor: Colors.green,
+        elevation: 0,
+        backgroundColor: const Color(0xFF16a34a),
+        title: Row(
+          children: [
+            const Icon(Icons.notifications_active, color: Colors.white, size: 28),
+            const SizedBox(width: 10),
+            const Text('Promemoria Raccolta', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+          ],
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop(notificheAttive);
           },
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [BoxShadow(color: Colors.green.withOpacity(0.08), blurRadius: 8, offset: const Offset(0, 2))],
+              ),
               child: Row(
                 children: [
                   Switch(
@@ -129,43 +149,95 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
                         notificheAttive = val;
                       });
                     },
-                    activeColor: Colors.green,
+                    activeColor: const Color(0xFF16a34a),
                   ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Attiva notifiche promemoria raccolta rifiuti',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      notificheAttive ? 'Notifiche attive: riceverai promemoria raccolta' : 'Notifiche disattivate',
+                      style: TextStyle(
+                        color: notificheAttive ? const Color(0xFF16a34a) : Colors.grey,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 28),
             const Text(
-              'Notifiche precedenti:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              'Prossimi promemoria:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF16a34a)),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: notifichePrecedenti.isEmpty
-                    ? const Text('Nessuna notifica precedente.')
-                    : ListView.builder(
-                        itemCount: notifichePrecedenti.length,
-                        itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Text(
-                            notifichePrecedenti[index],
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                        ),
+              child: notificheOrdinate.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.inbox, size: 60, color: Colors.green),
+                          SizedBox(height: 10),
+                          Text('Nessun promemoria programmato', style: TextStyle(fontSize: 16, color: Colors.grey)),
+                        ],
                       ),
-              ),
+                    )
+                  : ListView.builder(
+                      itemCount: notificheOrdinate.length,
+                      itemBuilder: (context, index) {
+                        final notifica = notificheOrdinate[index];
+                        final data = DateTime.parse(notifica['dataInvio']);
+                        final oggi = DateTime.now();
+                        final isOggi = data.year == oggi.year && data.month == oggi.month && data.day == oggi.day;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeIn,
+                          margin: const EdgeInsets.symmetric(vertical: 7),
+                          child: Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            color: isOggi ? const Color(0xFFdcfce7) : Colors.white,
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: isOggi ? const Color(0xFF16a34a) : Colors.green[200],
+                                child: Icon(
+                                  isOggi ? Icons.today : Icons.event,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              title: Text(
+                                notifica['corpoNotifica'],
+                                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  Icon(Icons.calendar_today, size: 16, color: Colors.green[700]),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}',
+                                    style: TextStyle(
+                                      color: isOggi ? const Color(0xFF16a34a) : Colors.green[700],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  if (isOggi)
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 8),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF16a34a),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Text('OGGI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

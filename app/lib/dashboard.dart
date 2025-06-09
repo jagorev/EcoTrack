@@ -204,6 +204,46 @@ class EcoTrackHomePage extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: user != null
+                    ? () async {
+                        await FirebaseAuth.instance.signOut();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Logout effettuato')),
+                        );
+                        // Aggiorna la UI dopo il logout
+                        (context as Element).reassemble();
+                      }
+                    : null, // Disabilitato se non loggato
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 6,
+                  shadowColor: Colors.redAccent,
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.logout, color: Colors.white, size: 26),
+                    SizedBox(width: 10),
+                    Text(
+                      "Esci",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

@@ -166,7 +166,7 @@ const Posizione = require('../models/Posizione');
  */
 router.get('/api/unitaRaccolta', async (req, res) => {
     try {
-        const unitaRaccolta = await UnitaRaccolta.find({}, 'livelloSaturazione posizione capienza')
+        const unitaRaccolta = await UnitaRaccolta.find({}, '_id livelloSaturazione posizione capienza')
             .populate('tipoRaccolta', 'tipo')
             .populate('sensore', 'tipo');
         res.json(unitaRaccolta);

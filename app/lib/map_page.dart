@@ -18,6 +18,7 @@ class _MapPageState extends State<MapPage> {
   late BitmapDescriptor greenIcon;
   late BitmapDescriptor orangeIcon;
   late BitmapDescriptor redIcon;
+  late BitmapDescriptor ecocentroIcon;
 
   static const _initialPosition = CameraPosition(
     target: LatLng(46.0711, 11.1217),
@@ -31,21 +32,29 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadIcons() async {
-    greenIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(100, 100)),
-      'assets/unita_marker_green.png',
-    );
-    orangeIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(100, 100)),
-      'assets/unita_marker_orange.png',
-    );
-    redIcon = await BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: Size(100, 100)),
-      'assets/unita_marker_red.png',
-    );
-    setState(() {
-      _iconsLoaded = true;
-    });
+    try {
+      greenIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/unita_marker_green.png',
+      );
+      orangeIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/unita_marker_orange.png',
+      );
+      redIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/unita_marker_red.png',
+      );
+      ecocentroIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/ecocentro_marker.png',
+      );
+      setState(() {
+        _iconsLoaded = true;
+      });
+    } catch (e) {
+      debugPrint('Errore caricamento icone: $e');
+    }
   }
 
   BitmapDescriptor getIcon(num livello) {
@@ -55,24 +64,18 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadPins() async {
-    const api =
-        'http://10.0.2.2:3000/api/unitaRaccolta'; // Android emulator address
+    const unitaApi = 'http://10.0.2.2:3000/api/unitaRaccolta';
+    const ecocentroApi = 'http://10.0.2.2:3000/api/ecocentro';
 
     try {
-      final resp = await http.get(Uri.parse(api));
+      // Carica unità di raccolta
+      final resp = await http.get(Uri.parse(unitaApi));
+      final markers = <Marker>{};
       if (resp.statusCode == 200) {
         final List data = json.decode(resp.body);
-        debugPrint('DATA: $data');
-
-        final markers = <Marker>{};
         for (var item in data) {
-          debugPrint('ITEM: $item');
-
           final p = item['posizione'];
-          if (p == null) {
-            debugPrint('Posizione mancante per item ${item['_id']}');
-            continue;
-          }
+          if (p == null) continue;
           double toDec(int g, int m, double s) =>
               (g.sign >= 0 ? 1 : -1) * (g.abs() + m / 60 + s / 3600);
           final lat = toDec(
@@ -85,8 +88,6 @@ class _MapPageState extends State<MapPage> {
             p['longitudinePrimi'],
             p['longitudineSecondi'].toDouble(),
           );
-          debugPrint('Marker: lat=$lat, lng=$lng, id=${item['_id']}');
-
           final livello = item['livelloSaturazione'] ?? 0;
           markers.add(
             Marker(
@@ -100,15 +101,46 @@ class _MapPageState extends State<MapPage> {
             ),
           );
         }
-        setState(() {
-          _markers.clear();
-          _markers.addAll(markers);
-          _loading = false;
-        });
-      } else {
-        debugPrint('Errore ${resp.statusCode}');
-        setState(() => _loading = false);
       }
+
+      // Carica ecocentri
+      final ecoResp = await http.get(Uri.parse(ecocentroApi));
+      if (ecoResp.statusCode == 200) {
+        final List ecoData = json.decode(ecoResp.body);
+        for (var item in ecoData) {
+          final p = item['posizione'];
+          if (p == null) continue;
+          double toDec(int g, int m, double s) =>
+              (g.sign >= 0 ? 1 : -1) * (g.abs() + m / 60 + s / 3600);
+          final lat = toDec(
+            p['latitudineGradi'],
+            p['latitudinePrimi'],
+            p['latitudineSecondi'].toDouble(),
+          );
+          final lng = toDec(
+            p['longitudineGradi'],
+            p['longitudinePrimi'],
+            p['longitudineSecondi'].toDouble(),
+          );
+          markers.add(
+            Marker(
+              markerId: MarkerId('ecocentro_${item['_id']}'),
+              position: LatLng(lat, lng),
+              icon: ecocentroIcon,
+              infoWindow: InfoWindow(
+                title: item['nome'] ?? 'Ecocentro',
+                snippet: item['indirizzo'] ?? '',
+              ),
+            ),
+          );
+        }
+      }
+
+      setState(() {
+        _markers.clear();
+        _markers.addAll(markers);
+        _loading = false;
+      });
     } catch (e) {
       debugPrint('Eccezione in _loadPins: $e');
       setState(() => _loading = false);

@@ -19,6 +19,7 @@ class _MapPageState extends State<MapPage> {
   late BitmapDescriptor orangeIcon;
   late BitmapDescriptor redIcon;
   late BitmapDescriptor ecocentroIcon;
+  late BitmapDescriptor raccoltaSpecialeIcon;
 
   static const _initialPosition = CameraPosition(
     target: LatLng(46.0711, 11.1217),
@@ -49,6 +50,10 @@ class _MapPageState extends State<MapPage> {
         const ImageConfiguration(size: Size(48, 48)),
         'assets/ecocentro_marker.png',
       );
+      raccoltaSpecialeIcon = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(48, 48)),
+        'assets/raccoltaspeciale_marker.png',
+      );
       setState(() {
         _iconsLoaded = true;
       });
@@ -66,6 +71,7 @@ class _MapPageState extends State<MapPage> {
   Future<void> _loadPins() async {
     const unitaApi = 'http://10.0.2.2:3000/api/unitaRaccolta';
     const ecocentroApi = 'http://10.0.2.2:3000/api/ecocentro';
+    const raccoltaSpecialeApi = 'http://10.0.2.2:3000/api/area-raccolta-speciale';
 
     try {
       // Carica unità di raccolta
@@ -129,6 +135,39 @@ class _MapPageState extends State<MapPage> {
               icon: ecocentroIcon,
               infoWindow: InfoWindow(
                 title: item['nome'] ?? 'Ecocentro',
+                snippet: item['indirizzo'] ?? '',
+              ),
+            ),
+          );
+        }
+      }
+
+      // Carica aree raccolta speciale
+      final specialeResp = await http.get(Uri.parse(raccoltaSpecialeApi));
+      if (specialeResp.statusCode == 200) {
+        final List specialeData = json.decode(specialeResp.body);
+        for (var item in specialeData) {
+          final p = item['posizione'];
+          if (p == null) continue;
+          double toDec(int g, int m, double s) =>
+              (g.sign >= 0 ? 1 : -1) * (g.abs() + m / 60 + s / 3600);
+          final lat = toDec(
+            p['latitudineGradi'],
+            p['latitudinePrimi'],
+            p['latitudineSecondi'].toDouble(),
+          );
+          final lng = toDec(
+            p['longitudineGradi'],
+            p['longitudinePrimi'],
+            p['longitudineSecondi'].toDouble(),
+          );
+          markers.add(
+            Marker(
+              markerId: MarkerId('raccoltaspeciale_${item['_id']}'),
+              position: LatLng(lat, lng),
+              icon: raccoltaSpecialeIcon,
+              infoWindow: InfoWindow(
+                title: item['nome'] ?? 'Raccolta Speciale',
                 snippet: item['indirizzo'] ?? '',
               ),
             ),

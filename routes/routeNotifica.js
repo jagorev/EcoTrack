@@ -37,6 +37,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT modifica notifica per ID
+router.put('/:id', async (req, res) => {
+  try {
+    const notifica = await Notifica.findById(req.params.id);
+    if (!notifica) return res.status(404).json({ message: 'Notifica non trovata' });
+    if (req.body.corpoNotifica) notifica.corpoNotifica = req.body.corpoNotifica;
+    if (req.body.dataInvio) notifica.dataInvio = new Date(req.body.dataInvio);
+    await notifica.save();
+    res.json(notifica);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 // DELETE notifica per ID
 router.delete('/:id', async (req, res) => {
   try {

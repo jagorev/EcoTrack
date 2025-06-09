@@ -27,7 +27,8 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const notifica = new Notifica({
-      corpoNotifica: req.body.corpoNotifica
+      corpoNotifica: req.body.corpoNotifica,
+      dataInvio: req.body.dataInvio ? new Date(req.body.dataInvio) : Date.now()
     });
     const nuovaNotifica = await notifica.save();
     res.status(201).json(nuovaNotifica);

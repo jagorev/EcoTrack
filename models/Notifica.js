@@ -5,7 +5,12 @@ const notificaSchema = new mongoose.Schema({
   corpoNotifica: { 
     type: String, 
     required: true 
-  } // Testo del messaggio
+  }, // Testo del messaggio
+  dataInvio: {
+    type: Date,
+    required: true,
+    default: Date.now
+  } // Data di invio della notifica
 });
 
 // Creo il modello e specifico la collezione 'notifiche'

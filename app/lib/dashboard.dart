@@ -5,7 +5,12 @@ import 'registrati.dart';
 import 'profile_page.dart';
 import 'map_page.dart';
 
-class EcoTrackHomePage extends StatelessWidget {
+class EcoTrackHomePage extends StatefulWidget {
+  @override
+  State<EcoTrackHomePage> createState() => _EcoTrackHomePageState();
+}
+
+class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
   Widget buildMenuItem(
     IconData icon,
     Color color,
@@ -46,208 +51,209 @@ class EcoTrackHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        final user = snapshot.data;
 
-    return Scaffold(
-      backgroundColor: Color(0xFFF0F2F5),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
+        return Scaffold(
+          backgroundColor: Color(0xFFF0F2F5),
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(width: 8),
-                  Text(
-                    "EcoTrack",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                  Row(
+                    children: [
+                      SizedBox(width: 8),
+                      Text(
+                        "EcoTrack",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.account_circle),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const ProfilePage(userType: UserType.guest),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.settings, color: Colors.black87),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Impostazioni (prossimamente)')),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const MapPage()),
+                      );
+                    },
+                    child: buildMenuItem(
+                      Icons.map,
+                      Colors.green,
+                      "Mappa Interattiva",
+                      "Visualizza i cassonetti e il livello di riempimento.",
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) =>
-                                  const ProfilePage(userType: UserType.guest),
-                        ),
-                      );
-                    },
+                  buildMenuItem(
+                    Icons.notifications,
+                    Colors.blue,
+                    "Promemoria Raccolta",
+                    "Ricevi notifiche per la raccolta porta a porta.",
                   ),
-                  IconButton(
-                    icon: Icon(Icons.settings, color: Colors.black87),
-                    onPressed: () {
-                      // TODO: Azione impostazioni
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Impostazioni (prossimamente)')),
-                      );
-                    },
+                  buildMenuItem(
+                    Icons.camera_alt,
+                    Colors.red,
+                    "Segnalazioni",
+                    "Segnala aree inquinate con foto.",
+                  ),
+                  buildMenuItem(
+                    Icons.calendar_today,
+                    Colors.amber[800]!,
+                    "Prenota Smaltimento",
+                    "Prenota lo smaltimento presso un ecocentro.",
+                  ),
+                  buildMenuItem(
+                    Icons.attach_money,
+                    Colors.purple,
+                    "Simula Tasse",
+                    "Calcola le tasse sulla gestione dei rifiuti.",
+                  ),
+                  Spacer(),
+                  ElevatedButton(
+                    onPressed: user == null
+                        ? () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => const AccediPage()),
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 6,
+                      shadowColor: Colors.greenAccent,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.login, color: Colors.white, size: 26),
+                        SizedBox(width: 10),
+                        Text(
+                          "Accedi",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: user == null
+                        ? () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const RegistratiPage(),
+                              ),
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.green.shade700,
+                      minimumSize: Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 6,
+                      shadowColor: Colors.greenAccent,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.person_add, color: Colors.white, size: 26),
+                        SizedBox(width: 10),
+                        Text(
+                          "Registrati",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: user != null
+                        ? () async {
+                            await FirebaseAuth.instance.signOut();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Logout effettuato')),
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red,
+                      minimumSize: Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 6,
+                      shadowColor: Colors.redAccent,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.logout, color: Colors.white, size: 26),
+                        SizedBox(width: 10),
+                        Text(
+                          "Esci",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-              SizedBox(height: 24),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const MapPage()),
-                  );
-                },
-                child: buildMenuItem(
-                  Icons.map,
-                  Colors.green,
-                  "Mappa Interattiva",
-                  "Visualizza i cassonetti e il livello di riempimento.",
-                ),
-              ),
-              buildMenuItem(
-                Icons.notifications,
-                Colors.blue,
-                "Promemoria Raccolta",
-                "Ricevi notifiche per la raccolta porta a porta.",
-              ),
-              buildMenuItem(
-                Icons.camera_alt,
-                Colors.red,
-                "Segnalazioni",
-                "Segnala aree inquinate con foto.",
-              ),
-              buildMenuItem(
-                Icons.calendar_today,
-                Colors.amber[800]!,
-                "Prenota Smaltimento",
-                "Prenota lo smaltimento presso un ecocentro.",
-              ),
-              buildMenuItem(
-                Icons.attach_money,
-                Colors.purple,
-                "Simula Tasse",
-                "Calcola le tasse sulla gestione dei rifiuti.",
-              ),
-              Spacer(),
-              ElevatedButton(
-                onPressed: user == null
-                    ? () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const AccediPage()),
-                        );
-                      }
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 6,
-                  shadowColor: Colors.greenAccent,
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.login, color: Colors.white, size: 26),
-                    SizedBox(width: 10),
-                    Text(
-                      "Accedi",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: user == null
-                    ? () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const RegistratiPage(),
-                          ),
-                        );
-                      }
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.green.shade700,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 6,
-                  shadowColor: Colors.greenAccent,
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.person_add, color: Colors.white, size: 26),
-                    SizedBox(width: 10),
-                    Text(
-                      "Registrati",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: user != null
-                    ? () async {
-                        await FirebaseAuth.instance.signOut();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Logout effettuato')),
-                        );
-                        // Aggiorna la UI dopo il logout
-                        (context as Element).reassemble();
-                      }
-                    : null, // Disabilitato se non loggato
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 6,
-                  shadowColor: Colors.redAccent,
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.logout, color: Colors.white, size: 26),
-                    SizedBox(width: 10),
-                    Text(
-                      "Esci",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

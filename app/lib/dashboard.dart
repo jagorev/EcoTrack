@@ -4,6 +4,7 @@ import 'accedi.dart';
 import 'registrati.dart';
 import 'profile_page.dart';
 import 'map_page.dart';
+import 'tari.dart';
 
 class EcoTrackHomePage extends StatefulWidget {
   @override
@@ -129,11 +130,18 @@ class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
                     "Prenota Smaltimento",
                     "Prenota lo smaltimento presso un ecocentro.",
                   ),
-                  buildMenuItem(
-                    Icons.attach_money,
-                    Colors.purple,
-                    "Simula Tasse",
-                    "Calcola le tasse sulla gestione dei rifiuti.",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const TariPage()),
+                      );
+                    },
+                    child: buildMenuItem(
+                      Icons.attach_money,
+                      Colors.purple,
+                      "Simula Tasse",
+                      "Calcola le tasse sulla gestione dei rifiuti.",
+                    ),
                   ),
                   Spacer(),
                   ElevatedButton(

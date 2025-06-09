@@ -3,65 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Impostazioni - EcoTrack</title>
+  <title>Impostazioni Notifiche - EcoTrack</title>
   <script>
     if (!localStorage.getItem('adminToken')) {
       window.location.href = '/index.html';
     }
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;500;400&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #f9fafb; }
+    .glass {
+      background: white;
+      box-shadow: 0 8px 32px 0 rgba(34,197,94,0.10);
+      border-radius: 24px;
+      border: 1px solid #bbf7d0;
+    }
+    .gradient-header {
+      background: #16a34a; /* bg-green-600 di Tailwind */
+      color: white;
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 4px 16px 0 rgba(22,163,74,0.10);
+    }
+    .section-title {
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: #16a34a;
+    }
+    .section-title-blue {
+      color: #16a34a;
+    }
+    .btn-main {
+      background: #16a34a;
+      color: white;
+      font-weight: 700;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
+    .btn-main:hover {
+      filter: brightness(0.95);
+      box-shadow: 0 2px 8px 0 #16a34a33;
+    }
+    .input-main:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 2px #16a34a33;
+    }
+    .checkbox-custom:checked {
+      accent-color: #16a34a;
+    }
+    .notifica-card {
+      border: 1.5px solid #bbf7d0;
+      background: #f0fdf4;
+      box-shadow: 0 2px 8px 0 #16a34a22;
+    }
+    .notifica-card:hover {
+      box-shadow: 0 4px 16px 0 #16a34a33;
+      border-color: #16a34a;
+    }
+    .badge {
+      background: #16a34a;
+      color: white;
+      font-weight: 700;
+      border-radius: 9999px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
-  <div class="w-full max-w-xl bg-white rounded-2xl shadow-lg p-8 mt-10">
-    <h1 class="text-2xl font-bold text-green-700 mb-6 text-center">Impostazioni</h1>
-    <div class="mb-10">
-      <h2 class="text-lg font-semibold text-green-700 mb-4">Invia notifica utenti</h2>
-      <form id="notificaForm" class="space-y-4">
+<body class="min-h-screen flex flex-col items-center p-6">
+  <div class="w-full max-w-2xl glass p-0 mt-10 shadow-xl">
+    <div class="gradient-header p-6 text-center">
+      <h1 class="text-3xl font-bold tracking-tight">Gestione Notifiche</h1>
+      <p class="mt-2 text-lg font-medium opacity-90">Invia e pianifica notifiche per gli utenti EcoTrack</p>
+    </div>
+    <div class="p-8">
+      <h2 class="section-title text-xl mb-4">Invia notifica manuale</h2>
+      <form id="notificaForm" class="space-y-4 mb-8">
         <div>
-          <label for="corpoNotifica" class="block text-green-800 font-medium mb-1">Testo notifica</label>
-          <textarea id="corpoNotifica" required rows="3" placeholder="Scrivi il messaggio..." class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2"></textarea>
+          <label for="corpoNotifica" class="block font-medium mb-1">Testo notifica</label>
+          <textarea id="corpoNotifica" required rows="3" placeholder="Scrivi il messaggio..." class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2 input-main"></textarea>
         </div>
         <div>
-          <label for="dataInvio" class="block text-green-800 font-medium mb-1">Data invio</label>
-          <input type="date" id="dataInvio" required class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2" />
+          <label for="dataInvio" class="block font-medium mb-1">Data invio</label>
+          <input type="date" id="dataInvio" required class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2 input-main" />
         </div>
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition">Invia notifica</button>
+        <button type="submit" class="w-full btn-main py-2 px-4 text-lg">Invia notifica</button>
       </form>
       <div id="notificaMsg" class="mt-3 text-center"></div>
-    </div>
-    <!-- Sezione pianificazione notifiche automatiche -->
-    <div class="mt-10">
-      <h2 class="text-lg font-semibold text-blue-700 mb-4">Pianifica notifica automatica</h2>
-      <form id="autoNotificaForm" class="space-y-4">
+      <hr class="my-8 border-green-200">
+      <h2 class="section-title section-title-blue text-xl mb-4">Pianifica notifica automatica</h2>
+      <form id="autoNotificaForm" class="space-y-4 mb-8">
         <div>
-          <label class="block text-blue-800 font-medium mb-1">Tipologia raccolta</label>
+          <label class="block font-medium mb-1">Tipologia raccolta</label>
           <div class="flex flex-wrap gap-4">
             <label class="flex items-center gap-2">
-              <input type="checkbox" name="raccolta" value="vetro" class="accent-blue-600"> Vetro
+              <input type="checkbox" name="raccolta" value="vetro" class="checkbox-custom"> Vetro
             </label>
             <label class="flex items-center gap-2">
-              <input type="checkbox" name="raccolta" value="plastica" class="accent-yellow-500"> Plastica
+              <input type="checkbox" name="raccolta" value="plastica" class="checkbox-custom"> Plastica
             </label>
             <label class="flex items-center gap-2">
-              <input type="checkbox" name="raccolta" value="carta" class="accent-green-600"> Carta
+              <input type="checkbox" name="raccolta" value="carta" class="checkbox-custom"> Carta
             </label>
             <label class="flex items-center gap-2">
-              <input type="checkbox" name="raccolta" value="umido" class="accent-brown-600"> Umido
+              <input type="checkbox" name="raccolta" value="umido" class="checkbox-custom"> Umido
             </label>
             <label class="flex items-center gap-2">
-              <input type="checkbox" name="raccolta" value="indifferenziato" class="accent-gray-600"> Indifferenziato
+              <input type="checkbox" name="raccolta" value="indifferenziato" class="checkbox-custom"> Indifferenziato
             </label>
           </div>
         </div>
         <div>
-          <label for="dataAutoInvio" class="block text-blue-800 font-medium mb-1">Data raccolta</label>
-          <input type="date" id="dataAutoInvio" required class="w-full rounded-lg border border-blue-300 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 p-2" />
+          <label for="dataAutoInvio" class="block font-medium mb-1">Data raccolta</label>
+          <input type="date" id="dataAutoInvio" required class="w-full rounded-lg border border-green-300 focus:ring-2 focus:ring-green-400 focus:border-green-500 p-2 input-main" />
         </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">Pianifica notifica</button>
+        <button type="submit" class="w-full btn-main py-2 px-4 text-lg">Pianifica notifica</button>
       </form>
       <div id="autoNotificaMsg" class="mt-3 text-center"></div>
+      <hr class="my-8 border-green-200">
+      <div class="mb-2 flex items-center justify-between">
+        <h2 class="section-title text-xl">Storico notifiche</h2>
+        <button id="refreshBtn" class="btn-main px-4 py-1 text-sm">Aggiorna</button>
+      </div>
+      <div id="notificheList" class="space-y-3 mt-2"></div>
     </div>
-    <!-- Altre sezioni impostazioni qui -->
   </div>
   <script>
     // --- Controllo token come sulle altre pagine protette ---
@@ -96,6 +164,7 @@
         window.location.href = '/index.html';
       }
     })();
+    // --- Invio notifica manuale ---
     document.getElementById('notificaForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const corpoNotifica = document.getElementById('corpoNotifica').value.trim();
@@ -126,6 +195,7 @@
           msgDiv.textContent = 'Notifica inviata con successo!';
           msgDiv.className = 'text-green-700 font-semibold';
           document.getElementById('notificaForm').reset();
+          loadNotifiche();
         } else {
           const data = await res.json();
           msgDiv.textContent = data.message || 'Errore nell\'invio della notifica.';
@@ -136,7 +206,7 @@
         msgDiv.className = 'text-red-700 font-semibold';
       }
     });
-    // Pianificazione notifica automatica
+    // --- Pianificazione notifica automatica ---
     document.getElementById('autoNotificaForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const raccolte = Array.from(document.querySelectorAll('input[name="raccolta"]:checked')).map(cb => cb.value);
@@ -175,11 +245,47 @@
         msgDiv.textContent = 'Notifiche pianificate con successo!';
         msgDiv.className = 'text-blue-700 font-semibold';
         document.getElementById('autoNotificaForm').reset();
+        loadNotifiche();
       } else {
         msgDiv.textContent = 'Errore nella pianificazione delle notifiche.';
         msgDiv.className = 'text-red-700 font-semibold';
       }
     });
+    // --- Caricamento e visualizzazione notifiche ---
+    async function loadNotifiche() {
+      const listDiv = document.getElementById('notificheList');
+      listDiv.innerHTML = '<div class="text-gray-400 text-center py-4">Caricamento...</div>';
+      try {
+        const res = await fetch('/api/Notifiche', {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('adminToken'),
+          }
+        });
+        if (!res.ok) throw new Error('Errore fetch notifiche');
+        let notifiche = await res.json();
+        // Ordina per dataInvio decrescente (più recente prima)
+        notifiche = notifiche.sort((a, b) => new Date(b.dataInvio) - new Date(a.dataInvio));
+        if (notifiche.length === 0) {
+          listDiv.innerHTML = '<div class="text-gray-400 text-center py-4">Nessuna notifica presente.</div>';
+          return;
+        }
+        listDiv.innerHTML = notifiche.map(n => `
+          <div class="notifica-card rounded-xl flex flex-col md:flex-row md:items-center gap-2 px-4 py-3 hover:shadow-lg transition">
+            <div class="flex-1">
+              <div class="font-semibold text-green-700 text-base">${n.corpoNotifica}</div>
+              <div class="text-xs text-gray-500 mt-1">${new Date(n.dataInvio).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+            </div>
+            <div class="flex-none">
+              <span class="badge">${n.dataInvio ? 'Programmato' : 'Manuale'}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        listDiv.innerHTML = '<div class="text-red-600 text-center py-4">Errore nel caricamento notifiche.</div>';
+      }
+    }
+    document.getElementById('refreshBtn').addEventListener('click', loadNotifiche);
+    window.addEventListener('DOMContentLoaded', loadNotifiche);
   </script>
 </body>
 </html>

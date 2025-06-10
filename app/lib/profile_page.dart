@@ -7,7 +7,7 @@ enum UserType { guest, registered, operator }
 
 class ProfilePage extends StatefulWidget {
   final UserType userType;
-  const ProfilePage({Key? key, required this.userType}) : super(key: key);
+  const ProfilePage({super.key, required this.userType});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();

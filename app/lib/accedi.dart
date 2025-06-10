@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'signInWithGoogle.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
+
 class AccediPage extends StatefulWidget {
   const AccediPage({Key? key}) : super(key: key);
+
 
   @override
   State<AccediPage> createState() => _AccediPageState();

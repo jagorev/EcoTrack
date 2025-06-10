@@ -35,6 +35,8 @@ const tipoSensoreRoutes = require('./routes/routeTipoSensore');
 app.use(tipoSensoreRoutes);
 const tipoRaccoltaRoutes = require('./routes/routeTipoRaccolta');
 app.use(tipoRaccoltaRoutes);
+const routeAreaRaccoltaSpeciale = require('./routes/routeAreaRaccoltaSpeciale');
+app.use(routeAreaRaccoltaSpeciale);
 
 // Configurazione Swagger
 const swaggerOptions = {

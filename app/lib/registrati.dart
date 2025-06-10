@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RegistratiPage extends StatelessWidget {
-  const RegistratiPage({Key? key}) : super(key: key);
+  const RegistratiPage({super.key});
 
   Future<void> _registerUser(
     BuildContext context,
@@ -141,7 +141,14 @@ class RegistratiPage extends StatelessWidget {
                 children: const [
                   Icon(Icons.check_circle, color: Colors.white),
                   SizedBox(width: 10),
-                  Text('Registrati', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text(
+                    'Registrati',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             ),

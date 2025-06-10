@@ -9,9 +9,12 @@
     "swagger-ui-express": "^5.0.1"
   },
   "scripts": {
-    "build:swagger": "node scripts/build-swagger.js"
+    "build:swagger": "node scripts/build-swagger.js",
+    "test": "jest --setupFiles dotenv/config"
   },
   "devDependencies": {
+    "jest": "^30.0.0",
+    "supertest": "^7.1.1",
     "swagger-jsdoc": "^6.2.8",
     "yamljs": "^0.3.0"
   }

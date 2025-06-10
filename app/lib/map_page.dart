@@ -69,9 +69,10 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadPins() async {
-    const unitaApi = 'http://10.0.2.2:3000/api/unitaRaccolta';
-    const ecocentroApi = 'http://10.0.2.2:3000/api/ecocentro';
-    const raccoltaSpecialeApi = 'http://10.0.2.2:3000/api/area-raccolta-speciale';
+    const unitaApi = 'https://ecotrack-6pp4.onrender.com/api/unitaRaccolta';
+    const ecocentroApi = 'https://ecotrack-6pp4.onrender.com/api/ecocentro';
+    const raccoltaSpecialeApi =
+        'https://ecotrack-6pp4.onrender.com/api/area-raccolta-speciale';
 
     try {
       // Carica unità di raccolta
@@ -175,6 +176,7 @@ class _MapPageState extends State<MapPage> {
         }
       }
 
+      if (!mounted) return;
       setState(() {
         _markers.clear();
         _markers.addAll(markers);

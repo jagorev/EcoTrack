@@ -35,7 +35,7 @@ class RegistratiPage extends StatelessWidget {
 
       // 4. Invia i dati all'API (POST, Content-Type: application/json)
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/utenteRegistrato'),
+        Uri.parse('https://ecotrack-6pp4.onrender.com/api/utenteRegistrato'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(data),
       );

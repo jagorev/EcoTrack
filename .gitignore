@@ -8,3 +8,5 @@ app/macos/Flutter/GeneratedPluginRegistrant.swift
 app/windows/flutter/generated_plugin_registrant.cc
 app/windows/flutter/generated_plugin_registrant.h
 app/windows/flutter/generated_plugins.cmake
+node_modules
+firebase-service-account.json

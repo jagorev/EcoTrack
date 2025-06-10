@@ -13,10 +13,23 @@ const Segnalazione = require('../models/Segnalazione');
  *     responses:
  *       200:
  *         description: Lista di segnalazioni ottenuta con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Segnalazione'
  *       500:
  *         description: Errore del server
  */
-
+router.get('/api/segnalazione', async (req, res) => {
+    try {
+        const segnalazioni = await Segnalazione.find();
+        res.status(200).json(segnalazioni);
+    } catch (err) {
+        res.status(500).json({ messaggio: err.message });
+    }
+});
 /**
  * @swagger
  * /api/segnalazione:
@@ -151,7 +164,7 @@ router.post('/api/segnalazione', async (req, res) => {
  *     tags:
  *       - Segnalazione
  */
-router.patch('/api/prenotazione/:id', async (req, res) => {
+router.patch('/api/segnalazione/:id', async (req, res) => {
     try {
         const segnalazioneAggiornata = await Segnalazione.findByIdAndUpdate(
             req.params.id,
@@ -193,7 +206,7 @@ router.patch('/api/prenotazione/:id', async (req, res) => {
  *     tags:
  *       - Segnalazione
  */
-router.delete('/api/prenotazione/:id', async (req, res) => {
+router.delete('/api/segnalazione/:id', async (req, res) => {
     try {
         const segnalazioneEliminata = await Segnalazione.findByIdAndDelete(req.params.id);
 

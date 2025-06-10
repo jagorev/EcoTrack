@@ -1,7 +1,7 @@
 const request = require('supertest');
-const app = process.env.SERVER_URL; // Usa SERVER_URL dal file .env
+const app = process.env.SERVER_URL; 
 
-jest.setTimeout(10000); // Timeout globale di 10 secondi
+jest.setTimeout(10000); 
 
 describe('Notifica API Tests', () => {
   let notificaId = '';

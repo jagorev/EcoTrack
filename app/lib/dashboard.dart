@@ -16,7 +16,6 @@ class EcoTrackHomePage extends StatefulWidget {
 }
 
 class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
-
   bool _notificheAttiveDashboard = true; // Stato delle notifiche nella dashboard
   @override
   void initState() {
@@ -83,7 +82,6 @@ class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         final user = snapshot.data;
-
         return Scaffold(
           backgroundColor: Color(0xFFF0F2F5),
           body: SafeArea(
@@ -126,6 +124,7 @@ class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
                     ],
                   ),
                   SizedBox(height: 24),
+                  // MENU PRINCIPALE
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
@@ -139,23 +138,49 @@ class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
                       "Visualizza i cassonetti e il livello di riempimento.",
                     ),
                   ),
-                  buildMenuItem(
-                    Icons.notifications,
-                    Colors.blue,
-                    "Promemoria Raccolta",
-                    "Ricevi notifiche per la raccolta porta a porta.",
+                  GestureDetector(
+                    onTap: () async {
+                      final result = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                          builder: (context) => PromemoriaRaccoltaPage(
+                            notificheAttive: _notificheAttiveDashboard,
+                          ),
+                        ),
+                      );
+                      if (result != null) {
+                        setState(() {
+                          _notificheAttiveDashboard = result;
+                        });
+                      }
+                    },
+                    child: buildMenuItem(
+                      Icons.notifications,
+                      Colors.blue,
+                      "Promemoria Raccolta",
+                      "Ricevi notifiche per la raccolta porta a porta.",
+                    ),
                   ),
-                  buildMenuItem(
-                    Icons.camera_alt,
-                    Colors.red,
-                    "Segnalazioni",
-                    "Segnala aree inquinate con foto.",
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: Navigazione a pagina segnalazioni
+                    },
+                    child: buildMenuItem(
+                      Icons.camera_alt,
+                      Colors.red,
+                      "Segnalazioni",
+                      "Segnala aree inquinate con foto.",
+                    ),
                   ),
-                  buildMenuItem(
-                    Icons.calendar_today,
-                    Colors.amber[800]!,
-                    "Prenota Smaltimento",
-                    "Prenota lo smaltimento presso un ecocentro.",
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: Navigazione a pagina prenotazione smaltimento
+                    },
+                    child: buildMenuItem(
+                      Icons.calendar_today,
+                      Colors.amber[800]!,
+                      "Prenota Smaltimento",
+                      "Prenota lo smaltimento presso un ecocentro.",
+                    ),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -170,74 +195,40 @@ class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
                       "Calcola le tasse sulla gestione dei rifiuti.",
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 24),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const MapPage()),
-                  );
-                },
-                child: buildMenuItem(
-                  Icons.map,
-                  Colors.green,
-                  "Mappa Interattiva",
-                  "Visualizza i cassonetti e il livello di riempimento.",
-                ),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  final result = await Navigator.of(context).push<bool>(
-                    MaterialPageRoute(
-                      builder: (context) => PromemoriaRaccoltaPage(
-                        notificheAttive: _notificheAttiveDashboard,
+                  const Spacer(),
+                  // PULSANTI DI AUTENTICAZIONE
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const AccediPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
+                      elevation: 6,
+                      shadowColor: Colors.greenAccent,
+                      padding: EdgeInsets.symmetric(vertical: 14),
                     ),
-                  );
-                  if (result != null) {
-                    setState(() {
-                      _notificheAttiveDashboard = result;
-                    });
-                  }
-                },
-                child: buildMenuItem(
-                  Icons.notifications,
-                  Colors.blue,
-                  "Promemoria Raccolta",
-                  "Ricevi notifiche per la raccolta porta a porta.",
-                ),
-              ),
-              buildMenuItem(
-                Icons.camera_alt,
-                Colors.red,
-                "Segnalazioni",
-                "Segnala aree inquinate con foto.",
-              ),
-              buildMenuItem(
-                Icons.calendar_today,
-                Colors.amber[800]!,
-                "Prenota Smaltimento",
-                "Prenota lo smaltimento presso un ecocentro.",
-              ),
-              buildMenuItem(
-                Icons.attach_money,
-                Colors.purple,
-                "Simula Tasse",
-                "Calcola le tasse sulla gestione dei rifiuti.",
-              ),
-              Spacer(),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const AccediPage()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.login, color: Colors.white, size: 26),
+                        SizedBox(width: 10),
+                        Text(
+                          "Accedi",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(

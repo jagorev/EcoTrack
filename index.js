@@ -65,7 +65,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Connessione a MongoDB Atlas
 mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 })
   .then(() => console.log('✅ Connesso a MongoDB Atlas'))
   .catch(err => console.error('❌ Errore connessione:', err));

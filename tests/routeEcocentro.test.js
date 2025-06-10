@@ -1,6 +1,5 @@
 const request = require('supertest');
-const app = require('../percorso/alla/tua/app'); // Sostituisci con il percorso corretto della tua app Express
-
+const app = process.env.SERVER_URL; // Usa SERVER_URL dal file .envs
 jest.setTimeout(10000);
 
 describe('Ecocentro API Tests', () => {

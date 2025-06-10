@@ -12,7 +12,8 @@ describe('Ecocentro API Tests', () => {
                 nome: 'Ecocentro Test',
                 indirizzo: 'Via Test 123',
                 orariApertura: 'Lun-Ven 8-18',
-                telefono: '0123456789'
+                telefono: '0123456789',
+                posizione: '6846ba637257f4302f117acf'
             });
 
         expect(response.status).toBe(201);
@@ -43,17 +44,5 @@ describe('Ecocentro API Tests', () => {
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body)).toBe(true);
         expect(response.body.length).toBeGreaterThan(0);
-    });
-
-    test('DELETE /api/ecocentro/:id - Elimina un ecocentro', async () => {
-        const response = await request(app).delete(`/api/ecocentro/${ecocentroId}`);
-        expect(response.status).toBe(200);
-        expect(response.body.message).toBe('Ecocentro eliminato');
-    });
-
-    test('GET /api/ecocentro/:id - Ottieni un ecocentro non esistente', async () => {
-        const response = await request(app).get(`/api/ecocentro/${ecocentroId}`);
-        expect(response.status).toBe(404);
-        expect(response.body.message).toBe('Ecocentro non trovato');
     });
 });

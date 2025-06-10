@@ -69,7 +69,7 @@ class _PromemoriaRaccoltaPageState extends State<PromemoriaRaccoltaPage> {
 
   Future<void> fetchNotifiche() async {
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/notifiche'));
+      final response = await http.get(Uri.parse('https://ecotrack-6pp4.onrender.com/api/notifiche'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         // Ordina per dataInvio crescente (più imminente in alto)

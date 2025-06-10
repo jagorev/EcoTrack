@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _onRegister() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final url = Uri.parse('http://10.0.2.2:3000/api/utenteRegistrato');
+      final url = Uri.parse('https://ecotrack-6pp4.onrender.com/api/utenteRegistrato');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -70,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
       String endpoint;
       Map<String, dynamic> body = {};
       if (widget.userType == UserType.operator) {
-        endpoint = 'http://10.0.2.2:3000/api/operatoriEcologici/${user.uid}';
+        endpoint = 'http://ecotrack-6pp4.onrender.com/api/operatoriEcologici/${user.uid}';
         body = {
           'username': _usernameController.text.trim(),
           'email': _emailController.text.trim(),
@@ -79,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
           'zona': _zonaOperativaController.text.trim(),
         };
       } else {
-        endpoint = 'http://10.0.2.2:3000/api/utenteRegistrato/${user.uid}';
+        endpoint = 'http://ecotrack-6pp4.onrender.com/api/utenteRegistrato/${user.uid}';
         body = {
           'username': _usernameController.text.trim(),
           'email': _emailController.text.trim(),

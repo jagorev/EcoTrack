@@ -5,13 +5,14 @@ jest.setTimeout(10000);
 describe('Ecocentro API Tests', () => {
     let ecocentroId = '';
 
-    test('POST /api/ecocentri - Crea un nuovo ecocentro', async () => {
+    test('POST /api/ecocentro - Crea un nuovo ecocentro', async () => {
         const response = await request(app)
-            .post('/api/ecocentri')
+            .post('/api/ecocentro')
             .send({
                 nome: 'Ecocentro Test',
                 indirizzo: 'Via Test 123',
-                orari: 'Lun-Ven 8-18',
+                orariApertura: 'Lun-Ven 8-18',
+                telefono: '0123456789'
             });
 
         expect(response.status).toBe(201);
@@ -19,16 +20,16 @@ describe('Ecocentro API Tests', () => {
         ecocentroId = response.body._id;
     });
 
-    test('GET /api/ecocentri/:id - Ottieni un ecocentro per ID', async () => {
-        const response = await request(app).get(`/api/ecocentri/${ecocentroId}`);
+    test('GET /api/ecocentro/:id - Ottieni un ecocentro per ID', async () => {
+        const response = await request(app).get(`/api/ecocentro/${ecocentroId}`);
         expect(response.status).toBe(200);
         expect(response.body._id).toBe(ecocentroId);
         expect(response.body.nome).toBe('Ecocentro Test');
     });
 
-    test('PUT /api/ecocentri/:id - Modifica un ecocentro', async () => {
+    test('PATCH /api/ecocentro/:id - Modifica un ecocentro', async () => {
         const response = await request(app)
-            .put(`/api/ecocentri/${ecocentroId}`)
+            .patch(`/api/ecocentro/${ecocentroId}`)
             .send({
                 nome: 'Ecocentro Aggiornato',
             });
@@ -37,21 +38,21 @@ describe('Ecocentro API Tests', () => {
         expect(response.body.nome).toBe('Ecocentro Aggiornato');
     });
 
-    test('GET /api/ecocentri - Ottieni tutti gli ecocentri', async () => {
-        const response = await request(app).get('/api/ecocentri');
+    test('GET /api/ecocentro - Ottieni tutti gli ecocentri', async () => {
+        const response = await request(app).get('/api/ecocentro');
         expect(response.status).toBe(200);
         expect(Array.isArray(response.body)).toBe(true);
         expect(response.body.length).toBeGreaterThan(0);
     });
 
-    test('DELETE /api/ecocentri/:id - Elimina un ecocentro', async () => {
-        const response = await request(app).delete(`/api/ecocentri/${ecocentroId}`);
+    test('DELETE /api/ecocentro/:id - Elimina un ecocentro', async () => {
+        const response = await request(app).delete(`/api/ecocentro/${ecocentroId}`);
         expect(response.status).toBe(200);
         expect(response.body.message).toBe('Ecocentro eliminato');
     });
 
-    test('GET /api/ecocentri/:id - Ottieni un ecocentro non esistente', async () => {
-        const response = await request(app).get(`/api/ecocentri/${ecocentroId}`);
+    test('GET /api/ecocentro/:id - Ottieni un ecocentro non esistente', async () => {
+        const response = await request(app).get(`/api/ecocentro/${ecocentroId}`);
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('Ecocentro non trovato');
     });

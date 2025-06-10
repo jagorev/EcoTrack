@@ -166,10 +166,9 @@ const Posizione = require('../models/Posizione');
  */
 router.get('/api/unitaRaccolta', async (req, res) => {
     try {
-        const unitaRaccolta = await UnitaRaccolta.find()
+        const unitaRaccolta = await UnitaRaccolta.find({}, '_id livelloSaturazione posizione capienza')
             .populate('tipoRaccolta', 'tipo')
-            .populate('sensore', 'tipo')
-            //.populate('posizione', 'latitudineGradi latitudinePrimi latitudineSecondi longitudineGradi longitudinePrimi longitudineSecondi');
+            .populate('sensore', 'tipo');
         res.json(unitaRaccolta);
     } catch (err) {
         console.error('Errore durante il recupero delle unità di raccolta:', err);

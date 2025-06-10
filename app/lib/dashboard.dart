@@ -6,6 +6,8 @@ import 'accedi.dart';
 import 'registrati.dart';
 import 'profile_page.dart';
 import 'map_page.dart';
+
+import 'promemoria_raccolta.dart';
 import 'tari.dart';
 
 class EcoTrackHomePage extends StatefulWidget {
@@ -14,6 +16,8 @@ class EcoTrackHomePage extends StatefulWidget {
 }
 
 class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
+
+  bool _notificheAttiveDashboard = true; // Stato delle notifiche nella dashboard
   @override
   void initState() {
     super.initState();
@@ -166,41 +170,74 @@ class _EcoTrackHomePageState extends State<EcoTrackHomePage> {
                       "Calcola le tasse sulla gestione dei rifiuti.",
                     ),
                   ),
-                  Spacer(),
-                  ElevatedButton(
-                    onPressed: user == null
-                        ? () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => const AccediPage()),
-                            );
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                ],
+              ),
+              SizedBox(height: 24),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const MapPage()),
+                  );
+                },
+                child: buildMenuItem(
+                  Icons.map,
+                  Colors.green,
+                  "Mappa Interattiva",
+                  "Visualizza i cassonetti e il livello di riempimento.",
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  final result = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (context) => PromemoriaRaccoltaPage(
+                        notificheAttive: _notificheAttiveDashboard,
                       ),
-                      elevation: 6,
-                      shadowColor: Colors.greenAccent,
-                      padding: EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.login, color: Colors.white, size: 26),
-                        SizedBox(width: 10),
-                        Text(
-                          "Accedi",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            letterSpacing: 1.1,
-                          ),
-                        ),
-                      ],
-                    ),
+                  );
+                  if (result != null) {
+                    setState(() {
+                      _notificheAttiveDashboard = result;
+                    });
+                  }
+                },
+                child: buildMenuItem(
+                  Icons.notifications,
+                  Colors.blue,
+                  "Promemoria Raccolta",
+                  "Ricevi notifiche per la raccolta porta a porta.",
+                ),
+              ),
+              buildMenuItem(
+                Icons.camera_alt,
+                Colors.red,
+                "Segnalazioni",
+                "Segnala aree inquinate con foto.",
+              ),
+              buildMenuItem(
+                Icons.calendar_today,
+                Colors.amber[800]!,
+                "Prenota Smaltimento",
+                "Prenota lo smaltimento presso un ecocentro.",
+              ),
+              buildMenuItem(
+                Icons.attach_money,
+                Colors.purple,
+                "Simula Tasse",
+                "Calcola le tasse sulla gestione dei rifiuti.",
+              ),
+              Spacer(),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const AccediPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(

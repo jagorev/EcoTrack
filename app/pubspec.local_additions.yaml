@@ -1,0 +1,2 @@
+# Add flutter_local_notifications for local push notifications
+flutter_local_notifications: ^16.3.2

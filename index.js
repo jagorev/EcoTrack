@@ -52,7 +52,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000'
+        url: 'https://ecotrack-6pp4.onrender.com/'
       }
     ]
   },

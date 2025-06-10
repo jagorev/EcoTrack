@@ -5,7 +5,7 @@ info:
     description: 'API per il sistema EcoTrack'
 servers:
     -
-        url: 'http://localhost:3000'
+        url: 'https://ecotrack-6pp4.onrender.com'
 paths:
     /api/ecocentro:
         get:

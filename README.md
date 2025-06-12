@@ -27,7 +27,7 @@ EcoTrack è un progetto sviluppato per ottimizzare la gestione dei rifiuti nella
 
 ## Documentazione
 
-La documentazione del progetto è disponibile su Overleaf: [Progetto su Overleaf](https://www.overleaf.com/project/67d052fd4f5b8b0092e948a4).
+La documentazione del progetto è disponibile su Overleaf: [Progetto su Overleaf](https://www.overleaf.com/read/xnqzkypzjdst#7024a7).
 
 ## Stato del progetto
 
